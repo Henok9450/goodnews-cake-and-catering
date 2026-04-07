@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Reviews collection rules
+    match /reviews/{reviewId} {
+      // Allow reading all reviews (temporary for dev/admin access)
+      allow read: if true; // Previously: resource.data.status == 'approved'
+      
+      // Allow anyone to create new reviews (they will be pending by default)
+      allow create: if request.resource.data.status == 'pending' 
+                    && request.resource.data.userName is string
+                    && request.resource.data.rating is number
+                    && request.resource.data.comment is string;
+      
+      // For now, allow all updates and deletes (admin operations)
+      // TODO: In production, restrict these to authenticated admin users only
+      // Example: allow update, delete: if request.auth != null && request.auth.token.admin == true;
+      allow update, delete: if true;
+    }
+
+    // Orders collection rules
+    match /orders/{orderId} {
+      // Allow customers to track their orders (read access)
+      allow read: if true; 
+
+      // Allow anyone to place an order (create access)
+      allow create: if true;
+
+      // Restrict updates/deletes for now
+      allow update: if true; // Temporary for testing status updates
+      allow delete: if false; 
+    }
+  }
+}
