@@ -21,6 +21,11 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
   const navGroups = [
     { label: 'Home', path: '/' },
     { 
@@ -48,18 +53,18 @@ const Header = () => {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'py-2 bg-white/80 backdrop-blur-md shadow-lg border-b border-white/20' 
-        : 'py-4 bg-white shadow-sm'
+        ? 'py-2 bg-white/95 backdrop-blur-md shadow-md border-b border-gray-100' 
+        : 'py-2.5 sm:py-3.5 bg-white shadow-sm'
     }`}>
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex justify-between items-center">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center gap-2">
           
           {/* LOGO SECTION */}
-          <Link to="/" className="flex items-center shrink-0" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/" className="flex items-center shrink min-w-0" onClick={() => setIsMenuOpen(false)}>
             <img
               src="/images/logo/logo3.png"
               alt="GoodNews Cake"
-              className={`transition-all duration-300 ${isScrolled ? 'h-12' : 'h-16'} w-auto object-contain`} 
+              className={`transition-all duration-300 ${isScrolled ? 'h-9 sm:h-11 md:h-12' : 'h-10 sm:h-12 md:h-14 lg:h-16'} max-w-[130px] xs:max-w-[160px] sm:max-w-[200px] md:max-w-none w-auto object-contain`} 
             />
           </Link>
 
@@ -113,18 +118,18 @@ const Header = () => {
           </nav>
 
           {/* ACTION BUTTONS (Right Side) */}
-          <div className="flex items-center space-x-2 md:space-x-4">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 shrink-0">
             
-            {/* CALL BUTTON (Refined) */}
+            {/* CALL BUTTON */}
             <a
               href="tel:+251917559943"
-              className="p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-all"
+              className="p-1.5 sm:p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-all"
               title="Call Bakery"
             >
-              <Phone className="h-5 w-5" />
+              <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
             </a>
 
-            {/* ADMIN PILL (Exclusive) */}
+            {/* ADMIN PILL (Desktop) */}
             {isAdmin && (
               <Link
                 to="/admin"
@@ -135,14 +140,15 @@ const Header = () => {
               </Link>
             )}
 
-            {/* CART (Sleek Circle) */}
+            {/* CART BUTTON */}
             <button
-              className="relative p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-all"
+              className="relative p-1.5 sm:p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-all"
               onClick={() => navigate('/cart')}
+              title="Cart"
             >
-              <ShoppingCart className="h-6 w-6" />
+              <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
               {getCartCount() > 0 && (
-                <span className="absolute top-1 right-1 bg-primary-600 text-white rounded-full text-[10px] font-bold w-5 h-5 flex items-center justify-center border-2 border-white">
+                <span className="absolute -top-0.5 -right-0.5 sm:top-1 sm:right-1 bg-primary-600 text-white rounded-full text-[9px] sm:text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center border-2 border-white">
                   {getCartCount()}
                 </span>
               )}
@@ -153,23 +159,25 @@ const Header = () => {
               user ? (
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 p-1 pl-1 pr-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-all border border-gray-200"
+                  className="flex items-center gap-1.5 p-1 sm:pr-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-all border border-gray-200"
+                  title="My Account"
                 >
-                  <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white overflow-hidden shadow-inner">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary-600 flex items-center justify-center text-white overflow-hidden shadow-inner shrink-0">
                     {user.photoURL ? (
-                      <img src={user.photoURL} alt={user.displayName} />
+                      <img src={user.photoURL} alt={user.displayName || 'Account'} className="w-full h-full object-cover" />
                     ) : (
-                      <User className="h-5 w-5" />
+                      <User className="h-4 w-4 sm:h-5 sm:w-5" />
                     )}
                   </div>
-                  <span className="hidden sm:block text-xs font-bold text-gray-700 tracking-tight">MY ACCOUNT</span>
+                  <span className="hidden md:block text-xs font-bold text-gray-700 tracking-tight">MY ACCOUNT</span>
                 </Link>
               ) : (
                 <button
                   onClick={() => loginWithGoogle()}
-                  className="px-5 py-2 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-all text-sm font-bold shadow-sm active:scale-95 flex items-center gap-2"
+                  className="px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95 flex items-center gap-1.5"
+                  title="Sign In"
                 >
-                  <User className="h-4 w-4" />
+                  <User className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Sign In</span>
                 </button>
               )
@@ -177,24 +185,25 @@ const Header = () => {
 
             {/* MOBILE MENU TOGGLE */}
             <button
-              className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="lg:hidden p-1.5 sm:p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors focus:outline-none"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
             </button>
           </div>
         </div>
 
         {/* MOBILE NAVIGATION DRAWER */}
         {isMenuOpen && (
-          <nav className="lg:hidden mt-4 pb-6 border-t border-gray-100 animate-in slide-in-from-top-4 duration-300">
-            <div className="flex flex-col space-y-1 pt-4">
+          <nav className="lg:hidden max-h-[calc(100vh-4.5rem)] overflow-y-auto overscroll-contain mt-2 pb-6 border-t border-gray-100 animate-in slide-in-from-top-4 duration-300">
+            <div className="flex flex-col space-y-1 pt-3">
               {navGroups.map((group) => (
                 <React.Fragment key={group.label}>
                   {group.path ? (
                     <Link
                       to={group.path}
-                      className={`block px-4 py-3 text-base font-bold transition-colors ${
+                      className={`block px-4 py-2.5 text-base font-bold transition-colors ${
                         isActive(group.path) ? 'text-primary-600 bg-primary-50 rounded-lg' : 'text-gray-700 hover:text-primary-600'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
@@ -208,8 +217,8 @@ const Header = () => {
                          <Link
                           key={sub.path}
                           to={sub.path}
-                          className={`block py-3 text-base font-medium transition-colors ${
-                            isActive(sub.path) ? 'text-primary-600' : 'text-gray-600'
+                          className={`block py-2 text-base font-medium transition-colors ${
+                            isActive(sub.path) ? 'text-primary-600 font-semibold' : 'text-gray-600'
                           }`}
                           onClick={() => setIsMenuOpen(false)}
                         >
@@ -225,7 +234,7 @@ const Header = () => {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="mx-4 mt-4 flex items-center justify-center gap-2 bg-gray-900 text-white px-4 py-4 rounded-xl text-sm font-bold hover:bg-gray-800 transition-all"
+                  className="mx-4 mt-3 flex items-center justify-center gap-2 bg-gray-900 text-white px-4 py-3 rounded-xl text-sm font-bold hover:bg-gray-800 transition-all"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <LayoutDashboard className="w-5 h-5" />
