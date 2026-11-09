@@ -32,12 +32,18 @@ export const PAYMENT_STATUSES = [
 
 export const getOrders = async () => {
     try {
-        const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
-        const snapshot = await getDocs(q);
+        let snapshot;
+        try {
+            const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
+            snapshot = await getDocs(q);
+        } catch (orderErr) {
+            // Fallback without orderBy if index is missing
+            snapshot = await getDocs(collection(db, COLLECTION));
+        }
         return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch (error) {
-        console.error('Error fetching orders:', error);
-        throw error;
+        console.warn('Orders fetch notice:', error.message);
+        return [];
     }
 };
 

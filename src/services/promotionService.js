@@ -16,12 +16,17 @@ const COLLECTION = 'promotions';
 
 export const getPromotions = async () => {
     try {
-        const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
-        const snapshot = await getDocs(q);
+        let snapshot;
+        try {
+            const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
+            snapshot = await getDocs(q);
+        } catch (e) {
+            snapshot = await getDocs(collection(db, COLLECTION));
+        }
         return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch (error) {
-        console.error('Error fetching promotions:', error);
-        throw error;
+        console.warn('Promotions fetch notice:', error.message);
+        return [];
     }
 };
 

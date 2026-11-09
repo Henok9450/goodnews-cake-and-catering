@@ -23,8 +23,13 @@ export const getProducts = async (filters = {}) => {
     try {
         const { category, status = 'all', featuredOnly = false, search = '' } = filters;
         
-        let q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
-        const snapshot = await getDocs(q);
+        let snapshot;
+        try {
+            const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
+            snapshot = await getDocs(q);
+        } catch (idxErr) {
+            snapshot = await getDocs(collection(db, COLLECTION));
+        }
         let products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
         if (category && category !== 'all') {

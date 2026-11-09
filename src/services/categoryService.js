@@ -18,8 +18,13 @@ const COLLECTION = 'categories';
 
 export const getCategories = async (includeInactive = false) => {
     try {
-        const q = query(collection(db, COLLECTION), orderBy('displayOrder', 'asc'));
-        const snapshot = await getDocs(q);
+        let snapshot;
+        try {
+            const q = query(collection(db, COLLECTION), orderBy('displayOrder', 'asc'));
+            snapshot = await getDocs(q);
+        } catch (idxErr) {
+            snapshot = await getDocs(collection(db, COLLECTION));
+        }
         const categories = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         if (!includeInactive) {
             return categories.filter(c => c.isActive !== false);

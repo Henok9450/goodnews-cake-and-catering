@@ -17,8 +17,13 @@ const COLLECTION = 'services';
 
 export const getServices = async (includeDrafts = false) => {
     try {
-        const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
-        const snapshot = await getDocs(q);
+        let snapshot;
+        try {
+            const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
+            snapshot = await getDocs(q);
+        } catch (idxErr) {
+            snapshot = await getDocs(collection(db, COLLECTION));
+        }
         const services = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
         if (!includeDrafts) {
             return services.filter(s => s.status === 'published');

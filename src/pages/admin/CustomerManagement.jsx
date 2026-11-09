@@ -56,10 +56,11 @@ const CustomerManagement = () => {
 
   const filteredCustomers = customers.filter(c => {
     const term = search.toLowerCase().trim();
-    return !term || 
-      c.name.toLowerCase().includes(term) || 
-      c.phone.includes(term) || 
-      c.email.toLowerCase().includes(term);
+    if (!term) return true;
+    const nameMatch = c.name ? String(c.name).toLowerCase().includes(term) : false;
+    const phoneMatch = c.phone ? String(c.phone).toLowerCase().includes(term) : false;
+    const emailMatch = c.email ? String(c.email).toLowerCase().includes(term) : false;
+    return nameMatch || phoneMatch || emailMatch;
   });
 
   return (
