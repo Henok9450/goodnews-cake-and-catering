@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = process.env.REACT_APP_EMAIL_WEBHOOK_URL || 'https://script.google.com/macros/s/AKfycbx_VHdTudShRFLaj_vlxNL77ZlxqpTHUEQ1Q8dXqqECwSDB5l8EifKgHW2LnqSH0CL5/exec';
+const GOOGLE_SCRIPT_URL = process.env.REACT_APP_EMAIL_WEBHOOK_URL || 'https://script.google.com/macros/s/AKfycbxIK7toPLy-PQm8s8NeG5WdCMEUVkLvnM1FM5A_psSRMCkUvzmm8CxAXCRumi9S65CU/exec';
 
 /**
  * Sends order data to the Google Apps Script Web App.
