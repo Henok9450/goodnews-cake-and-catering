@@ -1,3 +1,4 @@
+import { getProducts } from '../services/productService';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
@@ -545,6 +546,30 @@ const CookieModal = ({ cookie, isOpen, onClose, onOrder, onCustomize }) => {
 };
 
 const Cookies = () => {
+  const [liveCookies, setLiveCookies] = React.useState([]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    getProducts({ category: 'cookies', status: 'published' })
+      .then(prods => {
+        if (isMounted && prods && prods.length > 0) {
+          setLiveCookies(prods.map(p => ({
+            id: p.id,
+            title: p.name,
+            img: p.featuredImage || (p.images && p.images[0]) || '/images/cookies/cookie1.png',
+            description: p.description,
+            ingredients: p.ingredients || [],
+            size: p.size || '3-inch diameter',
+            servings: p.servings || '12 cookies per batch'
+          })));
+        }
+      })
+      .catch(e => console.warn('Using default cookies:', e.message));
+
+    return () => { isMounted = false; };
+  }, []);
+
+  const displayCookies = liveCookies.length > 0 ? liveCookies : cookies;
   const [selectedCookie, setSelectedCookie] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);
@@ -588,7 +613,7 @@ const Cookies = () => {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {cookies.map((cookie, index) => (
+          {displayCookies.map((cookie, index) => (
             <div key={index} className="card p-6 text-center flex flex-col">
               <div className="w-full h-96 flex items-center justify-center rounded-lg mb-4 overflow-hidden">
                 <img

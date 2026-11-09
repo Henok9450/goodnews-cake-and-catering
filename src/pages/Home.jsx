@@ -4,8 +4,25 @@ import { motion } from 'framer-motion';
 import { Cake, Star, Truck, Shield, Heart, Sparkles } from 'lucide-react';
 import { db } from '../config/firebase';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { getContentSection } from '../services/contentService';
 
 const Home = () => {
+  const [heroContent, setHeroContent] = useState({
+    heroBadge: '{heroContent.heroBadge || "Where Every Bite Brings Joy"}',
+    heroTitle: "Celebrate Life's Sweet Moments",
+    heroSubtitle: 'Handcrafted cakes for every occasion. From birthdays to weddings, we bake happiness into every slice. Because every good news deserves a sweet celebration!',
+    primaryCtaText: 'View Our Gallery',
+    primaryCtaLink: '/gallery',
+    secondaryCtaText: 'Start Custom Order',
+    secondaryCtaLink: '/custom-order'
+  });
+
+  useEffect(() => {
+    getContentSection('homepage').then(data => {
+      if (data) setHeroContent(prev => ({ ...prev, ...data }));
+    }).catch(err => console.log('Using default homepage content', err));
+  }, []);
+
   const features = [
     {
       icon: Cake,
@@ -87,8 +104,9 @@ const Home = () => {
               </motion.div>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Celebrate Life's{' '}
-              <span className="text-gradient">Sweet Moments</span>
+              {heroContent.heroTitle ? heroContent.heroTitle : (
+                <>Celebrate Life's <span className="text-gradient">Sweet Moments</span></>
+              )}
             </h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -96,8 +114,7 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-xl text-gray-600 mb-8 leading-relaxed"
             >
-              Handcrafted cakes for every occasion. From birthdays to weddings,
-              we bake happiness into every slice. Because every good news deserves a sweet celebration!
+              {heroContent.heroSubtitle || 'Handcrafted cakes for every occasion. From birthdays to weddings, we bake happiness into every slice. Because every good news deserves a sweet celebration!'}
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -105,11 +122,11 @@ const Home = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <Link to="/gallery" className="btn-primary text-lg px-8 py-4">
-                View Our Gallery
+              <Link to={heroContent.primaryCtaLink || '/gallery'} className="btn-primary text-lg px-8 py-4">
+                {heroContent.primaryCtaText || 'View Our Gallery'}
               </Link>
-              <Link to="/custom-order" className="btn-secondary text-lg px-8 py-4">
-                Start Custom Order
+              <Link to={heroContent.secondaryCtaLink || '/custom-order'} className="btn-secondary text-lg px-8 py-4">
+                {heroContent.secondaryCtaText || 'Start Custom Order'}
               </Link>
             </motion.div>
           </motion.div>

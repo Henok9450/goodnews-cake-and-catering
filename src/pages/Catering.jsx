@@ -1,9 +1,33 @@
+import { getServices } from '../services/serviceService';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 // import { emailService } from '../services/emailService';
 
 const Catering = () => {
+  const [liveServices, setLiveServices] = React.useState([]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    getServices()
+      .then(servs => {
+        if (isMounted && servs && servs.length > 0) {
+          setLiveServices(servs.map(s => ({
+            id: s.id,
+            img: s.coverImage || (s.images && s.images[0]) || '/images/catering/catering1.png',
+            title: s.title,
+            description: s.description,
+            serves: s.serves || '10-15 people',
+            category: s.category || 'desserts'
+          })));
+        }
+      })
+      .catch(e => console.warn('Using default catering items:', e.message));
+
+    return () => { isMounted = false; };
+  }, []);
+
+  const displayCateringItems = liveServices.length > 0 ? liveServices : cateringItems;
   const [showForm, setShowForm] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -346,7 +370,7 @@ const Catering = () => {
           <>
             {/* Using the same image logic as Gallery component */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {cateringItems.map((item) => (
+              {displayCateringItems.map((item) => (
                 <div key={item.id} className="card p-6 text-center flex flex-col">
                   {/* Same image container logic as Gallery */}
                   <div className="w-full h-96 flex items-center justify-center rounded-lg mb-4 overflow-hidden relative group">

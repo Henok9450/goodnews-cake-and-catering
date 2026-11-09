@@ -1,9 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
+import PublicLayout from './components/layout/PublicLayout';
+
+// Public Pages
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import CustomOrder from './pages/CustomOrder';
@@ -16,8 +17,26 @@ import Reviews from './pages/Reviews';
 import CheckoutPage from './pages/CheckoutPage';
 import TrackOrder from './pages/TrackOrder';
 import Profile from './pages/Profile';
-import AdminOrders from './pages/AdminOrders';
+
+// Admin Architecture
 import AdminRoute from './components/auth/AdminRoute';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminLogin from './pages/admin/AdminLogin';
+import DashboardOverview from './pages/admin/DashboardOverview';
+import ProductManagement from './pages/admin/ProductManagement';
+import CategoryManagement from './pages/admin/CategoryManagement';
+import ServiceManagement from './pages/admin/ServiceManagement';
+import OrderManagement from './pages/admin/OrderManagement';
+import CustomerManagement from './pages/admin/CustomerManagement';
+import InventoryManagement from './pages/admin/InventoryManagement';
+import PaymentManagement from './pages/admin/PaymentManagement';
+import PromotionManagement from './pages/admin/PromotionManagement';
+import GalleryManagement from './pages/admin/GalleryManagement';
+import TestimonialManagement from './pages/admin/TestimonialManagement';
+import ContentManagement from './pages/admin/ContentManagement';
+import ReportsAnalytics from './pages/admin/ReportsAnalytics';
+import AdminSettings from './pages/admin/AdminSettings';
+
 import './App.css';
 
 function App() {
@@ -25,10 +44,10 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="App flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">
-              <Routes>
+          <div className="App min-h-screen">
+            <Routes>
+              {/* Customer-Facing Public Website */}
+              <Route element={<PublicLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/custom-order" element={<CustomOrder />} />
@@ -42,17 +61,39 @@ function App() {
                 <Route path="/track" element={<TrackOrder />} />
                 <Route path="/track/:orderNumber" element={<TrackOrder />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route 
-                  path="/admin" 
-                  element={
-                    <AdminRoute>
-                      <AdminOrders />
-                    </AdminRoute>
-                  } 
-                />
-              </Routes>
-            </main>
-            <Footer />
+              </Route>
+
+              {/* Secure Admin Authentication */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+
+              {/* Secure Admin Dashboard (Role Protected) */}
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
+                <Route index element={<DashboardOverview />} />
+                <Route path="products" element={<ProductManagement />} />
+                <Route path="categories" element={<CategoryManagement />} />
+                <Route path="services" element={<ServiceManagement />} />
+                <Route path="orders" element={<OrderManagement />} />
+                <Route path="customers" element={<CustomerManagement />} />
+                <Route path="inventory" element={<InventoryManagement />} />
+                <Route path="payments" element={<PaymentManagement />} />
+                <Route path="promotions" element={<PromotionManagement />} />
+                <Route path="gallery" element={<GalleryManagement />} />
+                <Route path="testimonials" element={<TestimonialManagement />} />
+                <Route path="content" element={<ContentManagement />} />
+                <Route path="reports" element={<ReportsAnalytics />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
+
+              {/* Catch-all fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
           </div>
         </Router>
       </CartProvider>

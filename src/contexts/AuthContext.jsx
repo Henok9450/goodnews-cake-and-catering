@@ -4,16 +4,20 @@ import {
   createUserWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  signInWithPopup
+  signInWithPopup,
+  sendPasswordResetEmail
 } from 'firebase/auth';
-import { auth, googleProvider } from '../config/firebase';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, googleProvider, db } from '../config/firebase';
+import { seedDatabaseIfEmpty } from '../utils/seedData';
 
 const AuthContext = createContext();
 
-// List of emails authorized as Bakery Managers/Admins
-const ADMIN_EMAILS = [
+// Default bootstrap admin emails
+const DEFAULT_ADMIN_EMAILS = [
   'noahenok9450@gmail.com',
-  'henok.birhanu@gmail.com'
+  'henok.birhanu@gmail.com',
+  'admin@goodnewscake.com'
 ];
 
 export const useAuth = () => {
@@ -26,35 +30,119 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [adminProfile, setAdminProfile] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // For now, we'll use a simple auth context
-  // Firebase integration will be added later
+  // Check admin status in Firestore & bootstrap list
+  const verifyAdminRole = async (currentUser) => {
+    if (!currentUser || !currentUser.email) {
+      setIsAdmin(false);
+      setAdminProfile(null);
+      return false;
+    }
+
+    const email = currentUser.email.toLowerCase();
+    const isBootstrapAdmin = DEFAULT_ADMIN_EMAILS.includes(email);
+
+    try {
+      // Check admins collection in Firestore
+      const adminDocRef = doc(db, 'admins', currentUser.uid);
+      const adminDoc = await getDoc(adminDocRef);
+
+      if (adminDoc.exists() && adminDoc.data().isActive !== false) {
+        const data = adminDoc.data();
+        setIsAdmin(true);
+        setAdminProfile({ uid: currentUser.uid, ...data });
+        return true;
+      } else if (isBootstrapAdmin) {
+        // Auto-provision bootstrap admin profile in Firestore
+        const newAdminData = {
+          email: currentUser.email,
+          displayName: currentUser.displayName || 'Administrator',
+          role: 'superadmin',
+          isActive: true,
+          createdAt: serverTimestamp(),
+          lastLogin: serverTimestamp()
+        };
+        await setDoc(adminDocRef, newAdminData, { merge: true });
+        setIsAdmin(true);
+        setAdminProfile({ uid: currentUser.uid, ...newAdminData });
+
+        // Auto-seed initial catalog if Firestore is empty
+        seedDatabaseIfEmpty().catch(err => console.warn('Seed notice:', err.message));
+        return true;
+      } else {
+        setIsAdmin(false);
+        setAdminProfile(null);
+        return false;
+      }
+    } catch (err) {
+      console.warn('Admin check error (falling back to bootstrap list):', err.message);
+      if (isBootstrapAdmin) {
+        setIsAdmin(true);
+        setAdminProfile({ uid: currentUser.uid, email, role: 'superadmin' });
+        return true;
+      }
+      setIsAdmin(false);
+      setAdminProfile(null);
+      return false;
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        await verifyAdminRole(currentUser);
+      } else {
+        setIsAdmin(false);
+        setAdminProfile(null);
+      }
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
+  const login = async (email, password) => {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    await verifyAdminRole(cred.user);
+    return cred.user;
+  };
+
+  const loginWithGoogle = async () => {
+    const cred = await signInWithPopup(auth, googleProvider);
+    await verifyAdminRole(cred.user);
+    return cred.user;
+  };
+
+  const signup = async (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+    setUser(null);
+    setIsAdmin(false);
+    setAdminProfile(null);
+  };
+
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
   const value = {
     user,
+    adminProfile,
+    isAdmin,
     loading,
-    signup: (email, password) => {
-      return createUserWithEmailAndPassword(auth, email, password);
-    },
-    login: (email, password) => {
-      return signInWithEmailAndPassword(auth, email, password);
-    },
-    loginWithGoogle: () => {
-      return signInWithPopup(auth, googleProvider);
-    },
-    logout: () => {
-      return signOut(auth);
-    },
-    isAdmin: user ? ADMIN_EMAILS.includes(user.email) : false
+    login,
+    signup,
+    loginWithGoogle,
+    logout,
+    resetPassword,
+    verifyAdminRole
   };
 
   return (

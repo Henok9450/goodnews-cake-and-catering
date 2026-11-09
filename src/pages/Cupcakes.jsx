@@ -1,3 +1,4 @@
+import { getProducts } from '../services/productService';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
@@ -549,6 +550,30 @@ const CupcakeModal = ({ cupcake, isOpen, onClose, onOrder, onCustomize }) => {
 };
 
 const Cupcakes = () => {
+  const [liveCupcakes, setLiveCupcakes] = React.useState([]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    getProducts({ category: 'cupcakes', status: 'published' })
+      .then(prods => {
+        if (isMounted && prods && prods.length > 0) {
+          setLiveCupcakes(prods.map(p => ({
+            id: p.id,
+            title: p.name,
+            img: p.featuredImage || (p.images && p.images[0]) || '/images/cupcakes/cupcake1.png',
+            description: p.description,
+            ingredients: p.ingredients || [],
+            size: p.size || 'Standard cupcake',
+            servings: p.servings || '1 person per cupcake'
+          })));
+        }
+      })
+      .catch(e => console.warn('Using default cupcakes:', e.message));
+
+    return () => { isMounted = false; };
+  }, []);
+
+  const displayCupcakes = liveCupcakes.length > 0 ? liveCupcakes : cupcakes;
   const [selectedCupcake, setSelectedCupcake] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);
@@ -592,7 +617,7 @@ const Cupcakes = () => {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {cupcakes.map((cupcake, index) => (
+          {displayCupcakes.map((cupcake, index) => (
             <div key={index} className="card p-6 text-center flex flex-col">
               <div className="w-full h-96 flex items-center justify-center rounded-lg mb-4 overflow-hidden">
                 <img

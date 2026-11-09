@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,27 +17,26 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-console.log('🔥 Initializing Firebase app...');
 const app = initializeApp(firebaseConfig);
-console.log('✅ Firebase app initialized successfully');
 
 // Initialize Analytics (optional)
 let analytics = null;
 if (typeof window !== 'undefined') {
-    console.log('📊 Initializing Firebase Analytics...');
-    analytics = getAnalytics(app);
-    console.log('✅ Firebase Analytics initialized successfully');
+    try {
+        analytics = getAnalytics(app);
+    } catch (e) {
+        // Analytics not supported in all environments
+    }
 }
 
 // Initialize Firestore
-console.log('🗄️ Initializing Firestore...');
 const db = getFirestore(app);
-console.log('✅ Firestore initialized successfully');
 
 // Initialize Auth
-console.log('🔐 Initializing Firebase Auth...');
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
-console.log('✅ Firebase Auth initialized successfully');
 
-export { app, analytics, db, auth, googleProvider };
+// Initialize Storage
+const storage = getStorage(app);
+
+export { app, analytics, db, auth, googleProvider, storage };

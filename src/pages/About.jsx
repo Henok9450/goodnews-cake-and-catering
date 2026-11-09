@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Cake, Heart, Users } from 'lucide-react';
+import { getContentSection } from '../services/contentService';
 
 const About = () => {
+  const [aboutContent, setAboutContent] = useState({
+    passionText: "Creating beautiful, delicious cakes that celebrate life's special moments.",
+    missionText: "Spread joy and sweetness through exceptional baking and customer service.",
+    communityText: "Serving our local community with love and dedication since day one.",
+    storyText: "GoodNews Cake started with a simple idea: every piece of good news deserves a sweet celebration. What began as a home bakery has grown into a beloved local business, but our commitment to quality and personal touch remains the same."
+  });
+
+  useEffect(() => {
+    getContentSection('about').then(data => {
+      if (data) {
+        setAboutContent(prev => ({ ...prev, ...data }));
+      }
+    }).catch(err => console.log('Using default about content', err));
+  }, []);
+
   return (
     <div className="min-h-screen pt-20">
       <div className="container mx-auto px-4 py-8">
@@ -12,33 +28,31 @@ const About = () => {
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <div className="text-center card p-6">
               <img 
-    src="/images/logo/logo3.png"
-    alt="GoodNews Cake Logo"
-    class="h-12 w-12 mx-auto mb-4" 
-/> 
+                src="/images/logo/logo3.png"
+                alt="GoodNews Cake Logo"
+                className="h-12 w-12 mx-auto mb-4 object-contain" 
+              /> 
               <h3 className="text-xl font-semibold mb-2">Our Passion</h3>
-              <p className="text-gray-600">Creating beautiful, delicious cakes that celebrate life's special moments.</p>
+              <p className="text-gray-600 leading-relaxed">{aboutContent.passionText}</p>
             </div>
              
             <div className="text-center card p-6">
               <Heart className="h-12 w-12 text-primary-600 mx-auto mb-4" /> 
               <h3 className="text-xl font-semibold mb-2">Our Mission</h3>
-              <p className="text-gray-600">Spread joy and sweetness through exceptional baking and customer service.</p>
+              <p className="text-gray-600 leading-relaxed">{aboutContent.missionText}</p>
             </div>
             
             <div className="text-center card p-6">
               <Users className="h-12 w-12 text-primary-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">Our Community</h3>
-              <p className="text-gray-600">Serving our local community with love and dedication since day one.</p>
+              <p className="text-gray-600 leading-relaxed">{aboutContent.communityText}</p>
             </div>
           </div>
           
           <div className="card p-8">
             <h2 className="text-2xl font-bold mb-4">Our Story</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              GoodNews Cake started with a simple idea: every piece of good news deserves a sweet celebration. 
-              What began as a home bakery has grown into a beloved local business, but our commitment to quality 
-              and personal touch remains the same.
+              {aboutContent.storyText}
             </p>
             <p className="text-gray-600 leading-relaxed">
               We believe that cakes are more than just desserts—they're the centerpiece of memories, the sweet 

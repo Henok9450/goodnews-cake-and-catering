@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
-// import { emailService } from '../services/emailService'; // No longer needed directly here
-const cakes = [
+import { getProducts } from '../services/productService';
+
+const defaultCakes = [
   {
     img: '/images/cakes/cake1.png',
     title: 'Beautiful Cake Design 1',
-        description: 'A stunning vanilla cake with buttercream frosting and fresh fruit decorations.',
+    description: 'A stunning vanilla cake with buttercream frosting and fresh fruit decorations.',
     ingredients: ['Vanilla sponge', 'Buttercream frosting', 'Fresh fruits', 'Edible flowers'],
     size: '1 kg',
     servings: '8-10 people'
@@ -14,7 +15,7 @@ const cakes = [
   {
     img: '/images/cakes/cake2.png',
     title: 'Chocolate Delight',
-        description: 'Rich chocolate cake with ganache filling and chocolate shavings.',
+    description: 'Rich chocolate cake with ganache filling and chocolate shavings.',
     ingredients: ['Chocolate sponge', 'Dark chocolate ganache', 'Chocolate shavings', 'Whipped cream'],
     size: '1.5 kg',
     servings: '10-12 people'
@@ -22,7 +23,7 @@ const cakes = [
   {
     img: '/images/cakes/cake3.png',
     title: 'Red Velvet Elegance',
-        description: 'Classic red velvet cake with cream cheese frosting and red velvet crumbs.',
+    description: 'Classic red velvet cake with cream cheese frosting and red velvet crumbs.',
     ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'White chocolate', 'Red velvet crumbs'],
     size: '1 kg',
     servings: '8-10 people'
@@ -30,7 +31,7 @@ const cakes = [
   {
     img: '/images/cakes/cake4.png',
     title: 'Wedding Special',
-        description: 'Elegant multi-tier wedding cake with intricate piping and pearl decorations.',
+    description: 'Elegant multi-tier wedding cake with intricate piping and pearl decorations.',
     ingredients: ['Vanilla and chocolate layers', 'Swiss meringue buttercream', 'Edible pearls', 'Gold leaf'],
     size: 'Two-tier (6" & 8")',
     servings: '30-40 people'
@@ -38,7 +39,7 @@ const cakes = [
   {
     img: '/images/cakes/cake5.png',
     title: 'Fruit Fantasy',
-        description: 'Light sponge cake loaded with seasonal fruits and whipped cream.',
+    description: 'Light sponge cake loaded with seasonal fruits and whipped cream.',
     ingredients: ['Vanilla sponge', 'Fresh whipped cream', 'Seasonal fruits', 'Fruit glaze'],
     size: '1.5 kg',
     servings: '10-12 people'
@@ -46,7 +47,7 @@ const cakes = [
   {
     img: '/images/cakes/cake6.png',
     title: 'Caramel Dream',
-        description: 'Moist caramel cake with salted caramel filling and caramel drizzle.',
+    description: 'Moist caramel cake with salted caramel filling and caramel drizzle.',
     ingredients: ['Caramel sponge', 'Salted caramel filling', 'Caramel buttercream', 'Caramel sauce'],
     size: '1 kg',
     servings: '8-10 people'
@@ -54,7 +55,7 @@ const cakes = [
   {
     img: '/images/cakes/cake7.png',
     title: 'Lemon Zest',
-        description: 'Tangy lemon cake with lemon curd filling and lemon glaze.',
+    description: 'Tangy lemon cake with lemon curd filling and lemon glaze.',
     ingredients: ['Lemon sponge', 'Lemon curd', 'Lemon buttercream', 'Candied lemon'],
     size: '1 kg',
     servings: '8-10 people'
@@ -62,15 +63,15 @@ const cakes = [
   {
     img: '/images/cakes/cake8.png',
     title: 'Birthday Special',
-        description: 'Fun birthday cake with colorful sprinkles and personalized message.',
+    description: 'Fun birthday cake with colorful sprinkles and personalized message.',
     ingredients: ['Choice of flavor', 'Buttercream frosting', 'Colorful sprinkles', 'Custom message'],
     size: '1.5 kg',
     servings: '12-15 people'
   },
   {
     img: '/images/cakes/cake9.png',
-    title: 'Birthday Special',
-        description: 'Fun birthday cake with colorful sprinkles and personalized message.',
+    title: 'Celebration Delight',
+    description: 'Festive tiered party cake with edible decorations and custom messaging.',
     ingredients: ['Choice of flavor', 'Buttercream frosting', 'Colorful sprinkles', 'Custom message'],
     size: '1.5 kg',
     servings: '12-15 people'
@@ -100,60 +101,27 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState('');
 
-  const cakeFlavors = [
-    'Vanilla',
-    'Chocolate',
-    'Red Velvet',
-    'Lemon',
-    'Carrot',
-    'Marble',
-    'Coffee',
-    'Coconut',
-    'Other (specify in notes)'
-  ];
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
 
-  const cakeFillings = [
-    'Buttercream',
-    'Chocolate Ganache',
-    'Cream Cheese',
-    'Fruit Preserves',
-    'Lemon Curd',
-    'Caramel',
-    'Whipped Cream',
-    'Custard',
-    'Other (specify in notes)'
-  ];
-
-  const cakeFrostings = [
-    'Buttercream',
-    'Cream Cheese',
-    'Chocolate Ganache',
-    'Whipped Cream',
-    'Fondant',
-    'Swiss Meringue',
-    'Italian Meringue',
-    'Other (specify in notes)'
-  ];
-
-  const cakeSizes = [
-    '0.5 kg (8-10 servings)',
-    '1 kg (12-16 servings)',
-    '1.5 kg (20-25 servings)',
-    '2 kg (25-30 servings)',
-    'Sheet cake (24-48 servings)',
-    'Multi-tier (custom servings)',
-    'Other (specify in notes)'
-  ];
+  // Reset form when cake changes
+  React.useEffect(() => {
+    if (cake) {
+      setFormData(prev => ({
+        ...prev,
+        cakeType: cake.title || '',
+        cakeSize: cake.size || ''
+      }));
+    }
+  }, [cake]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
-
-  const { addToCart } = useCart(); // Access cart context
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -184,28 +152,25 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
         specialRequests: formData.specialRequests,
 
         // Metadata
-        image: window.location.origin + (cake?.img || ''),
-        addedAt: new Date().toISOString()
+        itemType: 'cake'
       };
 
+      // Add the item to our global shopping cart
       addToCart(orderData);
-
-      console.log('✅ Gallery item added to cart:', orderData);
 
       setIsSubmitting(false);
       setIsSubmitted(true);
-
     } catch (error) {
       console.error('Error adding to cart:', error);
+      setSubmissionError('Failed to add item to your bag. Please try again.');
       setIsSubmitting(false);
-      setSubmissionError('Failed to add to cart. Please try again.');
     }
   };
 
   const resetForm = () => {
     setFormData({
-      cakeType: cake?.title || '',
-      cakeSize: cake?.size || '',
+      cakeType: '',
+      cakeSize: '',
       cakeFlavor: '',
       cakeFilling: '',
       cakeFrosting: '',
@@ -221,329 +186,278 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
 
   if (!isOpen) return null;
 
-  if (isSubmitted) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg max-w-md w-full p-6">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative custom-scrollbar shadow-2xl">
+        <button
+          onClick={resetForm}
+          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {isSubmitted ? (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Added to Cart!</h2>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Item Added to Bag!</h3>
             <p className="text-gray-600 mb-6">
-              "{cake?.title}" has been added to your cart. You can continue shopping or proceed to checkout.
+              Your cake customization has been added to your shopping bag. You can continue shopping or proceed to review your order.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-center">
               <button
                 onClick={resetForm}
-                className="flex-1 px-6 py-3 border border-primary-500 text-primary-500 rounded-lg hover:bg-primary-50 font-semibold"
+                className="btn-secondary"
               >
-                Continue
+                Continue Browsing
               </button>
               <button
-                onClick={() => window.location.href = '/cart'}
-                className="flex-1 btn-primary font-semibold"
+                onClick={() => {
+                  resetForm();
+                  navigate('/cart');
+                }}
+                className="btn-primary"
               >
-                View Cart
+                View Bag & Order
               </button>
             </div>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {orderType === 'customize' ? 'Customize Cake Order' : 'Order This Cake'}
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Cake Summary */}
-          {cake && (
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <div className="flex items-center space-x-4">
-                <img src={cake.img} alt={cake.title} className="w-20 h-20 object-cover rounded" />
-                <div>
-                  <h3 className="font-semibold text-lg">{cake.title}</h3>
-                  <p className="text-sm text-gray-600">{cake.size} • {cake.servings}</p>
-                  <p className="text-sm text-gray-600 mt-1">{cake.description}</p>
-                </div>
+        ) : (
+          <div>
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {orderType === 'customize' ? 'Customize Your Cake' : 'Order Cake'}
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  {orderType === 'customize' 
+                    ? 'Personalize your cake specifications and instructions' 
+                    : 'Confirm your cake selection'}
+                </p>
               </div>
             </div>
-          )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+            {cake && (
+              <div className="bg-gray-50 rounded-2xl p-4 mb-6 border border-gray-100">
+                <div className="flex items-center space-x-4">
+                  <img src={cake.img} alt={cake.title} className="w-16 h-16 object-cover rounded-xl bg-white border border-gray-200" />
+                  <div>
+                    <h3 className="font-bold text-base text-gray-900">{cake.title}</h3>
+                    <p className="text-xs text-gray-600 mt-0.5">{cake.size} • {cake.servings}</p>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-1">{cake.description}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            {/* Cake Specifications */}
-            <div className="section-card">
-              <h3 className="text-lg font-semibold mb-4 text-primary-600">🎂 Cake Specifications</h3>
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cake Type</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Cake Type</label>
                   <input
                     type="text"
                     name="cakeType"
                     value={formData.cakeType}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., Birthday Cake, Wedding Cake, etc."
+                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                    placeholder="e.g., Birthday Cake"
+                    required
                   />
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cake Size *</label>
-                  <select
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Size</label>
+                  <input
+                    type="text"
                     name="cakeSize"
                     value={formData.cakeSize}
                     onChange={handleInputChange}
+                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                    placeholder="e.g., 1.5 kg, Two-tier"
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  >
-                    <option value="">Select Cake Size</option>
-                    {cakeSizes.map(size => (
-                      <option key={size} value={size}>{size}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
+              </div>
 
+              <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Flavor *</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Flavor</label>
                   <select
                     name="cakeFlavor"
                     value={formData.cakeFlavor}
                     onChange={handleInputChange}
+                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 font-medium"
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
                     <option value="">Select Flavor</option>
-                    {cakeFlavors.map(flavor => (
-                      <option key={flavor} value={flavor}>{flavor}</option>
-                    ))}
+                    <option value="vanilla">Vanilla</option>
+                    <option value="chocolate">Chocolate</option>
+                    <option value="red-velvet">Red Velvet</option>
+                    <option value="caramel">Caramel</option>
+                    <option value="lemon">Lemon</option>
+                    <option value="fruit">Mixed Fruit</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Filling</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Filling</label>
                   <select
                     name="cakeFilling"
                     value={formData.cakeFilling}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 font-medium"
                   >
-                    <option value="">Select Filling</option>
-                    {cakeFillings.map(filling => (
-                      <option key={filling} value={filling}>{filling}</option>
-                    ))}
+                    <option value="">Select Filling (Optional)</option>
+                    <option value="buttercream">Buttercream</option>
+                    <option value="chocolate-ganache">Chocolate Ganache</option>
+                    <option value="cream-cheese">Cream Cheese</option>
+                    <option value="fruit-compote">Fruit Compote</option>
+                    <option value="caramel">Caramel</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Frosting *</label>
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Frosting</label>
                   <select
                     name="cakeFrosting"
                     value={formData.cakeFrosting}
                     onChange={handleInputChange}
+                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-primary-500 font-medium"
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
                     <option value="">Select Frosting</option>
-                    {cakeFrostings.map(frosting => (
-                      <option key={frosting} value={frosting}>{frosting}</option>
-                    ))}
+                    <option value="buttercream">Buttercream</option>
+                    <option value="whipped-cream">Whipped Cream</option>
+                    <option value="cream-cheese">Cream Cheese</option>
+                    <option value="chocolate-ganache">Chocolate Ganache</option>
+                    <option value="fondant">Fondant</option>
                   </select>
                 </div>
               </div>
-            </div>
 
-            {/* Design Preferences */}
-            <div className="section-card">
-              <h3 className="text-lg font-semibold mb-4 text-primary-600">🎨 Design Preferences</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Theme/Design</label>
-                  <input
-                    type="text"
-                    name="cakeTheme"
-                    value={formData.cakeTheme}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., Floral, Modern, Vintage, Character, etc."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
-                  <input
-                    type="text"
-                    name="cakeColors"
-                    value={formData.cakeColors}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="e.g., Pink and gold, Blue and white, etc."
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Message on Cake</label>
-                  <input
-                    type="text"
-                    name="cakeMessage"
-                    value={formData.cakeMessage}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="What should we write on the cake?"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Message on Cake</label>
+                <input
+                  type="text"
+                  name="cakeMessage"
+                  value={formData.cakeMessage}
+                  onChange={handleInputChange}
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                  placeholder="e.g., Happy Birthday Abebe!"
+                />
               </div>
-            </div>
 
-            {/* Special Requests */}
-            <div className="section-card">
-              <h3 className="text-lg font-semibold mb-4 text-primary-600">💫 Special Requests & Notes</h3>
-              <textarea
-                name="specialRequests"
-                value={formData.specialRequests}
-                onChange={handleInputChange}
-                rows={4}
-                placeholder="Any dietary restrictions, allergies, specific design elements, reference images, or other special requirements..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Special Requests */}
-
-            {submissionError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-red-700 text-sm">{submissionError}</p>
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">Special Requests / Dietary Notes</label>
+                <textarea
+                  name="specialRequests"
+                  value={formData.specialRequests}
+                  onChange={handleInputChange}
+                  rows="2"
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-primary-500"
+                  placeholder="Any dietary restrictions, specific decorations, or delivery notes"
+                ></textarea>
               </div>
-            )}
 
-            <div className="flex gap-4 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 btn-primary disabled:bg-primary-400 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Submitting...
-                  </span>
-                ) : (
-                  'Add to Cart'
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
+              {submissionError && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs">
+                  {submissionError}
+                </div>
+              )}
+
+              <div className="flex gap-4 justify-end pt-4 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-500 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-primary py-2.5 px-6 rounded-xl text-xs font-bold shadow-md"
+                >
+                  {isSubmitting ? 'Adding...' : 'Add to Bag'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-// Add CSS for section cards
-const sectionCardStyle = {
-  background: 'white',
-  padding: '20px',
-  borderRadius: '8px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  border: '1px solid #e5e7eb'
-};
-
-// Original CakeModal Component (updated with order buttons)
+// Cake Details Modal Component
 const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
-  if (!isOpen) return null;
+  if (!isOpen || !cake) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="relative">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10 bg-white rounded-full p-2"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative custom-scrollbar shadow-2xl">
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
 
-          <div className="grid md:grid-cols-2 gap-8 p-6">
-            {/* Image Section */}
-            <div className="flex items-center justify-center">
-              <img
-                src={cake.img}
-                alt={cake.title}
-                className="w-full h-auto object-contain rounded-lg"
-              />
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center p-4 border border-gray-100">
+            <img
+              src={cake.img}
+              alt={cake.title}
+              className="w-full max-h-[380px] object-contain rounded-xl"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-3xl font-extrabold text-gray-900">{cake.title}</h2>
+            <div>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Description</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">{cake.description}</p>
             </div>
 
-            {/* Details Section */}
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-gray-900">{cake.title}</h2>
+            {cake.ingredients && cake.ingredients.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold mb-2">Description</h3>
-                <p className="text-gray-600">{cake.description}</p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Ingredients</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Ingredients</h3>
+                <ul className="list-disc list-inside text-xs text-gray-600 space-y-1">
                   {cake.ingredients.map((ingredient, index) => (
                     <li key={index}>{ingredient}</li>
                   ))}
                 </ul>
               </div>
+            )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold text-gray-700">Size</h4>
-                  <p className="text-gray-600">{cake.size}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-700">Servings</h4>
-                  <p className="text-gray-600">{cake.servings}</p>
-                </div>
+            <div className="grid grid-cols-2 gap-4 py-2 border-y border-gray-100 text-xs">
+              <div>
+                <p className="text-gray-400 font-medium">Standard Size</p>
+                <p className="font-bold text-gray-900">{cake.size || '1 kg'}</p>
               </div>
+              <div>
+                <p className="text-gray-400 font-medium">Estimated Servings</p>
+                <p className="font-bold text-gray-900">{cake.servings || '8-10 people'}</p>
+              </div>
+            </div>
 
-              <div className="pt-4">
-                <button
-                  className="btn-primary w-full"
-                  onClick={() => onOrder(cake)}
-                >
-                  Order This Cake
-                </button>
-                <button
-                  className="btn-secondary w-full mt-2"
-                  onClick={() => onCustomize(cake)}
-                >
-                  Customize Order
-                </button>
-              </div>
+            <div className="pt-2 flex flex-col sm:flex-row gap-3">
+              <button
+                className="btn-primary flex-1 py-3 rounded-xl font-bold text-xs"
+                onClick={() => onOrder(cake)}
+              >
+                Quick Order
+              </button>
+              <button
+                className="btn-secondary flex-1 py-3 rounded-xl font-bold text-xs"
+                onClick={() => onCustomize(cake)}
+              >
+                Customize Design
+              </button>
             </div>
           </div>
         </div>
@@ -556,7 +470,32 @@ const Gallery = () => {
   const [selectedCake, setSelectedCake] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);
-  const [orderType, setOrderType] = useState('standard'); // 'standard' or 'customize'
+  const [orderType, setOrderType] = useState('standard');
+  const [liveCakes, setLiveCakes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    getProducts({ category: 'cakes', status: 'published' })
+      .then(prods => {
+        if (isMounted && prods && prods.length > 0) {
+          setLiveCakes(prods.map(p => ({
+            id: p.id,
+            title: p.name,
+            img: p.featuredImage || (p.images && p.images[0]) || '/images/cakes/cake1.png',
+            description: p.description,
+            ingredients: p.ingredients || [],
+            size: p.size || '1 kg',
+            servings: p.servings || '8-10 people'
+          })));
+        }
+      })
+      .catch(err => console.warn('Using default cakes catalog:', err.message));
+
+    return () => { isMounted = false; };
+  }, []);
+
+  const displayCakes = liveCakes.length > 0 ? liveCakes : defaultCakes;
 
   const handleViewDetails = (cake) => {
     setSelectedCake(cake);
@@ -590,26 +529,28 @@ const Gallery = () => {
   return (
     <div className="min-h-screen pt-20">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">Our Cake Gallery</h1>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Browse through our collection of beautifully crafted cakes. Each one is made with love and attention to detail.
+        <h1 className="text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">Our Cake Gallery</h1>
+        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto text-sm sm:text-base">
+          Browse through our collection of beautifully crafted cakes. Each one is made with love, fresh ingredients, and attention to detail.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {cakes.map((cake, index) => (
-            <div key={index} className="card p-6 text-center flex flex-col">
-              <div className="w-full h-96 flex items-center justify-center rounded-lg mb-4 overflow-hidden">
+          {displayCakes.map((cake, index) => (
+            <div key={cake.id || index} className="card p-6 text-center flex flex-col justify-between hover:shadow-xl transition-shadow rounded-3xl border border-gray-100">
+              <div className="w-full h-80 flex items-center justify-center rounded-2xl mb-4 overflow-hidden bg-gray-50/50">
                 <img
                   src={cake.img}
                   alt={cake.title}
-                  className="w-full h-full object-contain rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-contain rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300"
                   onClick={() => handleViewDetails(cake)}
                 />
               </div>
-              <h3 className="text-xl font-semibold mb-2">{cake.title}</h3>
-              <p className="text-gray-600 mb-4">{cake.size} • {cake.servings}</p>
+              <div>
+                <h3 className="text-xl font-bold mb-1 text-gray-900">{cake.title}</h3>
+                <p className="text-gray-500 text-xs mb-4">{cake.size} • {cake.servings}</p>
+              </div>
               <button
-                className="btn-primary w-full"
+                className="btn-primary w-full py-2.5 rounded-xl font-bold text-xs"
                 onClick={() => handleViewDetails(cake)}
               >
                 View Details
@@ -619,7 +560,6 @@ const Gallery = () => {
         </div>
       </div>
 
-      {/* Cake Details Modal */}
       <CakeModal
         cake={selectedCake}
         isOpen={isModalOpen}
@@ -628,7 +568,6 @@ const Gallery = () => {
         onCustomize={handleCustomize}
       />
 
-      {/* Order Form Modal */}
       <OrderFormModal
         cake={selectedCake}
         isOpen={isOrderFormOpen}

@@ -1,25 +1,29 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 /**
- * A wrapper component that redirects to home if the user is not an admin.
- * Helps prevent unauthorized access to the bakery management pages.
+ * Route protection wrapper for the Admin Dashboard.
+ * Unauthenticated or non-admin visitors are safely redirected to /admin/login.
  */
 const AdminRoute = ({ children }) => {
   const { user, isAdmin, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <div className="relative">
+          <div className="w-14 h-14 rounded-full border-4 border-primary-200 border-t-primary-600 animate-spin"></div>
+        </div>
+        <p className="mt-4 text-sm font-medium text-gray-600">Verifying administrator authorization...</p>
       </div>
     );
   }
 
   if (!user || !isAdmin) {
-    console.warn('⛔ Unauthorized access attempt to Admin Area');
-    return <Navigate to="/" replace />;
+    console.warn('⛔ Unauthorized admin access attempt. Redirecting to /admin/login');
+    return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
 
   return children;
