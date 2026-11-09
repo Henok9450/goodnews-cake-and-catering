@@ -1,35 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Lock, Mail, Eye, EyeOff, ShieldCheck, ArrowLeft, KeyRound, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, ShieldCheck, ArrowLeft, KeyRound, AlertCircle, CheckCircle2, UserPlus, LogIn, LogOut } from 'lucide-react';
 
 const AdminLogin = () => {
+  const [mode, setMode] = useState('login'); // 'login' | 'setup'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [resetSent, setResetSent] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  // Password reset modal state
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [resetSent, setResetSent] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
 
-  const { user, isAdmin, login, loginWithGoogle, resetPassword, logout } = useAuth();
+  const { user, isAdmin, login, setupBootstrapAdmin, loginWithGoogle, resetPassword, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const redirectPath = location.state?.from?.pathname || '/admin';
+
   // Auto-redirect if already authorized
-  React.useEffect(() => {
+  useEffect(() => {
     if (user && isAdmin) {
       navigate(redirectPath, { replace: true });
     }
   }, [user, isAdmin, navigate, redirectPath]);
 
-
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccessMessage('');
     setIsLoading(true);
 
     try {
@@ -38,13 +44,49 @@ const AdminLogin = () => {
     } catch (err) {
       console.error('Admin login error:', err);
       if (err.code === 'auth/unauthorized-domain') {
-        setError('This domain (goodnews-cake-and-catering.vercel.app) is not authorized in Firebase. Please add it to Authorized Domains in Firebase Console > Authentication > Settings.');
-      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-        setError('Invalid admin credentials. Please verify your email and password.');
+        setError('Domain not authorized in Firebase. Please add "goodnews-cake-and-catering.vercel.app" to Authorized Domains in Firebase Console > Authentication > Settings.');
+      } else if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+        setError('Invalid credentials. If you have not created your admin password yet, switch to the "Initial Setup" tab above.');
       } else if (err.code === 'auth/too-many-requests') {
-        setError('Too many failed login attempts. Please wait a few minutes before trying again.');
+        setError('Too many failed attempts. Please wait a few minutes before trying again.');
       } else {
-        setError(err.message || 'Failed to authenticate. Please ensure you have administrative access.');
+        setError(err.message || 'Authentication failed. Please verify your credentials.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInitialSetup = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await setupBootstrapAdmin(email.trim(), password);
+      setSuccessMessage('Administrator account initialized successfully! Redirecting...');
+      setTimeout(() => {
+        navigate(redirectPath, { replace: true });
+      }, 1000);
+    } catch (err) {
+      console.error('Initial admin setup error:', err);
+      if (err.code === 'auth/email-already-in-use') {
+        setError('An account with this email already exists. Please use the "Sign In" tab.');
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setError('Domain not authorized: Please add "goodnews-cake-and-catering.vercel.app" to Authorized Domains in Firebase Console > Authentication > Settings.');
+      } else {
+        setError(err.message || 'Administrator account initialization failed.');
       }
     } finally {
       setIsLoading(false);
@@ -53,26 +95,18 @@ const AdminLogin = () => {
 
   const handleGoogleLogin = async () => {
     setError('');
+    setSuccessMessage('');
     setIsLoading(true);
     try {
-      await loginWithGoogle();
-      navigate(redirectPath, { replace: true });
+      // Use redirect authentication directly (100% reliable, zero COOP popup warnings)
+      await loginWithGoogle(true);
     } catch (err) {
       console.error('Google admin login error:', err);
       if (err.code === 'auth/unauthorized-domain') {
         setError('Domain not authorized: Please add "goodnews-cake-and-catering.vercel.app" to Authorized Domains in Firebase Console > Authentication > Settings.');
-      } else if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
-        // Fallback to full page redirect if popup is blocked
-        try {
-          await loginWithGoogle(true);
-          return;
-        } catch (redirErr) {
-          setError(redirErr.message || 'Google authentication failed.');
-        }
       } else {
         setError(err.message || 'Google authentication failed.');
       }
-    } finally {
       setIsLoading(false);
     }
   };
@@ -121,100 +155,229 @@ const AdminLogin = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-gray-900/80 backdrop-blur-xl py-8 px-6 shadow-2xl rounded-3xl border border-gray-800 sm:px-10">
-                    {user && !isAdmin && (
+          
+          {/* Active Non-Admin User Alert */}
+          {user && !isAdmin && (
             <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col gap-2">
               <div className="flex items-center gap-2 text-amber-400 font-semibold text-sm">
                 <AlertCircle className="w-5 h-5 shrink-0" />
                 Signed in as: {user.email}
               </div>
               <p className="text-xs text-amber-200 leading-relaxed">
-                This account does not currently have administrator privileges. Please switch to an authorized admin account.
+                This account does not have administrator privileges. Please switch to the authorized administrator account.
               </p>
               <button 
                 type="button"
                 onClick={logout} 
-                className="mt-1 text-xs font-semibold text-primary-400 hover:text-primary-300 underline text-left"
+                className="inline-flex items-center gap-1.5 mt-1 text-xs font-semibold text-primary-400 hover:text-primary-300 underline text-left"
               >
+                <LogOut className="w-3.5 h-3.5" />
                 Sign out of {user.email}
               </button>
             </div>
           )}
 
+          {/* Mode Switch Tabs */}
+          <div className="flex p-1 mb-6 bg-gray-800/80 rounded-xl border border-gray-700">
+            <button
+              type="button"
+              onClick={() => { setMode('login'); setError(''); setSuccessMessage(''); }}
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${
+                mode === 'login'
+                  ? 'bg-primary-600 text-white shadow-md'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMode('setup'); setError(''); setSuccessMessage(''); }}
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-2 ${
+                mode === 'setup'
+                  ? 'bg-primary-600 text-white shadow-md'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              Initial Setup
+            </button>
+          </div>
+
+          {/* Error Message */}
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-              <p className="text-sm text-red-300 font-medium">{error}</p>
+              <p className="text-sm text-red-300 font-medium leading-relaxed">{error}</p>
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleEmailLogin}>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                Admin Email Address
-              </label>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-500" />
-                </div>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@example.com"
-                  className="block w-full pl-11 pr-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
-                />
-              </div>
+          {/* Success Message */}
+          {successMessage && (
+            <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+              <p className="text-sm text-emerald-300 font-medium">{successMessage}</p>
             </div>
+          )}
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-sm font-medium text-gray-300">
-                  Password
+          {mode === 'login' ? (
+            /* --- SIGN IN FORM --- */
+            <form className="space-y-5" onSubmit={handleEmailLogin}>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                  Admin Email Address
                 </label>
-                <button
-                  type="button"
-                  onClick={() => { setShowForgotModal(true); setResetEmail(email); setResetSent(false); }}
-                  className="text-xs font-semibold text-primary-400 hover:text-primary-300 transition-colors"
-                >
-                  Forgot password?
-                </button>
-              </div>
-              <div className="relative rounded-xl shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-500" />
+                <div className="relative rounded-xl shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="block w-full pl-11 pr-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
+                  />
                 </div>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="block w-full pl-11 pr-11 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300 transition-colors"
-                >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-primary-600/30 text-sm font-bold text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                'Sign In to Dashboard'
-              )}
-            </button>
-          </form>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-sm font-medium text-gray-300">
+                    Password
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => { setShowForgotModal(true); setResetEmail(email); setResetSent(false); }}
+                    className="text-xs font-semibold text-primary-400 hover:text-primary-300 transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+                <div className="relative rounded-xl shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="block w-full pl-11 pr-11 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+              </div>
 
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-primary-600/30 text-sm font-bold text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  'Sign In to Dashboard'
+                )}
+              </button>
+            </form>
+          ) : (
+            /* --- INITIAL ADMIN SETUP FORM --- */
+            <form className="space-y-4" onSubmit={handleInitialSetup}>
+              <div className="p-3 bg-primary-500/10 border border-primary-500/20 rounded-xl text-xs text-primary-200">
+                Set up your administrator password for initial access. Only the designated administrator email address can be initialized.
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                  Administrator Email
+                </label>
+                <div className="relative rounded-xl shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="block w-full pl-11 pr-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                  Create Password (minimum 6 characters)
+                </label>
+                <div className="relative rounded-xl shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    minLength={6}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="block w-full pl-11 pr-11 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                  Confirm Password
+                </label>
+                <div className="relative rounded-xl shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    minLength={6}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="block w-full pl-11 pr-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg shadow-primary-600/30 text-sm font-bold text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-primary-500 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  'Initialize Administrator Account'
+                )}
+              </button>
+            </form>
+          )}
+
+          {/* Google Auth Divider */}
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -255,29 +418,31 @@ const AdminLogin = () => {
 
       {/* Forgot Password Modal */}
       {showForgotModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-gray-900 border border-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20 text-primary-400">
-                <KeyRound className="w-5 h-5" />
+              <div className="p-3 bg-primary-500/10 rounded-2xl text-primary-400 border border-primary-500/20">
+                <KeyRound className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white">Reset Admin Password</h3>
-                <p className="text-xs text-gray-400">We'll send secure instructions to your email</p>
+                <p className="text-xs text-gray-400">Receive password reset link by email</p>
               </div>
             </div>
 
             {resetSent ? (
-              <div className="text-center py-4">
-                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-                <p className="text-sm font-semibold text-white mb-1">Reset link dispatched</p>
-                <p className="text-xs text-gray-400 mb-6">
-                  Check your inbox at <span className="text-white font-mono">{resetEmail}</span> to complete your password reset.
+              <div className="text-center py-6">
+                <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-emerald-500/20">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <h4 className="text-base font-bold text-white mb-2">Check Your Email</h4>
+                <p className="text-xs text-gray-400 mb-6 leading-relaxed">
+                  We've sent a password reset link to <span className="text-gray-200 font-semibold">{resetEmail}</span>. Click the link in the email to set a new password.
                 </p>
                 <button
                   type="button"
                   onClick={() => setShowForgotModal(false)}
-                  className="w-full btn-primary py-2.5 rounded-xl font-bold text-sm"
+                  className="w-full py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl text-sm font-semibold transition-all"
                 >
                   Close Window
                 </button>
@@ -285,28 +450,31 @@ const AdminLogin = () => {
             ) : (
               <form onSubmit={handlePasswordReset} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Enter your admin email</label>
+                  <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                    Your Administrator Email Address
+                  </label>
                   <input
                     type="email"
                     required
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
-                    placeholder="admin@example.com"
-                    className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="name@example.com"
+                    className="block w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
                   />
                 </div>
-                <div className="flex gap-3 justify-end pt-2">
+
+                <div className="flex gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowForgotModal(false)}
-                    className="px-4 py-2 rounded-xl text-sm font-semibold text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 transition-colors"
+                    className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-sm font-semibold transition-all"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={resetLoading}
-                    className="btn-primary px-5 py-2 rounded-xl text-sm font-bold flex items-center gap-2"
+                    className="flex-1 py-3 bg-primary-600 hover:bg-primary-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-primary-600/30 transition-all disabled:opacity-60"
                   >
                     {resetLoading ? 'Sending...' : 'Send Reset Link'}
                   </button>

@@ -135,13 +135,23 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  const setupBootstrapAdmin = async (email, password) => {
+    const emailHash = await computeEmailHash(email);
+    if (emailHash !== BOOTSTRAP_ADMIN_HASH) {
+      throw new Error('This email address is not authorized for administrator account initialization.');
+    }
+    const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
+    await verifyAdminRole(cred.user);
+    return cred.user;
+  };
+
   const login = async (email, password) => {
     const cred = await signInWithEmailAndPassword(auth, email, password);
     await verifyAdminRole(cred.user);
     return cred.user;
   };
 
-  const loginWithGoogle = async (useRedirect = false) => {
+  const loginWithGoogle = async (useRedirect = true) => {
     if (useRedirect) {
       return signInWithRedirect(auth, googleProvider);
     }
@@ -184,6 +194,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     login,
     signup,
+    setupBootstrapAdmin,
     loginWithGoogle,
     logout,
     resetPassword,
