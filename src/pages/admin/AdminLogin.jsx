@@ -44,7 +44,7 @@ const AdminLogin = () => {
     } catch (err) {
       console.error('Admin login error:', err);
       if (err.code === 'auth/operation-not-allowed') {
-        setError('Email/Password sign-in is disabled in Firebase Console. Please use the "Google Admin Authentication" button below, or enable Email/Password in Firebase Console > Authentication > Sign-in method.');
+        setError('Email/Password provider is disabled in your Firebase Console. Please click the "Google Admin Authentication" button below to log in directly!');
       } else if (err.code === 'auth/unauthorized-domain') {
         setError('Domain not authorized in Firebase. Please add "goodnews-cake-and-catering.vercel.app" to Authorized Domains in Firebase Console > Authentication > Settings.');
       } else if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
@@ -84,7 +84,7 @@ const AdminLogin = () => {
     } catch (err) {
       console.error('Initial admin setup error:', err);
       if (err.code === 'auth/operation-not-allowed') {
-        setError('Email/Password accounts are disabled in Firebase Console. Please use "Google Admin Authentication" below, or enable Email/Password in Firebase Console > Authentication > Sign-in method.');
+        setError('Email/Password provider is disabled in your Firebase Console. Please click the "Google Admin Authentication" button below to log in directly!');
       } else if (err.code === 'auth/email-already-in-use') {
         setError('An account with this email already exists. Please use the "Sign In" tab.');
       } else if (err.code === 'auth/unauthorized-domain') {

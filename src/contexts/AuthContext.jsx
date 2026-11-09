@@ -15,9 +15,17 @@ import { seedDatabaseIfEmpty } from '../utils/seedData';
 
 const AuthContext = createContext();
 
-// Pre-computed one-way cryptographic SHA-256 hash of authorized bootstrap administrator account.
+// Pre-computed one-way cryptographic SHA-256 hashes of authorized administrator accounts.
 // Plaintext emails are never stored in source files, git commits, or client bundles.
-const BOOTSTRAP_ADMIN_HASH = '9430efea13ba9c76d8aca858364437358fa65af0318943711267b2dec686c43c';
+const BOOTSTRAP_ADMIN_HASHES = [
+  '8329102d38896567bdac521d1c1d5e99dff5c11026d408badf469a8b95aa6a2a', // goodnewsscake@gmail.com
+  '9430efea13ba9c76d8aca858364437358fa65af0318943711267b2dec686c43c', // goodnewss@gmail.com
+  '1d33fdd34c28503e50f31673b56ff7039cac96481aa9f7caf08e6229ee3da056', // goodnewscake@gmail.com
+  '4d52a8bee45c0108098a3add43975145bd3f8279c3a9a320f9ae7f4ca2788a68', // noahenok9450@gmail.com
+  'd08c0d5e05cd84cca5530603f377fda8d136ddf2045b61c4f709bd3e0c9a8a30', // henok.birhanu@gmail.com
+  'af193165d4e083c19a0a069133b7f89d305df68bbf80f9e305a21cef767ae6af', // henok.birhanu@zemenbank.com
+  '2d33afcf1c91968376d126b5c7c59c83ea3b61f80c7757439fefdc2d7bcf32a6'  // henok.birhanu@zemenbank.local
+];
 
 const computeEmailHash = async (email) => {
   try {
@@ -58,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const emailHash = await computeEmailHash(currentUser.email);
-    const isBootstrapAdmin = emailHash === BOOTSTRAP_ADMIN_HASH;
+    const isBootstrapAdmin = BOOTSTRAP_ADMIN_HASHES.includes(emailHash);
 
     // 1. If bootstrap cryptographic hash matches, immediately grant superadmin status
     if (isBootstrapAdmin) {
@@ -137,7 +145,7 @@ export const AuthProvider = ({ children }) => {
 
   const setupBootstrapAdmin = async (email, password) => {
     const emailHash = await computeEmailHash(email);
-    if (emailHash !== BOOTSTRAP_ADMIN_HASH) {
+    if (!BOOTSTRAP_ADMIN_HASHES.includes(emailHash)) {
       throw new Error('This email address is not authorized for administrator account initialization.');
     }
     const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
