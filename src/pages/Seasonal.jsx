@@ -7,8 +7,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/enkutatash.png',
     title: 'Golden New Year Honey Cake Flavor',
-    price: 'ETB2,500',
-    description: 'A golden cake celebrating the freshness of the new year, sweetened with local honey and decorated with yellow adey abeba flowers a symbol of renewal and joy',
+        description: 'A golden cake celebrating the freshness of the new year, sweetened with local honey and decorated with yellow adey abeba flowers a symbol of renewal and joy',
     ingredients: ['Vanilla sponge', 'Peppermint buttercream', 'White chocolate snowflakes', 'Edible glitter'],
     size: '1 kg round cake',
     servings: '12-16 people'
@@ -16,8 +15,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/timket.png',
     title: 'Timket Blue Waterfall Cake Flavor',
-    price: 'ETB2,800',
-    description: ' Inspired by the sacred water blessings of Timket, this cake features blue-and-white marbled frosting, symbolizing purity and renewal. Light, elegant, and perfect for family gatherings.',
+        description: ' Inspired by the sacred water blessings of Timket, this cake features blue-and-white marbled frosting, symbolizing purity and renewal. Light, elegant, and perfect for family gatherings.',
     ingredients: ['Lemon sponge', 'Elderflower buttercream', 'Edible flowers', 'Lemon curd filling'],
     size: '1 kg round cake',
     servings: '12-16 people'
@@ -25,8 +23,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/fun.png',
     title: ' Addis Delight Cake Flavor',
-    price: 'ETB2,700',
-    description: 'A fun, colorful cake for birthdays and family celebrations fluffy sponge layers with whipped strawberry cream and bright decorations.',
+        description: 'A fun, colorful cake for birthdays and family celebrations fluffy sponge layers with whipped strawberry cream and bright decorations.',
     ingredients: ['Vanilla sponge', 'Mixed berry compote', 'Coconut buttercream', 'Fresh berries'],
     size: '1 kg round cake',
     servings: '12-16 people'
@@ -34,8 +31,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/meskel.png',
     title: 'Meskel Blossom Cake Flavor',
-    price: 'ETB2,900',
-    description: 'This bright yellow cake honors the Meskel flower season, with tropical fruit filling and a buttercream cross design on top. Perfect for gatherings and church celebrations.',
+        description: 'This bright yellow cake honors the Meskel flower season, with tropical fruit filling and a buttercream cross design on top. Perfect for gatherings and church celebrations.',
     ingredients: ['Spice sponge', 'Cream cheese frosting', 'Caramel drizzle', 'Cinnamon spices'],
     size: '1 kg round cake',
     servings: '12-16 people'
@@ -43,8 +39,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/celebratory.png',
     title: 'Christmas Special',
-    price: 'ETB3,200',
-    description: 'Rich fruit cake with marzipan and royal icing, perfect for Christmas celebrations.',
+        description: 'Rich fruit cake with marzipan and royal icing, perfect for Christmas celebrations.',
     ingredients: ['Rich fruit cake', 'Marzipan layer', 'Royal icing', 'Festive decorations'],
     size: '1.5 kg round cake',
     servings: '16-20 people'
@@ -52,8 +47,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/valentine-heart.png',
     title: 'Valentine Heart',
-    price: 'ETB2,600',
-    description: 'Romantic heart-shaped cake with red velvet and cream cheese frosting.',
+        description: 'Romantic heart-shaped cake with red velvet and cream cheese frosting.',
     ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'Chocolate ganache', 'Edible roses'],
     size: 'Heart-shaped cake',
     servings: '10-12 people'
@@ -61,8 +55,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/easter.png',
     title: 'Fasika Celebration Cake',
-    price: 'ETB2,400',
-    description: 'White buttercream base with gold crosses and pastel flowers.',
+        description: 'White buttercream base with gold crosses and pastel flowers.',
     ingredients: ['Lemon sponge', 'Vanilla buttercream', 'Pastel colors', 'Easter egg decorations'],
     size: '1 kg round cake',
     servings: '12-16 people'
@@ -70,8 +63,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/traditional.png',
     title: 'YeGenna Fruit Delight Flavor',
-    price: 'ETB2,800',
-    description: 'Celebrate Genna with a traditional-style fruit cake, bursting with raisins, dates, and a hint of Ethiopian honey. Finished with smooth vanilla frosting and festive red-and-green decorations.',
+        description: 'Celebrate Genna with a traditional-style fruit cake, bursting with raisins, dates, and a hint of Ethiopian honey. Finished with smooth vanilla frosting and festive red-and-green decorations.',
     ingredients: ['Chocolate orange sponge', 'Orange buttercream', 'Black cocoa decorations', 'Spooky toppers'],
     size: '1 kg round cake',
     servings: '12-16 people'
@@ -79,8 +71,7 @@ const seasonalItems = [
   {
     img: '/images/seasonal/vegan.png',
     title: ' Vegan Coffee Almond Cake Flavor',
-    price: 'ETB3,500',
-    description: 'A delicious plant-based cake for fasting periods — made with Ethiopian coffee, almond milk, and coconut oil frosting. Light, aromatic, and satisfying.',
+        description: 'A delicious plant-based cake for fasting periods — made with Ethiopian coffee, almond milk, and coconut oil frosting. Light, aromatic, and satisfying.',
     ingredients: ['Champagne sponge', 'Champagne buttercream', 'Gold leaf', 'Edible glitter'],
     size: '1.5 kg round cake',
     servings: '16-20 people'
@@ -195,7 +186,7 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
         cartId: Date.now(),
         orderType: orderType === 'customize' ? 'Custom Seasonal Order' : `Standard Seasonal Order: ${seasonalItem?.title || 'Unknown Item'}`,
         title: seasonalItem?.title || (orderType === 'customize' ? 'Custom Seasonal Order' : 'Unknown Item'),
-        price: seasonalItem?.price || 'Contact for quote',
+        price: 'Quote on Request',
         img: seasonalItem?.img,
 
         // Item Details
@@ -204,7 +195,7 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
         cakeFlavor: formData.cakeFlavor,
         frostingType: formData.frostingType,
         fillingType: formData.fillingType,
-        estimatedPrice: seasonalItem?.price || 'Contact for quote',
+        estimatedPrice: 'Quote on Request',
 
         // Design
         seasonalTheme: formData.seasonalTheme,
@@ -314,7 +305,6 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 <img src={seasonalItem.img} alt={seasonalItem.title} className="w-20 h-20 object-cover rounded" />
                 <div>
                   <h3 className="font-semibold text-lg">{seasonalItem.title}</h3>
-                  <p className="text-primary-600 font-semibold">{seasonalItem.price}</p>
                   <p className="text-sm text-gray-600">{seasonalItem.size} • {seasonalItem.servings}</p>
                   <p className="text-sm text-gray-600 mt-1">{seasonalItem.description}</p>
                 </div>
@@ -564,8 +554,6 @@ const SeasonalModal = ({ seasonalItem, isOpen, onClose, onOrder, onCustomize }) 
             {/* Details Section */}
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-gray-900">{seasonalItem.title}</h2>
-              <p className="text-2xl font-semibold text-primary-600">{seasonalItem.price}</p>
-
               <div>
                 <h3 className="text-lg font-semibold mb-2">Description</h3>
                 <p className="text-gray-600">{seasonalItem.description}</p>
@@ -668,7 +656,7 @@ const Seasonal = () => {
                 />
               </div>
               <h3 className="text-xl font-semibold mb-2">{seasonalItem.title}</h3>
-              <p className="text-gray-600 mb-4">Starting from {seasonalItem.price}</p>
+              <p className="text-gray-600 mb-4">{seasonalItem.size} • {seasonalItem.servings}</p>
               <button
                 className="btn-primary w-full"
                 onClick={() => handleViewDetails(seasonalItem)}

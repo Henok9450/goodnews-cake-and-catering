@@ -7,8 +7,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie1.png',
     title: 'Classic Chocolate Chip',
-    price: 'ETB120',
-    description: 'Buttery cookies loaded with rich chocolate chips for the perfect classic treat.',
+        description: 'Buttery cookies loaded with rich chocolate chips for the perfect classic treat.',
     ingredients: ['All-purpose flour', 'Butter', 'Brown sugar', 'Chocolate chips', 'Vanilla extract', 'Baking soda'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -16,8 +15,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie2.png',
     title: 'Double Chocolate',
-    price: 'ETB140',
-    description: 'Rich chocolate cookies with double the chocolate goodness and soft centers.',
+        description: 'Rich chocolate cookies with double the chocolate goodness and soft centers.',
     ingredients: ['Cocoa powder', 'Butter', 'Sugar', 'Chocolate chunks', 'Eggs', 'Flour'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -25,8 +23,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie3.png',
     title: 'Oatmeal Raisin',
-    price: 'ETB130',
-    description: 'Hearty oatmeal cookies with plump raisins and warm cinnamon spice.',
+        description: 'Hearty oatmeal cookies with plump raisins and warm cinnamon spice.',
     ingredients: ['Rolled oats', 'Butter', 'Brown sugar', 'Raisins', 'Cinnamon', 'Flour'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -34,8 +31,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie4.png',
     title: 'Sugar Cookies',
-    price: 'ETB150',
-    description: 'Soft, buttery sugar cookies perfect for decorating with royal icing.',
+        description: 'Soft, buttery sugar cookies perfect for decorating with royal icing.',
     ingredients: ['Butter', 'Sugar', 'Flour', 'Eggs', 'Vanilla extract', 'Baking powder'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -43,8 +39,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie5.png',
     title: 'Peanut Butter',
-    price: 'ETB135',
-    description: 'Rich peanut butter cookies with classic criss-cross pattern and soft texture.',
+        description: 'Rich peanut butter cookies with classic criss-cross pattern and soft texture.',
     ingredients: ['Peanut butter', 'Butter', 'Brown sugar', 'Flour', 'Egg', 'Vanilla'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -52,8 +47,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie6.png',
     title: 'Snickerdoodle',
-    price: 'ETB125',
-    description: 'Soft, pillowy cookies rolled in cinnamon sugar for a cozy, comforting treat.',
+        description: 'Soft, pillowy cookies rolled in cinnamon sugar for a cozy, comforting treat.',
     ingredients: ['Flour', 'Butter', 'Sugar', 'Cream of tartar', 'Cinnamon', 'Eggs'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -61,8 +55,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie7.png',
     title: 'White Chocolate Macadamia',
-    price: 'ETB160',
-    description: 'Buttery cookies with creamy white chocolate chunks and crunchy macadamia nuts.',
+        description: 'Buttery cookies with creamy white chocolate chunks and crunchy macadamia nuts.',
     ingredients: ['Butter', 'Flour', 'White chocolate chunks', 'Macadamia nuts', 'Brown sugar', 'Vanilla'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -70,8 +63,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie8.png',
     title: 'Red Velvet Crinkle',
-    price: 'ETB145',
-    description: 'Festive red velvet cookies with cream cheese flavor and powdered sugar coating.',
+        description: 'Festive red velvet cookies with cream cheese flavor and powdered sugar coating.',
     ingredients: ['Cocoa powder', 'Red food coloring', 'Cream cheese', 'Flour', 'Sugar', 'Eggs'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -79,8 +71,7 @@ const cookies = [
   {
     img: '/images/cookies/cookie9.png',
     title: 'Lemon Glaze',
-    price: 'ETB140',
-    description: 'Zesty lemon cookies topped with sweet lemon glaze for a refreshing treat.',
+        description: 'Zesty lemon cookies topped with sweet lemon glaze for a refreshing treat.',
     ingredients: ['Lemon zest', 'Lemon juice', 'Butter', 'Flour', 'Sugar', 'Eggs'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
@@ -178,7 +169,7 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
         cartId: Date.now(),
         orderType: orderType === 'customize' ? 'Custom Cookie Order' : `Standard Cookie Order: ${cookie?.title || 'Unknown Cookie'}`,
         title: cookie?.title || (orderType === 'customize' ? 'Custom Cookie Order' : 'Unknown Cookie'),
-        price: cookie?.price || 'Contact for quote',
+        price: 'Quote on Request',
         img: cookie?.img,
 
         // Item Details
@@ -187,7 +178,7 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
         cookieFlavor: formData.cookieFlavor,
         icingType: formData.icingType,
         toppings: formData.toppings,
-        estimatedPrice: cookie?.price || 'Contact for quote',
+        estimatedPrice: 'Quote on Request',
 
         // Design
         theme: formData.cookieTheme,
@@ -293,7 +284,6 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                 <img src={cookie.img} alt={cookie.title} className="w-20 h-20 object-cover rounded" />
                 <div>
                   <h3 className="font-semibold text-lg">{cookie.title}</h3>
-                  <p className="text-amber-600 font-semibold">{cookie.price} per batch</p>
                   <p className="text-sm text-gray-600">{cookie.size} • {cookie.servings}</p>
                   <p className="text-sm text-gray-600 mt-1">{cookie.description}</p>
                 </div>
@@ -507,8 +497,6 @@ const CookieModal = ({ cookie, isOpen, onClose, onOrder, onCustomize }) => {
             {/* Details Section */}
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-gray-900">{cookie.title}</h2>
-              <p className="text-2xl font-semibold text-amber-600">{cookie.price} per batch</p>
-
               <div>
                 <h3 className="text-lg font-semibold mb-2">Description</h3>
                 <p className="text-gray-600">{cookie.description}</p>
@@ -611,7 +599,7 @@ const Cookies = () => {
                 />
               </div>
               <h3 className="text-xl font-semibold mb-2">{cookie.title}</h3>
-              <p className="text-gray-600 mb-4">Starting from {cookie.price}</p>
+              <p className="text-gray-600 mb-4">{cookie.size} • {cookie.servings}</p>
               <button
                 className="btn-primary w-full"
                 onClick={() => handleViewDetails(cookie)}

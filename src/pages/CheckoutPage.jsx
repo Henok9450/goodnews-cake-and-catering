@@ -60,7 +60,7 @@ const CheckoutPage = () => {
                 if (item.filling) details.push(`Filling: ${item.filling}`);
                 if (item.frosting) details.push(`Frosting: ${item.frosting}`);
                 
-                let summary = `- ${item.title || item.orderType} (Price: ${item.price})`;
+                let summary = `- ${item.title || item.orderType} `;
                 if (details.length > 0) summary += `\n  Details: ${details.join(', ')}`;
                 
                 const msg = item.message || item.cookieMessage || item.cupcakeMessage;
@@ -81,7 +81,7 @@ const CheckoutPage = () => {
                 eventDate: formData.eventDate,
                 deliveryTime: formData.deliveryTime,
                 orderSummary: orderSummary,
-                totalPrice: `ETB ${getCartTotal()}`,
+                totalPrice: getCartTotal() > 0 ? `ETB ${getCartTotal()}` : 'Quote on Request',
 
                 // Detailed Breakdown
                 items: cartItems.map(item => ({
@@ -219,8 +219,7 @@ const CheckoutPage = () => {
                                 <h3 className="font-semibold text-lg text-gray-900">{item.title || item.orderType}</h3>
                                 {item.cakeSize && <p className="text-sm text-gray-500">Size: {item.cakeSize}</p>}
                                 {item.flavor && <p className="text-sm text-gray-500">Flavor: {item.flavor}</p>}
-                                <p className="text-primary-600 font-medium mt-1">{item.price}</p>
-                            </div>
+                                </div>
 
                             {/* Remove Button */}
                             <button
@@ -241,17 +240,16 @@ const CheckoutPage = () => {
 
                         <div className="space-y-3 mb-6">
                             <div className="flex justify-between text-gray-600">
-                                <span>Subtotal</span>
-                                <span>ETB {getCartTotal().toLocaleString()}</span>
-                            </div>
-                            <div className="flex justify-between text-gray-600">
-                                <span>Service Fee</span>
-                                <span>ETB 0</span>
+                                <span>Total Items</span>
+                                <span className="font-medium">{cartItems.length}</span>
                             </div>
                             <div className="border-t pt-3 flex justify-between font-bold text-lg text-gray-900">
-                                <span>Total</span>
-                                <span>ETB {getCartTotal().toLocaleString()}</span>
+                                <span>Pricing</span>
+                                <span className="text-primary-600 font-semibold">Quote on Request</span>
                             </div>
+                            <p className="text-xs text-gray-500">
+                                Final pricing and payment instructions will be provided after we review your order details.
+                            </p>
                         </div>
 
                         {/* Checkout Form */}

@@ -34,8 +34,7 @@ const Catering = () => {
       img: '/images/catering/catering1.png',
       title: 'Assorted Cupcake Platter',
       description: 'A delightful selection of our most popular cupcakes, perfect for any gathering. Includes chocolate, vanilla, red velvet, and lemon flavors.',
-      price: 'ETB 1,500',
-      serves: '12-15 people',
+            serves: '12-15 people',
       category: 'desserts'
     },
     {
@@ -43,8 +42,7 @@ const Catering = () => {
       img: '/images/catering/catering2.png',
       title: 'Mini Dessert Shots',
       description: 'Elegant and portion-controlled dessert shots. Choose from tiramisu, strawberry cheesecake, or chocolate mousse.',
-      price: 'ETB 1,800',
-      serves: '15-20 shots',
+            serves: '15-20 shots',
       category: 'desserts'
     },
     {
@@ -52,8 +50,7 @@ const Catering = () => {
       img: '/images/catering/catering3.png',
       title: 'Gourmet Brownie & Bar Box',
       description: 'A rich assortment of fudgy brownies and decadent dessert bars, including caramel, nuts, and chocolate chips.',
-      price: 'ETB 1,300',
-      serves: '10-12 people',
+            serves: '10-12 people',
       category: 'desserts'
     },
     {
@@ -61,8 +58,7 @@ const Catering = () => {
       img: '/images/catering/catering4.png',
       title: 'Mixed Pastry Basket',
       description: 'An elegant selection of croissants, danishes, and scones, ideal for corporate brunches or morning events.',
-      price: 'ETB 2,000',
-      serves: '8-10 people',
+            serves: '8-10 people',
       category: 'breakfast'
     },
     {
@@ -70,8 +66,7 @@ const Catering = () => {
       img: '/images/catering/catering5.png',
       title: 'Decorative Cake Pops',
       description: 'Beautifully decorated cake pops on sticks, perfect for parties and special events. Various designs available.',
-      price: 'ETB 1,200',
-      serves: '12 cake pops',
+            serves: '12 cake pops',
       category: 'desserts'
     },
     {
@@ -79,8 +74,7 @@ const Catering = () => {
       img: '/images/catering/catering6.png',
       title: 'Artisan Cookie Collection',
       description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-      price: 'ETB 1,000',
-      serves: '15-18 cookies',
+            serves: '15-18 cookies',
       category: 'desserts'
     },
     {
@@ -88,8 +82,7 @@ const Catering = () => {
       img: '/images/catering/catering7.png',
       title: 'Artisan Cookie Collection',
       description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-      price: 'ETB 1,000',
-      serves: '15-18 cookies',
+            serves: '15-18 cookies',
       category: 'desserts'
     },
     {
@@ -97,8 +90,7 @@ const Catering = () => {
       img: '/images/catering/catering8.png',
       title: 'Artisan Cookie Collection',
       description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-      price: 'ETB 1,000',
-      serves: '15-18 cookies',
+            serves: '15-18 cookies',
       category: 'desserts'
     }
   ];
@@ -186,14 +178,14 @@ const Catering = () => {
     try {
       // Format selected items for email/display
       const formattedItems = formData.selectedItems.map(item =>
-        `${item.title} - Quantity: ${item.quantity} - Price: ${item.price}`
+        `${item.title} - Quantity: ${item.quantity}`
       ).join('\n');
 
       const orderData = {
         cartId: Date.now(),
         orderType: 'Catering Order',
         title: `Catering: ${formData.eventType || 'Event'} (${formData.guestCount || '0'} guests)`,
-        price: `ETB ${calculateTotal()}`,
+        price: 'Quote on Request',
         img: formData.selectedItems.length > 0 ? formData.selectedItems[0].img : '/images/catering/catering1.png',
 
         eventType: formData.eventType,
@@ -234,10 +226,7 @@ const Catering = () => {
   };
 
   const calculateTotal = () => {
-    return formData.selectedItems.reduce((total, item) => {
-      const price = parseInt(item.price.replace(/[^0-9]/g, ''));
-      return total + (price * item.quantity);
-    }, 0).toLocaleString();
+    return 'Quote on Request';
   };
 
   const resetForm = () => {
@@ -283,11 +272,11 @@ const Catering = () => {
                     <strong>Selected Items:</strong>
                     <ul className="list-disc list-inside mt-2">
                       {formData.selectedItems.map((item, index) => (
-                        <li key={index}>{item.title} (Qty: {item.quantity}) - {item.price}</li>
+                        <li key={index}>{item.title} (Qty: {item.quantity})</li>
                       ))}
                     </ul>
                   </div>
-                  <p><strong>Estimated Total:</strong> ETB {calculateTotal()}</p>
+                  <p><strong>Pricing:</strong> Quote provided upon confirmation</p>
                 </div>
               </div>
               <div className="flex gap-4 justify-center">
@@ -382,7 +371,6 @@ const Catering = () => {
                     <p className="text-sm text-gray-500 mb-2">Serves: {item.serves}</p>
                   </div>
                   <div className="mt-auto">
-                    <p className="text-lg font-bold text-primary-600 mb-4">{item.price}</p>
                     <div className="flex gap-2">
                       <button
                         className="btn-primary flex-1"
@@ -495,8 +483,7 @@ const Catering = () => {
                             </div>
                             <div>
                               <h4 className="font-semibold">{item.title}</h4>
-                              <p className="text-sm text-gray-600">{item.price}</p>
-                            </div>
+                              </div>
                           </div>
                           <div className="flex items-center space-x-2">
                             <button
@@ -591,12 +578,11 @@ const Catering = () => {
                             <p className="font-medium">{item.title} × {item.quantity}</p>
                             <p className="text-sm text-gray-600">{item.serves}</p>
                           </div>
-                          <p className="font-semibold">ETB {(parseInt(item.price.replace(/[^0-9]/g, '')) * item.quantity).toLocaleString()}</p>
-                        </div>
+                          </div>
                       ))}
                       <div className="flex justify-between items-center pt-2 border-t-2">
                         <p className="text-lg font-bold">Estimated Total:</p>
-                        <p className="text-lg font-bold text-primary-600">ETB {calculateTotal()}</p>
+                        <p className="text-lg font-bold text-primary-600">Quote on Request</p>
                       </div>
                     </div>
                   </div>

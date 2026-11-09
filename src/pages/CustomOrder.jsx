@@ -35,13 +35,13 @@ const CustomOrder = () => {
   ];
 
   const cakeSizes = [
-    { size: '0.5 kg Round', servings: '8-10 people', price: 'ETB 800' },
-    { size: '1 kg Round', servings: '12-16 people', price: 'ETB 1100' },
-    { size: '1.5 kg Round', servings: '20-25 people', price: 'ETB 1400' },
-    { size: '2 kg Round', servings: '30-40 people', price: 'ETB 1800' },
-    { size: '2.5 kg Tier', servings: '25-35 people', price: 'ETB 2200' },
-    { size: '3.5 kg Tier', servings: '40-50 people', price: 'ETB 2800' },
-    { size: 'Custom Size', servings: 'Contact for quote', price: 'ETB Custom' }
+    { size: '0.5 kg Round', servings: '8-10 people' },
+    { size: '1 kg Round', servings: '12-16 people' },
+    { size: '1.5 kg Round', servings: '20-25 people' },
+    { size: '2 kg Round', servings: '30-40 people' },
+    { size: '2.5 kg Tier', servings: '25-35 people' },
+    { size: '3.5 kg Tier', servings: '40-50 people' },
+    { size: 'Custom Size', servings: 'Contact for quote' }
   ];
 
   const flavors = [
@@ -111,7 +111,7 @@ const CustomOrder = () => {
         cartId: Date.now(),
         orderType: 'Custom Cake',
         title: `Custom ${formData.cakeType || 'Cake'}`,
-        price: calculatePrice(),
+        price: 'Quote on Request',
         img: '/images/cakes/cake8.png', // Placeholder for custom cakes
 
         // Details
@@ -155,7 +155,7 @@ const CustomOrder = () => {
 
   const calculatePrice = () => {
     const selectedSize = cakeSizes.find(size => size.size === formData.cakeSize);
-    return selectedSize ? selectedSize.price : 'Contact for quote';
+    return 'Quote on Request';
   };
 
   const resetForm = () => {
@@ -198,8 +198,7 @@ const CustomOrder = () => {
                     <p><strong>Cake Type:</strong> {formData.cakeType}</p>
                     <p><strong>Size:</strong> {formData.cakeSize}</p>
                     <p><strong>Flavor:</strong> {formData.flavor}</p>
-                    <p><strong>Estimated Price:</strong> {calculatePrice()}</p>
-                  </div>
+                    </div>
                 </div>
               </div>
               <div className="flex gap-4 justify-center">
@@ -297,7 +296,7 @@ const CustomOrder = () => {
                       <option value="">Select Size</option>
                       {cakeSizes.map(size => (
                         <option key={size.size} value={size.size}>
-                          {size.size} - {size.servings} ({size.price})
+                          {size.size} - {size.servings}
                         </option>
                       ))}
                     </select>
@@ -422,8 +421,7 @@ const CustomOrder = () => {
                       <p><strong>Flavor:</strong> {formData.flavor}</p>
                       <p><strong>Filling:</strong> {formData.filling || 'None'}</p>
                       <p><strong>Frosting:</strong> {formData.frosting}</p>
-                      <p><strong>Estimated Price:</strong> {calculatePrice()}</p>
-                    </div>
+                      </div>
                   </div>
                 </div>
 

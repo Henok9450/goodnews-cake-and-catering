@@ -6,8 +6,7 @@ const cakes = [
   {
     img: '/images/cakes/cake1.png',
     title: 'Beautiful Cake Design 1',
-    price: 'ETB1300',
-    description: 'A stunning vanilla cake with buttercream frosting and fresh fruit decorations.',
+        description: 'A stunning vanilla cake with buttercream frosting and fresh fruit decorations.',
     ingredients: ['Vanilla sponge', 'Buttercream frosting', 'Fresh fruits', 'Edible flowers'],
     size: '1 kg',
     servings: '8-10 people'
@@ -15,8 +14,7 @@ const cakes = [
   {
     img: '/images/cakes/cake2.png',
     title: 'Chocolate Delight',
-    price: 'ETB1500',
-    description: 'Rich chocolate cake with ganache filling and chocolate shavings.',
+        description: 'Rich chocolate cake with ganache filling and chocolate shavings.',
     ingredients: ['Chocolate sponge', 'Dark chocolate ganache', 'Chocolate shavings', 'Whipped cream'],
     size: '1.5 kg',
     servings: '10-12 people'
@@ -24,8 +22,7 @@ const cakes = [
   {
     img: '/images/cakes/cake3.png',
     title: 'Red Velvet Elegance',
-    price: 'ETB1800',
-    description: 'Classic red velvet cake with cream cheese frosting and red velvet crumbs.',
+        description: 'Classic red velvet cake with cream cheese frosting and red velvet crumbs.',
     ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'White chocolate', 'Red velvet crumbs'],
     size: '1 kg',
     servings: '8-10 people'
@@ -33,8 +30,7 @@ const cakes = [
   {
     img: '/images/cakes/cake4.png',
     title: 'Wedding Special',
-    price: 'ETB2800',
-    description: 'Elegant multi-tier wedding cake with intricate piping and pearl decorations.',
+        description: 'Elegant multi-tier wedding cake with intricate piping and pearl decorations.',
     ingredients: ['Vanilla and chocolate layers', 'Swiss meringue buttercream', 'Edible pearls', 'Gold leaf'],
     size: 'Two-tier (6" & 8")',
     servings: '30-40 people'
@@ -42,8 +38,7 @@ const cakes = [
   {
     img: '/images/cakes/cake5.png',
     title: 'Fruit Fantasy',
-    price: 'ETB1400',
-    description: 'Light sponge cake loaded with seasonal fruits and whipped cream.',
+        description: 'Light sponge cake loaded with seasonal fruits and whipped cream.',
     ingredients: ['Vanilla sponge', 'Fresh whipped cream', 'Seasonal fruits', 'Fruit glaze'],
     size: '1.5 kg',
     servings: '10-12 people'
@@ -51,8 +46,7 @@ const cakes = [
   {
     img: '/images/cakes/cake6.png',
     title: 'Caramel Dream',
-    price: 'ETB1300',
-    description: 'Moist caramel cake with salted caramel filling and caramel drizzle.',
+        description: 'Moist caramel cake with salted caramel filling and caramel drizzle.',
     ingredients: ['Caramel sponge', 'Salted caramel filling', 'Caramel buttercream', 'Caramel sauce'],
     size: '1 kg',
     servings: '8-10 people'
@@ -60,8 +54,7 @@ const cakes = [
   {
     img: '/images/cakes/cake7.png',
     title: 'Lemon Zest',
-    price: 'ETB1300',
-    description: 'Tangy lemon cake with lemon curd filling and lemon glaze.',
+        description: 'Tangy lemon cake with lemon curd filling and lemon glaze.',
     ingredients: ['Lemon sponge', 'Lemon curd', 'Lemon buttercream', 'Candied lemon'],
     size: '1 kg',
     servings: '8-10 people'
@@ -69,8 +62,7 @@ const cakes = [
   {
     img: '/images/cakes/cake8.png',
     title: 'Birthday Special',
-    price: 'ETB2100',
-    description: 'Fun birthday cake with colorful sprinkles and personalized message.',
+        description: 'Fun birthday cake with colorful sprinkles and personalized message.',
     ingredients: ['Choice of flavor', 'Buttercream frosting', 'Colorful sprinkles', 'Custom message'],
     size: '1.5 kg',
     servings: '12-15 people'
@@ -78,8 +70,7 @@ const cakes = [
   {
     img: '/images/cakes/cake9.png',
     title: 'Birthday Special',
-    price: 'ETB2100',
-    description: 'Fun birthday cake with colorful sprinkles and personalized message.',
+        description: 'Fun birthday cake with colorful sprinkles and personalized message.',
     ingredients: ['Choice of flavor', 'Buttercream frosting', 'Colorful sprinkles', 'Custom message'],
     size: '1.5 kg',
     servings: '12-15 people'
@@ -176,7 +167,7 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
 
         // Item Basics
         title: cake?.title || (orderType === 'customize' ? 'Custom Cake' : 'Unknown Cake'),
-        price: cake?.price || 'Contact for quote',
+        price: 'Quote on Request',
         img: cake?.img,
 
         // Cake Details
@@ -289,7 +280,6 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
                 <img src={cake.img} alt={cake.title} className="w-20 h-20 object-cover rounded" />
                 <div>
                   <h3 className="font-semibold text-lg">{cake.title}</h3>
-                  <p className="text-primary-600 font-semibold">{cake.price}</p>
                   <p className="text-sm text-gray-600">{cake.size} • {cake.servings}</p>
                   <p className="text-sm text-gray-600 mt-1">{cake.description}</p>
                 </div>
@@ -515,8 +505,6 @@ const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
             {/* Details Section */}
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-gray-900">{cake.title}</h2>
-              <p className="text-2xl font-semibold text-primary-600">{cake.price}</p>
-
               <div>
                 <h3 className="text-lg font-semibold mb-2">Description</h3>
                 <p className="text-gray-600">{cake.description}</p>
@@ -619,7 +607,7 @@ const Gallery = () => {
                 />
               </div>
               <h3 className="text-xl font-semibold mb-2">{cake.title}</h3>
-              <p className="text-gray-600 mb-4">Starting from {cake.price}</p>
+              <p className="text-gray-600 mb-4">{cake.size} • {cake.servings}</p>
               <button
                 className="btn-primary w-full"
                 onClick={() => handleViewDetails(cake)}
