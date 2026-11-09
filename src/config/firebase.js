@@ -35,6 +35,7 @@ const db = getFirestore(app);
 // Initialize Auth
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 // Initialize Storage
 const storage = getStorage(app);

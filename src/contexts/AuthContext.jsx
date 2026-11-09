@@ -5,6 +5,8 @@ import {
   signOut, 
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   sendPasswordResetEmail
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -91,6 +93,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // Process Google redirect result if returning from redirect sign-in
+    getRedirectResult(auth)
+      .then(async (result) => {
+        if (result?.user) {
+          await verifyAdminRole(result.user);
+        }
+      })
+      .catch((err) => {
+        if (err.code !== 'auth/popup-closed-by-user') {
+          console.warn('Redirect auth status:', err.message);
+        }
+      });
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
@@ -111,10 +126,25 @@ export const AuthProvider = ({ children }) => {
     return cred.user;
   };
 
-  const loginWithGoogle = async () => {
-    const cred = await signInWithPopup(auth, googleProvider);
-    await verifyAdminRole(cred.user);
-    return cred.user;
+  const loginWithGoogle = async (useRedirect = false) => {
+    if (useRedirect) {
+      return signInWithRedirect(auth, googleProvider);
+    }
+    try {
+      const cred = await signInWithPopup(auth, googleProvider);
+      await verifyAdminRole(cred.user);
+      return cred.user;
+    } catch (popupError) {
+      if (
+        popupError.code === 'auth/popup-blocked' ||
+        popupError.code === 'auth/cancelled-popup-request' ||
+        popupError.message?.includes('Cross-Origin-Opener-Policy')
+      ) {
+        console.warn('Popup interrupted or blocked, redirecting to Google sign in...');
+        return signInWithRedirect(auth, googleProvider);
+      }
+      throw popupError;
+    }
   };
 
   const signup = async (email, password) => {

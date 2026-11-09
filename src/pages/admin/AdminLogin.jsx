@@ -53,7 +53,15 @@ const AdminLogin = () => {
     } catch (err) {
       console.error('Google admin login error:', err);
       if (err.code === 'auth/unauthorized-domain') {
-        setError('This domain (goodnews-cake-and-catering.vercel.app) is not authorized in Firebase. Please add it to Authorized Domains in Firebase Console > Authentication > Settings.');
+        setError('Domain not authorized: Please add "goodnews-cake-and-catering.vercel.app" to Authorized Domains in Firebase Console > Authentication > Settings.');
+      } else if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
+        // Fallback to full page redirect if popup is blocked
+        try {
+          await loginWithGoogle(true);
+          return;
+        } catch (redirErr) {
+          setError(redirErr.message || 'Google authentication failed.');
+        }
       } else {
         setError(err.message || 'Google authentication failed.');
       }
