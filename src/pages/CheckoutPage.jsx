@@ -41,7 +41,6 @@ const CheckoutPage = () => {
         if (isProcessingRef.current) return;
         isProcessingRef.current = true;
 
-        alert('🚀 GoodNews Checkout Ver 2.4 - Starting...'); // Force visual confirmation
         setIsCheckingOut(true);
 
         try {
@@ -112,25 +111,25 @@ const CheckoutPage = () => {
                 createdAt: serverTimestamp()
             };
 
-            // 1. Save to Firestore for Real-time Tracking & History
-            console.log('💾 Saving order to Firestore...');
-            const docRef = await addDoc(collection(db, 'orders'), fullOrderData);
-            console.log('✅ Order saved with ID:', docRef.id);
+            // 1. Dispatch order notification email immediately in parallel
+            console.log('📧 Dispatching order email notification...');
+            const emailPromise = emailService.sendOrder({
+                ...fullOrderData
+            }).catch(e => console.warn('⚠️ Email notification notice:', e));
 
-            // 2. Send via existing email service (Version 2.4 - Detached)
-            console.log('📧 Dispatching order email (Async)...');
-            Promise.resolve().then(async () => {
-                try {
-                    const result = await emailService.sendOrder({
-                        ...fullOrderData,
-                        firestoreId: docRef.id
-                    });
-                    if (result && result.success) console.log('✅ Background Email Sent');
-                    else console.warn('⚠️ Background Email Failed:', result?.error);
-                } catch (e) {
-                    console.warn('⚠️ Background Email Error:', e);
-                }
-            });
+            // 2. Save to Firestore for Real-time Admin Tracking
+            console.log('💾 Saving order to Firestore...');
+            let docId = null;
+            try {
+                const docRef = await addDoc(collection(db, 'orders'), fullOrderData);
+                docId = docRef.id;
+                console.log('✅ Order saved with ID:', docId);
+            } catch (fsErr) {
+                console.warn('⚠️ Firestore order save notice (continuing order completion):', fsErr.message);
+            }
+
+            // Ensure email dispatch has completed
+            await emailPromise;
 
             // --- CRITICAL SUCCESS PATH ---
             console.log('🎉 Checkout complete!');
