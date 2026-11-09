@@ -15,14 +15,25 @@ import { seedDatabaseIfEmpty } from '../utils/seedData';
 
 const AuthContext = createContext();
 
-// Default bootstrap admin emails
-const DEFAULT_ADMIN_EMAILS = [
-  'noahenok9450@gmail.com',
-  'henok.birhanu@gmail.com',
-  'henok.birhanu@zemenbank.com',
-  'henok.birhanu@zemenbank.local',
-  'admin@goodnewscake.com'
-];
+// Pre-computed one-way cryptographic SHA-256 hash of authorized bootstrap administrator account.
+// Plaintext emails are never stored in source files, git commits, or client bundles.
+const BOOTSTRAP_ADMIN_HASH = '9430efea13ba9c76d8aca858364437358fa65af0318943711267b2dec686c43c';
+
+const computeEmailHash = async (email) => {
+  try {
+    if (!email) return '';
+    const cleanEmail = email.toLowerCase().trim();
+    if (typeof window !== 'undefined' && window.crypto && window.crypto.subtle) {
+      const msgBuffer = new TextEncoder().encode(cleanEmail);
+      const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    return '';
+  } catch (e) {
+    return '';
+  }
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -46,15 +57,10 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
 
-    const email = (currentUser.email || '').toLowerCase().trim();
-    const isBootstrapAdmin = 
-      DEFAULT_ADMIN_EMAILS.some(e => e.toLowerCase() === email) ||
-      email.startsWith('henok') ||
-      email.includes('goodnews');
+    const emailHash = await computeEmailHash(currentUser.email);
+    const isBootstrapAdmin = emailHash === BOOTSTRAP_ADMIN_HASH;
 
-    console.log(`🔐 Verifying admin status for [${email}] (bootstrap: ${isBootstrapAdmin})`);
-
-    // 1. If bootstrap match, immediately grant admin rights without blocking on Firestore
+    // 1. If bootstrap cryptographic hash matches, immediately grant superadmin status
     if (isBootstrapAdmin) {
       setIsAdmin(true);
       const profile = {
@@ -66,7 +72,7 @@ export const AuthProvider = ({ children }) => {
       };
       setAdminProfile(profile);
 
-      // Persist in background if possible
+      // Sync to Firestore in background without blocking
       try {
         const adminDocRef = doc(db, 'admins', currentUser.uid);
         await setDoc(adminDocRef, {
@@ -82,7 +88,7 @@ export const AuthProvider = ({ children }) => {
       return true;
     }
 
-    // 2. For non-bootstrap users, check Firestore collection
+    // 2. For other users, verify existing privileges in Firestore admins collection
     try {
       const adminDocRef = doc(db, 'admins', currentUser.uid);
       const adminDoc = await getDoc(adminDocRef);
