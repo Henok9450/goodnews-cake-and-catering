@@ -8,7 +8,7 @@ const cupcakes = [
   {
     img: '/images/cupcakes/cupcake1.png',
     title: 'Vanilla Dream',
-        description: 'Classic vanilla cupcakes with creamy buttercream frosting and sprinkles.',
+    description: 'Classic vanilla cupcakes with creamy buttercream frosting and sprinkles.',
     ingredients: ['Vanilla sponge', 'Buttercream frosting', 'Colorful sprinkles', 'Vanilla extract'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
@@ -16,7 +16,7 @@ const cupcakes = [
   {
     img: '/images/cupcakes/cupcake2.png',
     title: 'Chocolate Heaven',
-        description: 'Rich chocolate cupcakes with chocolate ganache and chocolate curls.',
+    description: 'Rich chocolate cupcakes with chocolate ganache and chocolate curls.',
     ingredients: ['Chocolate sponge', 'Dark chocolate ganache', 'Chocolate curls', 'Cocoa powder'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
@@ -24,7 +24,7 @@ const cupcakes = [
   {
     img: '/images/cupcakes/cupcake3.png',
     title: 'Red Velvet Bliss',
-        description: 'Moist red velvet cupcakes with cream cheese frosting and red velvet crumbs.',
+    description: 'Moist red velvet cupcakes with cream cheese frosting and red velvet crumbs.',
     ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'Red velvet crumbs', 'Buttermilk'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
@@ -32,7 +32,7 @@ const cupcakes = [
   {
     img: '/images/cupcakes/cupcake4.png',
     title: 'Lemon Zest',
-        description: 'Tangy lemon cupcakes with lemon buttercream and candied lemon peel.',
+    description: 'Tangy lemon cupcakes with lemon buttercream and candied lemon peel.',
     ingredients: ['Lemon sponge', 'Lemon buttercream', 'Candied lemon', 'Lemon zest'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
@@ -40,7 +40,7 @@ const cupcakes = [
   {
     img: '/images/cupcakes/cupcake5.png',
     title: 'Caramel Delight',
-        description: 'Caramel-infused cupcakes with salted caramel frosting and caramel drizzle.',
+    description: 'Caramel-infused cupcakes with salted caramel frosting and caramel drizzle.',
     ingredients: ['Caramel sponge', 'Salted caramel frosting', 'Caramel sauce', 'Sea salt'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
@@ -48,7 +48,7 @@ const cupcakes = [
   {
     img: '/images/cupcakes/cupcake6.png',
     title: 'Strawberry Swirl',
-        description: 'Fresh strawberry cupcakes with strawberry buttercream and fresh berry.',
+    description: 'Fresh strawberry cupcakes with strawberry buttercream and fresh berry.',
     ingredients: ['Strawberry sponge', 'Strawberry buttercream', 'Fresh strawberry', 'Strawberry puree'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
@@ -56,24 +56,24 @@ const cupcakes = [
   {
     img: '/images/cupcakes/cupcake7.png',
     title: 'Cookies & Cream',
-        description: 'Chocolate cupcakes with cookies and cream frosting and cookie crumbs.',
+    description: 'Chocolate cupcakes with cookies and cream frosting and cookie crumbs.',
     ingredients: ['Chocolate sponge', 'Oreo buttercream', 'Crushed cookies', 'Vanilla extract'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake8.jpg',
-    title: 'Birthday Special',
-        description: 'Colorful birthday cupcakes with rainbow sprinkles and festive toppings.',
-    ingredients: ['Vanilla or chocolate sponge', 'Buttercream frosting', 'Rainbow sprinkles', 'Edible glitter'],
+    title: 'Salted Caramel Toffee & Mocha Cupcakes',
+    description: 'Rich dark chocolate cupcakes crowned with velvety espresso toffee buttercream, sea-salted caramel cubes, and crunchy toffee pearls.',
+    ingredients: ['Dark cocoa sponge', 'Espresso toffee buttercream', 'Salted caramel cubes', 'Sea salt'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake9.png',
-    title: 'Coconut Paradise',
-        description: 'Tropical coconut cupcakes with coconut frosting and toasted coconut flakes.',
-    ingredients: ['Coconut sponge', 'Coconut buttercream', 'Toasted coconut', 'Coconut milk'],
+    title: 'Classic Vanilla Cloud Cupcakes',
+    description: 'Fluffy chocolate cupcakes piped with towering spirals of rich vanilla cream cheese frosting on a baker golden rack.',
+    ingredients: ['Fudge chocolate sponge', 'Vanilla cream cheese frosting', 'Vanilla extract'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   }

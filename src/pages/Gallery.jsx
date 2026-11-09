@@ -107,6 +107,30 @@ const defaultCakes = [
     ingredients: ['Funfetti sponge', 'Vanilla buttercream', 'Fondant chalkboard & toppers', 'Silver pearls'],
     size: 'Two-tier (2 kg)',
     servings: '20-25 people'
+  },
+  {
+    img: '/images/cakes/1000018386_enhanced.png',
+    title: 'Spider-Man Superhero Celebration Cake',
+    description: 'Dynamic sky-blue buttercream children celebration cake with handcrafted Spider-Man edible sugar figures, web emblems, and festive confetti sprinkles.',
+    ingredients: ['Chocolate sponge', 'Vanilla buttercream', 'Sugar toppers', 'Rainbow confetti'],
+    size: '1.5 kg',
+    servings: '12-15 people'
+  },
+  {
+    img: '/images/cakes/1000018385_enhanced.png',
+    title: 'Mickey & Friends Jubilee Kids Cake',
+    description: 'Joyful bright blue celebration cake adorned with Mickey Mouse and friends toppers, fluffy cloud piping, and edible colorful candies.',
+    ingredients: ['Vanilla sponge', 'Cream cheese frosting', 'Sugar character cutouts', 'Crispy pearls'],
+    size: '1.5 kg',
+    servings: '12-15 people'
+  },
+  {
+    img: '/images/cakes/polar-bear-cake-mobile-1.webp',
+    title: 'Winter Coconut Polar Bear Cake',
+    description: 'Delightful fluffy shredded coconut bear celebration cake featuring chocolate sponge layers, sugar party hat, and dark chocolate features.',
+    ingredients: ['Chocolate & vanilla layers', 'Shredded sweet coconut', 'Buttercream', 'Chocolate drops'],
+    size: '1.5 kg',
+    servings: '12-15 people'
   }
 ];
 

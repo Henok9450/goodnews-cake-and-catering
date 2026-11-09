@@ -10,7 +10,7 @@ const cateringItems = [
     img: '/images/catering/catering1.png',
     title: 'Assorted Cupcake Platter',
     description: 'A delightful selection of our most popular cupcakes, perfect for any gathering. Includes chocolate, vanilla, red velvet, and lemon flavors.',
-          serves: '12-15 people',
+    serves: '12-15 people',
     category: 'desserts'
   },
   {
@@ -18,7 +18,7 @@ const cateringItems = [
     img: '/images/catering/catering2.png',
     title: 'Mini Dessert Shots',
     description: 'Elegant and portion-controlled dessert shots. Choose from tiramisu, strawberry cheesecake, or chocolate mousse.',
-          serves: '15-20 shots',
+    serves: '15-20 shots',
     category: 'desserts'
   },
   {
@@ -26,7 +26,7 @@ const cateringItems = [
     img: '/images/catering/catering3.png',
     title: 'Gourmet Brownie & Bar Box',
     description: 'A rich assortment of fudgy brownies and decadent dessert bars, including caramel, nuts, and chocolate chips.',
-          serves: '10-12 people',
+    serves: '10-12 people',
     category: 'desserts'
   },
   {
@@ -34,46 +34,46 @@ const cateringItems = [
     img: '/images/catering/catering4.png',
     title: 'Mixed Pastry Basket',
     description: 'An elegant selection of croissants, danishes, and scones, ideal for corporate brunches or morning events.',
-          serves: '8-10 people',
+    serves: '8-10 people',
     category: 'breakfast'
   },
   {
     id: 5,
     img: '/images/catering/catering5.png',
-    title: 'Decorative Cake Pops',
-    description: 'Beautifully decorated cake pops on sticks, perfect for parties and special events. Various designs available.',
-          serves: '12 cake pops',
-    category: 'desserts'
+    title: 'Executive Grand Banquet Buffet & Savory Table',
+    description: 'Luxurious banquet table presentation with tiered savory hors doeuvres, gourmet meatballs, delicate tartlets, fresh floral centerpieces, and glowing brass candelabras.',
+    serves: '40-80 people',
+    category: 'lunch'
   },
   {
     id: 6,
     img: '/images/catering/catering6.png',
-    title: 'Artisan Cookie Collection',
-    description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-          serves: '15-18 cookies',
+    title: 'Royal Golden Tiered Dessert & Petit Four Buffet',
+    description: 'Spectacular gold geometric arch dessert buffet featuring layers of gourmet dessert shooters, golden artisan cake pops, mini fruit tartlets, and pastry bite platters.',
+    serves: '60-120 people',
     category: 'desserts'
   },
   {
     id: 7,
     img: '/images/catering/catering7.png',
-    title: 'Artisan Cookie Collection',
-    description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-          serves: '15-18 cookies',
+    title: 'Tiered Mini Cupcake & Dessert Shot Catering Station',
+    description: 'Modern stepped white presentation featuring fresh raspberry-topped mini cupcakes, layered mousse shooters, artisan chocolate truffles, and sweet confection bowls.',
+    serves: '30-50 people',
     category: 'desserts'
   },
   {
     id: 8,
     img: '/images/catering/catering8.png',
-    title: 'Artisan Cookie Collection',
-    description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-          serves: '15-18 cookies',
+    title: 'Baby Shower & Milestone Celebration Plinth Setup',
+    description: 'Thematic celebration setup with pastel balloon arch garland, welcome easel board, and golden pedestal tables curated for baby showers and christenings.',
+    serves: '25-50 people',
     category: 'desserts'
   },
   {
     id: 9,
     img: '/images/catering/wedding-catering.png',
     title: 'Wedding & Event Catering Box Package',
-    description: 'Organized pyramid banquet display of individual gourmet meal boxes with fresh seasonal fruit platters, ideal for receptions and celebrations.',
+    description: 'Organized pyramid banquet display of individual sanitized gourmet meal boxes with fresh seasonal fruit platters, ideal for receptions and celebrations.',
     serves: '50-100+ guests',
     category: 'lunch'
   }

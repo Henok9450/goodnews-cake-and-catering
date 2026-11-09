@@ -6,84 +6,84 @@ import { useCart } from '../contexts/CartContext';
 
 const seasonalItems = [
   {
-    img: '/images/seasonal/enkutatash.png',
-    title: 'Golden New Year Honey Cake Flavor',
-        description: 'A golden cake celebrating the freshness of the new year, sweetened with local honey and decorated with yellow adey abeba flowers a symbol of renewal and joy',
-    ingredients: ['Vanilla sponge', 'Peppermint buttercream', 'White chocolate snowflakes', 'Edible glitter'],
-    size: '1 kg round cake',
+    img: '/images/seasonal/enkutatash-real.jpg',
+    title: 'Enkutatash Golden Honey Cake (Ethiopian New Year)',
+    description: 'A handcrafted Ethiopian New Year celebration cake frosted in golden honey buttercream, garnished with fresh hand-picked yellow Adey Abeba blossoms, real dripping raw honeycomb, and delicate edible gold leaf.',
+    ingredients: ['Vanilla sponge', 'Teff-infused honey buttercream', 'Fresh Adey Abeba flowers', 'Raw honeycomb', 'Ethiopian honey drizzle'],
+    size: '1.5 kg round cake',
     servings: '12-16 people'
   },
   {
-    img: '/images/seasonal/timket.png',
-    title: 'Timket Blue Waterfall Cake Flavor',
-        description: ' Inspired by the sacred water blessings of Timket, this cake features blue-and-white marbled frosting, symbolizing purity and renewal. Light, elegant, and perfect for family gatherings.',
-    ingredients: ['Lemon sponge', 'Elderflower buttercream', 'Edible flowers', 'Lemon curd filling'],
-    size: '1 kg round cake',
-    servings: '12-16 people'
+    img: '/images/seasonal/habesha-wedding-melse.jpg',
+    title: 'Habesha Traditional Wedding & Melse Cake',
+    description: 'An elegant two-tier ivory celebration cake honoring Ethiopian wedding and Melse traditions with intricate hand-piped Habesha Kemis Tibeb geometric embroidery borders in red, yellow, and green, accented with sugar garden roses.',
+    ingredients: ['Velvet almond sponge', 'Vanilla bean buttercream', 'Hand-piped edible Tibeb embroidery', 'Sugar roses', 'Gold leaf'],
+    size: 'Two-tier (3.5 kg)',
+    servings: '35-45 people'
   },
   {
-    img: '/images/seasonal/fun.png',
-    title: ' Addis Delight Cake Flavor',
-        description: 'A fun, colorful cake for birthdays and family celebrations fluffy sponge layers with whipped strawberry cream and bright decorations.',
-    ingredients: ['Vanilla sponge', 'Mixed berry compote', 'Coconut buttercream', 'Fresh berries'],
-    size: '1 kg round cake',
+    img: '/images/seasonal/fasika-easter-real.jpg',
+    title: 'Fasika Ethiopian Easter Celebration Cake',
+    description: 'A pristine artisanal two-tier celebration cake celebrating Fasika and the joyful breaking of the Great Lent (Hudadi/Abiy Tsom). Features a hand-piped golden Ethiopian Orthodox cross, fresh spring blossoms, and gold leaf on rich buttercream.',
+    ingredients: ['Cardamom vanilla sponge', 'Whipped buttercream', 'Handmade gold Orthodox cross', 'Spring edible flowers', 'Gold leaf'],
+    size: 'Two-tier (3 kg)',
+    servings: '30-40 people'
+  },
+  {
+    img: '/images/seasonal/gena-celebration.png',
+    title: 'YeGenna Traditional Christmas Fruit Cake',
+    description: 'Celebrate Ethiopian Christmas (Genna) with our rich traditional fruit cake, bursting with sun-ripened raisins, dates, spices, and local honey, crowned with festive red and green holiday piped rosettes.',
+    ingredients: ['Spiced fruit cake', 'Ethiopian honey soak', 'Vanilla bean frosting', 'Cranberries', 'Festive rosettes'],
+    size: '1.5 kg round cake',
+    servings: '14-18 people'
+  },
+  {
+    img: '/images/seasonal/Timket1.png',
+    title: 'Timket Epiphany Sacred Blessing Cake',
+    description: 'Inspired by the sacred water blessings of Timket (Epiphany), featuring pure blue-and-white marbled ocean watercolor frosting and handcrafted cream peaks symbolizing renewal and purity.',
+    ingredients: ['Lemon sponge', 'Elderflower buttercream', 'Blue watercolor glaze', 'Whipped meringue swirls'],
+    size: '1.2 kg round cake',
     servings: '12-16 people'
   },
   {
     img: '/images/seasonal/meskel.png',
-    title: 'Meskel Blossom Cake Flavor',
-        description: 'This bright yellow cake honors the Meskel flower season, with tropical fruit filling and a buttercream cross design on top. Perfect for gatherings and church celebrations.',
-    ingredients: ['Spice sponge', 'Cream cheese frosting', 'Caramel drizzle', 'Cinnamon spices'],
-    size: '1 kg round cake',
-    servings: '12-16 people'
-  },
-  {
-    img: '/images/seasonal/celebratory.png',
-    title: 'Christmas Special',
-        description: 'Rich fruit cake with marzipan and royal icing, perfect for Christmas celebrations.',
-    ingredients: ['Rich fruit cake', 'Marzipan layer', 'Royal icing', 'Festive decorations'],
+    title: 'Meskel Blossom Flower Cake',
+    description: 'Bright golden celebration cake honoring the Demera festival and the yellow Meskel flower season, with tropical fruit compote and warm spices.',
+    ingredients: ['Spice sponge', 'Cream cheese frosting', 'Caramel drizzle', 'Adey Abeba flower motif'],
     size: '1.5 kg round cake',
-    servings: '16-20 people'
-  },
-  {
-    img: '/images/seasonal/valentine-heart.png',
-    title: 'Valentine Heart',
-        description: 'Romantic heart-shaped cake with red velvet and cream cheese frosting.',
-    ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'Chocolate ganache', 'Edible roses'],
-    size: 'Heart-shaped cake',
-    servings: '10-12 people'
-  },
-  {
-    img: '/images/seasonal/easter.png',
-    title: 'Fasika Celebration Cake',
-        description: 'White buttercream base with gold crosses and pastel flowers.',
-    ingredients: ['Lemon sponge', 'Vanilla buttercream', 'Pastel colors', 'Easter egg decorations'],
-    size: '1 kg round cake',
     servings: '12-16 people'
   },
   {
-    img: '/images/seasonal/traditional.png',
-    title: 'YeGenna Fruit Delight Flavor',
-        description: 'Celebrate Genna with a traditional-style fruit cake, bursting with raisins, dates, and a hint of Ethiopian honey. Finished with smooth vanilla frosting and festive red-and-green decorations.',
-    ingredients: ['Chocolate orange sponge', 'Orange buttercream', 'Black cocoa decorations', 'Spooky toppers'],
-    size: '1 kg round cake',
-    servings: '12-16 people'
-  },
-  {
-    img: '/images/seasonal/vegan.png',
-    title: ' Vegan Coffee Almond Cake Flavor',
-        description: 'A delicious plant-based cake for fasting periods — made with Ethiopian coffee, almond milk, and coconut oil frosting. Light, aromatic, and satisfying.',
-    ingredients: ['Champagne sponge', 'Champagne buttercream', 'Gold leaf', 'Edible glitter'],
+    img: '/images/seasonal/graduation-success.png',
+    title: 'Graduation & Milestone Success Cake',
+    description: 'A decadent dark chocolate celebration cake with artisan chocolate ganache and hand-piped Congratulations script in ivory white chocolate, ideal for university and college graduations in Ethiopia.',
+    ingredients: ['Dark chocolate sponge', 'Fudge ganache filling', 'Gold shimmer dust', 'White chocolate lettering'],
     size: '1.5 kg round cake',
-    servings: '16-20 people'
+    servings: '14-18 people'
   },
   {
     img: '/images/seasonal/kids-graduation.png',
-    title: 'Kids 1st Grade Graduation Milestone Cake',
-    description: 'A festive two-tier graduation cake celebrating young learners with mortarboard cap, ABC blocks, chalkboard, and sugar pearls.',
+    title: 'Kids 1st Grade Milestone Graduation Cake',
+    description: 'A festive two-tier graduation cake celebrating young learners with mortarboard cap, ABC blocks, chalkboard, and silver sugar pearls.',
     ingredients: ['Funfetti sponge', 'Whipped vanilla buttercream', 'Fondant toppers', 'Edible pearls'],
-    size: '2 kg two-tier cake',
+    size: 'Two-tier (2 kg)',
     servings: '20-25 people'
+  },
+  {
+    img: '/images/seasonal/valentine-heart.png',
+    title: 'Valentine Romance Heart Cake',
+    description: 'Romantic heart-shaped cake layered with velvety red velvet sponge, smooth cream cheese frosting, and chocolate ganache for Valentine celebrations in Addis Ababa.',
+    ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'Chocolate ganache', 'Edible roses'],
+    size: 'Heart-shaped cake (1.2 kg)',
+    servings: '10-12 people'
+  },
+  {
+    img: '/images/seasonal/vegan.png',
+    title: 'Ethiopian Orthodox Fasting (Tsom) Vegan Cake',
+    description: 'A 100% plant-based vegan cake crafted specifically for Ethiopian Orthodox fasting seasons (Hudadi, Tsome Nebiyat, Filseta) with roasted Ethiopian coffee, almond milk, and rich cocoa.',
+    ingredients: ['Coffee-infused sponge', 'Almond milk cream', 'Organic coconut frosting', 'Cocoa dust'],
+    size: '1.5 kg round cake',
+    servings: '14-16 people'
   }
 ];
 
