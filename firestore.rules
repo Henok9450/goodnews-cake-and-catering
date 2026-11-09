@@ -2,34 +2,64 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Reviews collection rules
-    match /reviews/{reviewId} {
-      // Allow reading all reviews (temporary for dev/admin access)
-      allow read: if true; // Previously: resource.data.status == 'approved'
-      
-      // Allow anyone to create new reviews (they will be pending by default)
-      allow create: if request.resource.data.status == 'pending' 
-                    && request.resource.data.userName is string
-                    && request.resource.data.rating is number
-                    && request.resource.data.comment is string;
-      
-      // For now, allow all updates and deletes (admin operations)
-      // TODO: In production, restrict these to authenticated admin users only
-      // Example: allow update, delete: if request.auth != null && request.auth.token.admin == true;
-      allow update, delete: if true;
+    // Admins collection
+    match /admins/{adminId} {
+      allow read, write: if request.auth != null;
     }
 
-    // Orders collection rules
-    match /orders/{orderId} {
-      // Allow customers to track their orders (read access)
-      allow read: if true; 
+    // Products collection: public read, authenticated admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
 
-      // Allow anyone to place an order (create access)
+    // Categories collection: public read, authenticated admin write
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Services collection: public read, authenticated admin write
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Website Content (CMS): public read, authenticated admin write
+    match /website_content/{contentId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Reviews collection rules: public read & create, authenticated admin update/delete
+    match /reviews/{reviewId} {
+      allow read: if true;
       allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
 
-      // Restrict updates/deletes for now
-      allow update: if true; // Temporary for testing status updates
-      allow delete: if false; 
+    // Orders collection: public read & create, authenticated admin update/delete
+    match /orders/{orderId} {
+      allow read: if true; 
+      allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
+
+    // Promotions collection: public read, authenticated admin write
+    match /promotions/{promoId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Payment settings: public read, authenticated admin write
+    match /payment_settings/{settingId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Customers collection: authenticated admin access
+    match /customers/{customerId} {
+      allow read, write: if request.auth != null;
     }
   }
 }

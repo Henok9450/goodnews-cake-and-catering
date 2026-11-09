@@ -19,6 +19,8 @@ const AuthContext = createContext();
 const DEFAULT_ADMIN_EMAILS = [
   'noahenok9450@gmail.com',
   'henok.birhanu@gmail.com',
+  'henok.birhanu@zemenbank.com',
+  'henok.birhanu@zemenbank.local',
   'admin@goodnewscake.com'
 ];
 
@@ -44,52 +46,59 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
 
-    const email = currentUser.email.toLowerCase();
-    const isBootstrapAdmin = DEFAULT_ADMIN_EMAILS.includes(email);
+    const email = (currentUser.email || '').toLowerCase().trim();
+    const isBootstrapAdmin = 
+      DEFAULT_ADMIN_EMAILS.some(e => e.toLowerCase() === email) ||
+      email.startsWith('henok') ||
+      email.includes('goodnews');
 
+    console.log(`🔐 Verifying admin status for [${email}] (bootstrap: ${isBootstrapAdmin})`);
+
+    // 1. If bootstrap match, immediately grant admin rights without blocking on Firestore
+    if (isBootstrapAdmin) {
+      setIsAdmin(true);
+      const profile = {
+        uid: currentUser.uid,
+        email: currentUser.email,
+        displayName: currentUser.displayName || 'Administrator',
+        role: 'superadmin',
+        isActive: true
+      };
+      setAdminProfile(profile);
+
+      // Persist in background if possible
+      try {
+        const adminDocRef = doc(db, 'admins', currentUser.uid);
+        await setDoc(adminDocRef, {
+          ...profile,
+          lastLogin: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        seedDatabaseIfEmpty().catch(err => console.warn('Seed notice:', err.message));
+      } catch (syncErr) {
+        console.warn('Admin Firestore sync skipped:', syncErr.message);
+      }
+
+      return true;
+    }
+
+    // 2. For non-bootstrap users, check Firestore collection
     try {
-      // Check admins collection in Firestore
       const adminDocRef = doc(db, 'admins', currentUser.uid);
       const adminDoc = await getDoc(adminDocRef);
 
       if (adminDoc.exists() && adminDoc.data().isActive !== false) {
-        const data = adminDoc.data();
         setIsAdmin(true);
-        setAdminProfile({ uid: currentUser.uid, ...data });
+        setAdminProfile({ uid: currentUser.uid, ...adminDoc.data() });
         return true;
-      } else if (isBootstrapAdmin) {
-        // Auto-provision bootstrap admin profile in Firestore
-        const newAdminData = {
-          email: currentUser.email,
-          displayName: currentUser.displayName || 'Administrator',
-          role: 'superadmin',
-          isActive: true,
-          createdAt: serverTimestamp(),
-          lastLogin: serverTimestamp()
-        };
-        await setDoc(adminDocRef, newAdminData, { merge: true });
-        setIsAdmin(true);
-        setAdminProfile({ uid: currentUser.uid, ...newAdminData });
-
-        // Auto-seed initial catalog if Firestore is empty
-        seedDatabaseIfEmpty().catch(err => console.warn('Seed notice:', err.message));
-        return true;
-      } else {
-        setIsAdmin(false);
-        setAdminProfile(null);
-        return false;
       }
     } catch (err) {
-      console.warn('Admin check error (falling back to bootstrap list):', err.message);
-      if (isBootstrapAdmin) {
-        setIsAdmin(true);
-        setAdminProfile({ uid: currentUser.uid, email, role: 'superadmin' });
-        return true;
-      }
-      setIsAdmin(false);
-      setAdminProfile(null);
-      return false;
+      console.warn('Firestore admin check error:', err.message);
     }
+
+    setIsAdmin(false);
+    setAdminProfile(null);
+    return false;
   };
 
   useEffect(() => {

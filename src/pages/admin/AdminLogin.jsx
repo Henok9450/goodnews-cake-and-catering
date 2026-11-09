@@ -14,11 +14,18 @@ const AdminLogin = () => {
   const [resetEmail, setResetEmail] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
 
-  const { login, loginWithGoogle, resetPassword } = useAuth();
+  const { user, isAdmin, login, loginWithGoogle, resetPassword, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const redirectPath = location.state?.from?.pathname || '/admin';
+  // Auto-redirect if already authorized
+  React.useEffect(() => {
+    if (user && isAdmin) {
+      navigate(redirectPath, { replace: true });
+    }
+  }, [user, isAdmin, navigate, redirectPath]);
+
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -114,6 +121,25 @@ const AdminLogin = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-gray-900/80 backdrop-blur-xl py-8 px-6 shadow-2xl rounded-3xl border border-gray-800 sm:px-10">
+                    {user && !isAdmin && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col gap-2">
+              <div className="flex items-center gap-2 text-amber-400 font-semibold text-sm">
+                <AlertCircle className="w-5 h-5 shrink-0" />
+                Signed in as: {user.email}
+              </div>
+              <p className="text-xs text-amber-200 leading-relaxed">
+                This account does not currently have administrator privileges. Please switch to an authorized admin account.
+              </p>
+              <button 
+                type="button"
+                onClick={logout} 
+                className="mt-1 text-xs font-semibold text-primary-400 hover:text-primary-300 underline text-left"
+              >
+                Sign out of {user.email}
+              </button>
+            </div>
+          )}
+
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
