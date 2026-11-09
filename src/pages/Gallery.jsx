@@ -75,6 +75,38 @@ const defaultCakes = [
     ingredients: ['Choice of flavor', 'Buttercream frosting', 'Colorful sprinkles', 'Custom message'],
     size: '1.5 kg',
     servings: '12-15 people'
+  },
+  {
+    img: '/images/cakes/wedding-cake-strawberry.png',
+    title: 'Strawberry Pearl Wedding Sheet Cake',
+    description: 'A luxurious rectangular wedding sheet cake adorned with abundant fresh strawberries, elegant pearl piping, and fluffy vanilla buttercream.',
+    ingredients: ['Vanilla sponge', 'Fresh strawberries', 'Vanilla buttercream', 'Sugar pearls', 'Strawberry glaze'],
+    size: 'Sheet cake (3 kg)',
+    servings: '35-45 people'
+  },
+  {
+    img: '/images/cakes/wedding-cake-grand.png',
+    title: 'Silver Pearl Grand Wedding Cake',
+    description: 'Grand rectangular celebration cake featuring crisp vertical piping textures, edible silver pearls, and celebratory sparkler accents.',
+    ingredients: ['Velvet sponge', 'Swiss meringue buttercream', 'Edible silver pearls', 'White chocolate ganache'],
+    size: 'Grand Sheet cake (4 kg)',
+    servings: '50-60 people'
+  },
+  {
+    img: '/images/cakes/two-tier-pearl-celebration.png',
+    title: 'Golden Pearl Two-Tier Celebration Cake',
+    description: 'Sophisticated two-tiered white buttercream cake decorated with shimmering pearls and artisan golden meringue rosettes.',
+    ingredients: ['Vanilla & almond sponge', 'Whipped buttercream', 'Edible pearls', 'Golden meringue kisses'],
+    size: 'Two-tier (2 kg)',
+    servings: '20-25 people'
+  },
+  {
+    img: '/images/cakes/kids-graduation.png',
+    title: 'Kids 1st Grade Graduation Cake',
+    description: 'Charming two-tier milestone cake crowned with a graduation cap, ABC alphabet blocks, chalkboard, and miniature school books.',
+    ingredients: ['Funfetti sponge', 'Vanilla buttercream', 'Fondant chalkboard & toppers', 'Silver pearls'],
+    size: 'Two-tier (2 kg)',
+    servings: '20-25 people'
   }
 ];
 

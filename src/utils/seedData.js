@@ -146,6 +146,48 @@ export const INITIAL_PRODUCTS = [
         images: ['/images/cakes/cake8.png'],
         status: 'published'
     },
+    {
+        name: 'Strawberry Pearl Wedding Sheet Cake',
+        slug: 'strawberry-pearl-wedding-sheet-cake',
+        category: 'cakes',
+        description: 'A luxurious rectangular wedding sheet cake adorned with abundant fresh strawberries, elegant pearl piping, and fluffy vanilla buttercream.',
+        ingredients: ['Vanilla sponge', 'Fresh strawberries', 'Vanilla buttercream', 'Sugar pearls', 'Strawberry glaze'],
+        size: 'Sheet cake (3 kg)',
+        sizes: ['Sheet cake (3 kg)', 'Grand Sheet cake (5 kg)'],
+        servings: '35-45 people',
+        featuredImage: '/images/cakes/wedding-cake-strawberry.png',
+        images: ['/images/cakes/wedding-cake-strawberry.png'],
+        isFeatured: true,
+        status: 'published'
+    },
+    {
+        name: 'Silver Pearl Grand Wedding Cake',
+        slug: 'silver-pearl-grand-wedding-cake',
+        category: 'cakes',
+        description: 'Grand rectangular celebration cake featuring crisp vertical piping textures, edible silver pearls, and celebratory sparkler accents.',
+        ingredients: ['Velvet sponge', 'Swiss meringue buttercream', 'Edible silver pearls', 'White chocolate ganache'],
+        size: 'Grand Sheet cake (4 kg)',
+        sizes: ['Grand Sheet cake (4 kg)', 'Two-tier grand'],
+        servings: '50-60 people',
+        featuredImage: '/images/cakes/wedding-cake-grand.png',
+        images: ['/images/cakes/wedding-cake-grand.png'],
+        isFeatured: true,
+        status: 'published'
+    },
+    {
+        name: 'Golden Pearl Two-Tier Celebration Cake',
+        slug: 'golden-pearl-two-tier-celebration-cake',
+        category: 'cakes',
+        description: 'Sophisticated two-tiered white buttercream cake decorated with shimmering pearls and artisan golden meringue rosettes.',
+        ingredients: ['Vanilla & almond sponge', 'Whipped buttercream', 'Edible pearls', 'Golden meringue kisses'],
+        size: 'Two-tier (2 kg)',
+        sizes: ['Two-tier (2 kg)', 'Three-tier (3.5 kg)'],
+        servings: '20-25 people',
+        featuredImage: '/images/cakes/two-tier-pearl-celebration.png',
+        images: ['/images/cakes/two-tier-pearl-celebration.png'],
+        isFeatured: true,
+        status: 'published'
+    },
 
     // --- CUPCAKES ---
     {
@@ -274,6 +316,20 @@ export const INITIAL_PRODUCTS = [
         featuredImage: '/images/seasonal/meskel.png',
         images: ['/images/seasonal/meskel.png'],
         status: 'published'
+    },
+    {
+        name: 'Kids 1st Grade Graduation Milestone Cake',
+        slug: 'kids-1st-grade-graduation-milestone-cake',
+        category: 'seasonal',
+        description: 'A festive two-tier graduation cake celebrating young learners with mortarboard cap, ABC blocks, chalkboard, and sugar pearls.',
+        ingredients: ['Funfetti sponge', 'Whipped vanilla buttercream', 'Fondant toppers', 'Edible pearls'],
+        size: '2 kg two-tier cake',
+        sizes: ['1.5 kg', '2 kg two-tier cake', '3 kg'],
+        servings: '20-25 people',
+        featuredImage: '/images/seasonal/kids-graduation.png',
+        images: ['/images/seasonal/kids-graduation.png'],
+        isFeatured: true,
+        status: 'published'
     }
 ];
 
@@ -328,6 +384,19 @@ export const INITIAL_SERVICES = [
         pricingType: 'quote',
         features: ['Perfect for morning corporate events', 'Jam and butter accompaniments'],
         isFeatured: false,
+        status: 'published'
+    },
+    {
+        title: 'Wedding & Event Catering Box Package',
+        slug: 'wedding-and-event-catering-box-package',
+        category: 'Catering',
+        description: 'Organized pyramid banquet display of individual gourmet meal boxes with fresh seasonal fruit platters, ideal for receptions and celebrations.',
+        serves: '50-100+ guests',
+        coverImage: '/images/catering/wedding-catering.png',
+        images: ['/images/catering/wedding-catering.png'],
+        pricingType: 'quote',
+        features: ['Individual sanitized event meal packaging', 'Custom curated banquet menu', 'Fresh seasonal fruit platters included'],
+        isFeatured: true,
         status: 'published'
     }
 ];

@@ -68,6 +68,14 @@ const cateringItems = [
     description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
           serves: '15-18 cookies',
     category: 'desserts'
+  },
+  {
+    id: 9,
+    img: '/images/catering/wedding-catering.png',
+    title: 'Wedding & Event Catering Box Package',
+    description: 'Organized pyramid banquet display of individual gourmet meal boxes with fresh seasonal fruit platters, ideal for receptions and celebrations.',
+    serves: '50-100+ guests',
+    category: 'lunch'
   }
 ];
 

@@ -76,6 +76,14 @@ const seasonalItems = [
     ingredients: ['Champagne sponge', 'Champagne buttercream', 'Gold leaf', 'Edible glitter'],
     size: '1.5 kg round cake',
     servings: '16-20 people'
+  },
+  {
+    img: '/images/seasonal/kids-graduation.png',
+    title: 'Kids 1st Grade Graduation Milestone Cake',
+    description: 'A festive two-tier graduation cake celebrating young learners with mortarboard cap, ABC blocks, chalkboard, and sugar pearls.',
+    ingredients: ['Funfetti sponge', 'Whipped vanilla buttercream', 'Fondant toppers', 'Edible pearls'],
+    size: '2 kg two-tier cake',
+    servings: '20-25 people'
   }
 ];
 
