@@ -1,3 +1,4 @@
+import { INITIAL_PRODUCTS } from '../utils/seedData';
 import { 
     collection, 
     doc, 
@@ -49,8 +50,20 @@ export const getProducts = async (filters = {}) => {
 
         return products;
     } catch (error) {
-        console.error('Error fetching products:', error);
-        throw error;
+        console.warn('Firestore products fetch notice (using catalog fallback):', error.message);
+        let products = INITIAL_PRODUCTS.map((p, idx) => ({ id: p.id || `init-${idx}`, ...p }));
+        const { category, status = 'all', featuredOnly = false, search = '' } = filters;
+        if (category && category !== 'all') products = products.filter(p => p.category === category);
+        if (status && status !== 'all') products = products.filter(p => p.status === status);
+        if (featuredOnly) products = products.filter(p => p.isFeatured === true);
+        if (search && search.trim() !== '') {
+            const term = search.toLowerCase().trim();
+            products = products.filter(p => 
+                (p.name && p.name.toLowerCase().includes(term)) ||
+                (p.description && p.description.toLowerCase().includes(term))
+            );
+        }
+        return products;
     }
 };
 

@@ -1,3 +1,4 @@
+import { INITIAL_SERVICES } from '../utils/seedData';
 import { 
     collection, 
     doc, 
@@ -24,8 +25,8 @@ export const getServices = async (includeDrafts = false) => {
         }
         return services;
     } catch (error) {
-        console.error('Error fetching services:', error);
-        throw error;
+        console.warn('Firestore services fetch notice (using catalog fallback):', error.message);
+        return INITIAL_SERVICES.map((s, idx) => ({ id: s.id || `init-serv-${idx}`, ...s }));
     }
 };
 

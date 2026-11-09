@@ -1,3 +1,4 @@
+import { INITIAL_CATEGORIES } from '../utils/seedData';
 import { 
     collection, 
     doc, 
@@ -25,8 +26,8 @@ export const getCategories = async (includeInactive = false) => {
         }
         return categories;
     } catch (error) {
-        console.error('Error fetching categories:', error);
-        throw error;
+        console.warn('Firestore categories fetch notice (using catalog fallback):', error.message);
+        return INITIAL_CATEGORIES.map((c, idx) => ({ id: c.id || `init-cat-${idx}`, ...c }));
     }
 };
 
