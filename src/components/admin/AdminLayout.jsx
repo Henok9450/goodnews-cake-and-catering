@@ -25,6 +25,45 @@ import {
   Bell
 } from 'lucide-react';
 
+
+class AdminErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Admin component error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 max-w-2xl mx-auto my-12 bg-white rounded-2xl border border-red-200 shadow-md text-center">
+          <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Module Notice</h2>
+          <p className="text-xs text-gray-500 mb-6 font-mono bg-gray-50 p-3 rounded-lg border border-gray-200 overflow-x-auto text-left">
+            {this.state.error?.message || 'Component failed to load'}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-primary py-2.5 px-6 rounded-xl text-xs font-bold shadow-md"
+          >
+            Reload Module
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
@@ -230,7 +269,9 @@ const AdminLayout = () => {
 
         {/* DYNAMIC SUBPAGE CONTENT */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-          <Outlet />
+          <AdminErrorBoundary>
+            <Outlet />
+          </AdminErrorBoundary>
         </main>
       </div>
 

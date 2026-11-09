@@ -15,7 +15,8 @@ import {
   AlertTriangle,
   ArrowUpDown,
   RefreshCw,
-  Sparkles
+  Sparkles,
+  Cake
 } from 'lucide-react';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../services/productService';
 import { getCategories } from '../../services/categoryService';
