@@ -30,7 +30,9 @@ const AdminLogin = () => {
       navigate(redirectPath, { replace: true });
     } catch (err) {
       console.error('Admin login error:', err);
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+      if (err.code === 'auth/unauthorized-domain') {
+        setError('This domain (goodnews-cake-and-catering.vercel.app) is not authorized in Firebase. Please add it to Authorized Domains in Firebase Console > Authentication > Settings.');
+      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
         setError('Invalid admin credentials. Please verify your email and password.');
       } else if (err.code === 'auth/too-many-requests') {
         setError('Too many failed login attempts. Please wait a few minutes before trying again.');
@@ -50,7 +52,11 @@ const AdminLogin = () => {
       navigate(redirectPath, { replace: true });
     } catch (err) {
       console.error('Google admin login error:', err);
-      setError(err.message || 'Google authentication failed.');
+      if (err.code === 'auth/unauthorized-domain') {
+        setError('This domain (goodnews-cake-and-catering.vercel.app) is not authorized in Firebase. Please add it to Authorized Domains in Firebase Console > Authentication > Settings.');
+      } else {
+        setError(err.message || 'Google authentication failed.');
+      }
     } finally {
       setIsLoading(false);
     }
