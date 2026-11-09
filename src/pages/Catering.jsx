@@ -4,6 +4,73 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 // import { emailService } from '../services/emailService';
 
+const cateringItems = [
+  {
+    id: 1,
+    img: '/images/catering/catering1.png',
+    title: 'Assorted Cupcake Platter',
+    description: 'A delightful selection of our most popular cupcakes, perfect for any gathering. Includes chocolate, vanilla, red velvet, and lemon flavors.',
+          serves: '12-15 people',
+    category: 'desserts'
+  },
+  {
+    id: 2,
+    img: '/images/catering/catering2.png',
+    title: 'Mini Dessert Shots',
+    description: 'Elegant and portion-controlled dessert shots. Choose from tiramisu, strawberry cheesecake, or chocolate mousse.',
+          serves: '15-20 shots',
+    category: 'desserts'
+  },
+  {
+    id: 3,
+    img: '/images/catering/catering3.png',
+    title: 'Gourmet Brownie & Bar Box',
+    description: 'A rich assortment of fudgy brownies and decadent dessert bars, including caramel, nuts, and chocolate chips.',
+          serves: '10-12 people',
+    category: 'desserts'
+  },
+  {
+    id: 4,
+    img: '/images/catering/catering4.png',
+    title: 'Mixed Pastry Basket',
+    description: 'An elegant selection of croissants, danishes, and scones, ideal for corporate brunches or morning events.',
+          serves: '8-10 people',
+    category: 'breakfast'
+  },
+  {
+    id: 5,
+    img: '/images/catering/catering5.png',
+    title: 'Decorative Cake Pops',
+    description: 'Beautifully decorated cake pops on sticks, perfect for parties and special events. Various designs available.',
+          serves: '12 cake pops',
+    category: 'desserts'
+  },
+  {
+    id: 6,
+    img: '/images/catering/catering6.png',
+    title: 'Artisan Cookie Collection',
+    description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
+          serves: '15-18 cookies',
+    category: 'desserts'
+  },
+  {
+    id: 7,
+    img: '/images/catering/catering7.png',
+    title: 'Artisan Cookie Collection',
+    description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
+          serves: '15-18 cookies',
+    category: 'desserts'
+  },
+  {
+    id: 8,
+    img: '/images/catering/catering8.png',
+    title: 'Artisan Cookie Collection',
+    description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
+          serves: '15-18 cookies',
+    category: 'desserts'
+  }
+];
+
 const Catering = () => {
   const [liveServices, setLiveServices] = React.useState([]);
 
@@ -52,72 +119,7 @@ const Catering = () => {
   const [submissionError, setSubmissionError] = useState('');
 
   // Data for catering items - using the same image display logic as Gallery
-  const cateringItems = [
-    {
-      id: 1,
-      img: '/images/catering/catering1.png',
-      title: 'Assorted Cupcake Platter',
-      description: 'A delightful selection of our most popular cupcakes, perfect for any gathering. Includes chocolate, vanilla, red velvet, and lemon flavors.',
-            serves: '12-15 people',
-      category: 'desserts'
-    },
-    {
-      id: 2,
-      img: '/images/catering/catering2.png',
-      title: 'Mini Dessert Shots',
-      description: 'Elegant and portion-controlled dessert shots. Choose from tiramisu, strawberry cheesecake, or chocolate mousse.',
-            serves: '15-20 shots',
-      category: 'desserts'
-    },
-    {
-      id: 3,
-      img: '/images/catering/catering3.png',
-      title: 'Gourmet Brownie & Bar Box',
-      description: 'A rich assortment of fudgy brownies and decadent dessert bars, including caramel, nuts, and chocolate chips.',
-            serves: '10-12 people',
-      category: 'desserts'
-    },
-    {
-      id: 4,
-      img: '/images/catering/catering4.png',
-      title: 'Mixed Pastry Basket',
-      description: 'An elegant selection of croissants, danishes, and scones, ideal for corporate brunches or morning events.',
-            serves: '8-10 people',
-      category: 'breakfast'
-    },
-    {
-      id: 5,
-      img: '/images/catering/catering5.png',
-      title: 'Decorative Cake Pops',
-      description: 'Beautifully decorated cake pops on sticks, perfect for parties and special events. Various designs available.',
-            serves: '12 cake pops',
-      category: 'desserts'
-    },
-    {
-      id: 6,
-      img: '/images/catering/catering6.png',
-      title: 'Artisan Cookie Collection',
-      description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-            serves: '15-18 cookies',
-      category: 'desserts'
-    },
-    {
-      id: 7,
-      img: '/images/catering/catering7.png',
-      title: 'Artisan Cookie Collection',
-      description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-            serves: '15-18 cookies',
-      category: 'desserts'
-    },
-    {
-      id: 8,
-      img: '/images/catering/catering8.png',
-      title: 'Artisan Cookie Collection',
-      description: 'Gourmet cookies including chocolate chip, oatmeal raisin, and specialty decorated cookies.',
-            serves: '15-18 cookies',
-      category: 'desserts'
-    }
-  ];
+  
 
   const eventTypes = [
     'Corporate Event',
