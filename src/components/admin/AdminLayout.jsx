@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { 
@@ -103,8 +103,12 @@ const AdminLayout = () => {
     }
   };
 
-  // Get current section name for breadcrumb
+  // Get current section name for breadcrumb and document title
   const currentNav = navigation.find(item => isActive(item)) || { name: 'Admin Dashboard' };
+
+  useEffect(() => {
+    document.title = `Admin | ${currentNav.name} - GoodNews Cake`;
+  }, [currentNav.name]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row font-sans">
@@ -113,6 +117,8 @@ const AdminLayout = () => {
       <div className="lg:hidden bg-gray-900 text-white px-4 py-3 flex items-center justify-between shadow-md sticky top-0 z-40">
         <div className="flex items-center gap-3">
           <button 
+            type="button"
+            aria-label="Open navigation sidebar"
             onClick={() => setSidebarOpen(true)}
             className="p-2 rounded-lg bg-gray-800 text-gray-300 hover:text-white focus:outline-none"
           >
@@ -128,12 +134,15 @@ const AdminLayout = () => {
           <Link 
             to="/" 
             target="_blank" 
+            aria-label="Open public customer website"
             className="p-2 text-gray-400 hover:text-white rounded-lg bg-gray-800"
             title="Open Public Site"
           >
             <ExternalLink className="w-4 h-4" />
           </Link>
           <button 
+            type="button"
+            aria-label="Sign out of admin portal"
             onClick={handleLogout} 
             className="p-2 text-red-400 hover:text-red-300 rounded-lg bg-gray-800"
             title="Sign out"
@@ -169,6 +178,8 @@ const AdminLayout = () => {
             </div>
           </Link>
           <button 
+            type="button"
+            aria-label="Close navigation sidebar"
             onClick={() => setSidebarOpen(false)} 
             className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800"
           >

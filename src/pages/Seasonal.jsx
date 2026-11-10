@@ -328,8 +328,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
               <h3 className="text-lg font-semibold mb-4 text-primary-600">🎂 Cake Specifications</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Seasonal Item Type</label>
+                  <label htmlFor="seasonal-item-type" className="block text-sm font-medium text-gray-700 mb-2">Seasonal Item Type</label>
                   <input
+                    id="seasonal-item-type"
                     type="text"
                     name="seasonalItemType"
                     value={formData.seasonalItemType}
@@ -340,8 +341,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cake Size *</label>
+                  <label htmlFor="seasonal-cake-size" className="block text-sm font-medium text-gray-700 mb-2">Cake Size *</label>
                   <select
+                    id="seasonal-cake-size"
                     name="cakeSize"
                     value={formData.cakeSize}
                     onChange={handleInputChange}
@@ -356,8 +358,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cake Flavor *</label>
+                  <label htmlFor="seasonal-cake-flavor" className="block text-sm font-medium text-gray-700 mb-2">Cake Flavor *</label>
                   <select
+                    id="seasonal-cake-flavor"
                     name="cakeFlavor"
                     value={formData.cakeFlavor}
                     onChange={handleInputChange}
@@ -372,8 +375,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Frosting Type *</label>
+                  <label htmlFor="seasonal-frosting-type" className="block text-sm font-medium text-gray-700 mb-2">Frosting Type *</label>
                   <select
+                    id="seasonal-frosting-type"
                     name="frostingType"
                     value={formData.frostingType}
                     onChange={handleInputChange}
@@ -388,8 +392,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Filling Type</label>
+                  <label htmlFor="seasonal-filling-type" className="block text-sm font-medium text-gray-700 mb-2">Filling Type</label>
                   <select
+                    id="seasonal-filling-type"
                     name="fillingType"
                     value={formData.fillingType}
                     onChange={handleInputChange}
@@ -403,8 +408,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Seasonal Theme *</label>
+                  <label htmlFor="seasonal-theme" className="block text-sm font-medium text-gray-700 mb-2">Seasonal Theme *</label>
                   <select
+                    id="seasonal-theme"
                     name="seasonalTheme"
                     value={formData.seasonalTheme}
                     onChange={handleInputChange}
@@ -425,8 +431,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
               <h3 className="text-lg font-semibold mb-4 text-primary-600">🎨 Design & Customization</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
+                  <label htmlFor="seasonal-cake-colors" className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
                   <input
+                    id="seasonal-cake-colors"
                     type="text"
                     name="cakeColors"
                     value={formData.cakeColors}
@@ -437,8 +444,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cake Message</label>
+                  <label htmlFor="seasonal-cake-message" className="block text-sm font-medium text-gray-700 mb-2">Cake Message</label>
                   <input
+                    id="seasonal-cake-message"
                     type="text"
                     name="cakeMessage"
                     value={formData.cakeMessage}
@@ -449,8 +457,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Special Decorations</label>
+                  <label htmlFor="seasonal-special-decorations" className="block text-sm font-medium text-gray-700 mb-2">Special Decorations</label>
                   <input
+                    id="seasonal-special-decorations"
                     type="text"
                     name="specialDecorations"
                     value={formData.specialDecorations}
@@ -467,8 +476,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
               <h3 className="text-lg font-semibold mb-4 text-primary-600">💫 Special Requirements</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Dietary Requirements</label>
+                  <label htmlFor="seasonal-dietary-requirements" className="block text-sm font-medium text-gray-700 mb-2">Dietary Requirements</label>
                   <input
+                    id="seasonal-dietary-requirements"
                     type="text"
                     name="dietaryRequirements"
                     value={formData.dietaryRequirements}
@@ -479,8 +489,9 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests & Notes</label>
+                  <label htmlFor="seasonal-special-requests" className="block text-sm font-medium text-gray-700 mb-2">Special Requests & Notes</label>
                   <textarea
+                    id="seasonal-special-requests"
                     name="specialRequests"
                     value={formData.specialRequests}
                     onChange={handleInputChange}

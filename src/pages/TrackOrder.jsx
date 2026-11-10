@@ -80,12 +80,15 @@ const TrackOrder = () => {
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8 max-w-xl mx-auto">
                     <form onSubmit={handleSearch} className="flex gap-4">
                         <div className="relative flex-grow">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <label htmlFor="track-order-number" className="sr-only">Order Number</label>
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
                             <input
+                                id="track-order-number"
                                 type="text"
                                 value={searchNumber}
                                 onChange={(e) => setSearchNumber(e.target.value)}
                                 placeholder="e.g. GN-123456"
+                                aria-label="Enter order tracking number"
                                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none uppercase"
                             />
                         </div>

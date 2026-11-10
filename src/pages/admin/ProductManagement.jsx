@@ -92,6 +92,18 @@ const ProductManagement = () => {
     fetchCatalogData();
   }, []);
 
+  // Keyboard accessibility: Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (isModalOpen) setIsModalOpen(false);
+        if (productToDelete) setProductToDelete(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen, productToDelete]);
+
   const showNotification = (type, message) => {
     setNotification({ type, message });
     setTimeout(() => setNotification({ type: '', message: '' }), 5000);
@@ -476,12 +488,17 @@ const ProductManagement = () => {
 
       {/* CREATE / EDIT MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="product-modal-title"
+        >
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
             
             <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
               <div>
-                <h3 className="text-xl font-extrabold text-gray-900">
+                <h3 id="product-modal-title" className="text-xl font-extrabold text-gray-900">
                   {editingProduct ? 'Edit Product' : 'Add New Cake / Product'}
                 </h3>
                 <p className="text-xs text-gray-500 mt-0.5">
@@ -489,6 +506,8 @@ const ProductManagement = () => {
                 </p>
               </div>
               <button
+                type="button"
+                aria-label="Close dialog"
                 onClick={() => setIsModalOpen(false)}
                 className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
               >
@@ -774,12 +793,17 @@ const ProductManagement = () => {
 
       {/* DELETE CONFIRMATION DIALOG */}
       {productToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-product-title"
+        >
           <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl animate-fade-in text-center">
             <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 mb-1">Delete "{productToDelete.name}"?</h3>
+            <h3 id="delete-product-title" className="text-base font-bold text-gray-900 mb-1">Delete "{productToDelete.name}"?</h3>
             <p className="text-xs text-gray-500 mb-6">
               This will permanently delete this product and its photos from Firebase. This action cannot be undone.
             </p>

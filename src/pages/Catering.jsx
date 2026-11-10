@@ -475,8 +475,9 @@ const Catering = () => {
 
                   <div className="grid md:grid-cols-2 gap-6 pb-6 border-b">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
+                      <label htmlFor="catering-event-type" className="block text-sm font-medium text-gray-700 mb-2">Event Type</label>
                       <select
+                        id="catering-event-type"
                         name="eventType"
                         value={formData.eventType}
                         onChange={handleInputChange}
@@ -490,8 +491,9 @@ const Catering = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Estimated Guest Count</label>
+                      <label htmlFor="catering-guest-count" className="block text-sm font-medium text-gray-700 mb-2">Estimated Guest Count</label>
                       <input
+                        id="catering-guest-count"
                         type="number"
                         name="guestCount"
                         value={formData.guestCount}
@@ -524,21 +526,24 @@ const Catering = () => {
                           <div className="flex items-center space-x-2">
                             <button
                               type="button"
+                              aria-label={`Decrease quantity of ${item.title}`}
                               onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
+                              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
                             >
                               -
                             </button>
                             <span className="w-8 text-center">{item.quantity}</span>
                             <button
                               type="button"
+                              aria-label={`Increase quantity of ${item.title}`}
                               onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
+                              className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
                             >
                               +
                             </button>
                             <button
                               type="button"
+                              aria-label={`Remove ${item.title} from package`}
                               onClick={() => removeItem(item.id)}
                               className="ml-4 text-red-600 hover:text-red-800"
                             >
@@ -563,8 +568,9 @@ const Catering = () => {
                   </div>
 
                   <div className="space-y-4 pt-4 border-t">
-                    <label className="flex items-center">
+                    <label htmlFor="catering-setup-required" className="flex items-center cursor-pointer">
                       <input
+                        id="catering-setup-required"
                         type="checkbox"
                         name="setupRequired"
                         checked={formData.setupRequired}
@@ -575,8 +581,9 @@ const Catering = () => {
                     </label>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests or Dietary Restrictions</label>
+                      <label htmlFor="catering-special-requests" className="block text-sm font-medium text-gray-700 mb-2">Special Requests or Dietary Restrictions</label>
                       <textarea
+                        id="catering-special-requests"
                         name="specialRequests"
                         value={formData.specialRequests}
                         onChange={handleInputChange}

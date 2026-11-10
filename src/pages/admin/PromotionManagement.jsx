@@ -38,6 +38,17 @@ const PromotionManagement = () => {
     fetchPromos();
   }, []);
 
+  // Keyboard accessibility: Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isModalOpen) {
+        setIsModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
   const showNotification = (type, message) => {
     setNotification({ type, message });
     setTimeout(() => setNotification({ type: '', message: '' }), 4000);
@@ -179,13 +190,23 @@ const PromotionManagement = () => {
 
       {/* MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="promo-modal-title"
+        >
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl animate-fade-in">
             <div className="flex justify-between items-center pb-3 border-b border-gray-100 mb-4">
-              <h3 className="text-base font-extrabold text-gray-900">
+              <h3 id="promo-modal-title" className="text-base font-extrabold text-gray-900">
                 {editingPromo ? 'Edit Promotion' : 'New Promotional Campaign'}
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="p-1 text-gray-400 hover:text-gray-600">
+              <button 
+                type="button"
+                aria-label="Close dialog"
+                onClick={() => setIsModalOpen(false)} 
+                className="p-1 text-gray-400 hover:text-gray-600 rounded-full"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>

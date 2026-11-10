@@ -327,8 +327,9 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Cake Type</label>
+                  <label htmlFor="gallery-cake-type" className="block text-xs font-bold text-gray-700 mb-1">Cake Type</label>
                   <input
+                    id="gallery-cake-type"
                     type="text"
                     name="cakeType"
                     value={formData.cakeType}
@@ -339,8 +340,9 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Size</label>
+                  <label htmlFor="gallery-cake-size" className="block text-xs font-bold text-gray-700 mb-1">Size</label>
                   <input
+                    id="gallery-cake-size"
                     type="text"
                     name="cakeSize"
                     value={formData.cakeSize}
@@ -354,8 +356,9 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Flavor</label>
+                  <label htmlFor="gallery-cake-flavor" className="block text-xs font-bold text-gray-700 mb-1">Flavor</label>
                   <select
+                    id="gallery-cake-flavor"
                     name="cakeFlavor"
                     value={formData.cakeFlavor}
                     onChange={handleInputChange}
@@ -372,8 +375,9 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Filling</label>
+                  <label htmlFor="gallery-cake-filling" className="block text-xs font-bold text-gray-700 mb-1">Filling</label>
                   <select
+                    id="gallery-cake-filling"
                     name="cakeFilling"
                     value={formData.cakeFilling}
                     onChange={handleInputChange}
@@ -388,8 +392,9 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Frosting</label>
+                  <label htmlFor="gallery-cake-frosting" className="block text-xs font-bold text-gray-700 mb-1">Frosting</label>
                   <select
+                    id="gallery-cake-frosting"
                     name="cakeFrosting"
                     value={formData.cakeFrosting}
                     onChange={handleInputChange}
@@ -407,8 +412,9 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Message on Cake</label>
+                <label htmlFor="gallery-cake-message" className="block text-xs font-bold text-gray-700 mb-1">Message on Cake</label>
                 <input
+                  id="gallery-cake-message"
                   type="text"
                   name="cakeMessage"
                   value={formData.cakeMessage}
@@ -419,8 +425,9 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Special Requests / Dietary Notes</label>
+                <label htmlFor="gallery-special-requests" className="block text-xs font-bold text-gray-700 mb-1">Special Requests / Dietary Notes</label>
                 <textarea
+                  id="gallery-special-requests"
                   name="specialRequests"
                   value={formData.specialRequests}
                   onChange={handleInputChange}

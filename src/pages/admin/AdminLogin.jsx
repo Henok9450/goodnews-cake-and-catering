@@ -229,7 +229,7 @@ const AdminLogin = () => {
             /* --- SIGN IN FORM --- */
             <form className="space-y-5" onSubmit={handleEmailLogin}>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                <label htmlFor="admin-email" className="block text-sm font-medium text-gray-300 mb-1.5">
                   Admin Email Address
                 </label>
                 <div className="relative rounded-xl shadow-sm">
@@ -237,6 +237,7 @@ const AdminLogin = () => {
                     <Mail className="h-5 w-5 text-gray-500" />
                   </div>
                   <input
+                    id="admin-email"
                     type="email"
                     required
                     value={email}
@@ -249,7 +250,7 @@ const AdminLogin = () => {
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-gray-300">
+                  <label htmlFor="admin-password" className="block text-sm font-medium text-gray-300">
                     Password
                   </label>
                   <button
@@ -265,6 +266,7 @@ const AdminLogin = () => {
                     <Lock className="h-5 w-5 text-gray-500" />
                   </div>
                   <input
+                    id="admin-password"
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
@@ -274,6 +276,7 @@ const AdminLogin = () => {
                   />
                   <button
                     type="button"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300 transition-colors"
                   >
@@ -302,7 +305,7 @@ const AdminLogin = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                <label htmlFor="admin-setup-email" className="block text-sm font-medium text-gray-300 mb-1.5">
                   Administrator Email
                 </label>
                 <div className="relative rounded-xl shadow-sm">
@@ -310,6 +313,7 @@ const AdminLogin = () => {
                     <Mail className="h-5 w-5 text-gray-500" />
                   </div>
                   <input
+                    id="admin-setup-email"
                     type="email"
                     required
                     value={email}
@@ -321,7 +325,7 @@ const AdminLogin = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                <label htmlFor="admin-setup-password" className="block text-sm font-medium text-gray-300 mb-1.5">
                   Create Password (minimum 6 characters)
                 </label>
                 <div className="relative rounded-xl shadow-sm">
@@ -329,6 +333,7 @@ const AdminLogin = () => {
                     <Lock className="h-5 w-5 text-gray-500" />
                   </div>
                   <input
+                    id="admin-setup-password"
                     type={showPassword ? 'text' : 'password'}
                     required
                     minLength={6}
@@ -339,6 +344,7 @@ const AdminLogin = () => {
                   />
                   <button
                     type="button"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 hover:text-gray-300 transition-colors"
                   >
@@ -348,7 +354,7 @@ const AdminLogin = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                <label htmlFor="admin-setup-confirm" className="block text-sm font-medium text-gray-300 mb-1.5">
                   Confirm Password
                 </label>
                 <div className="relative rounded-xl shadow-sm">
@@ -356,6 +362,7 @@ const AdminLogin = () => {
                     <Lock className="h-5 w-5 text-gray-500" />
                   </div>
                   <input
+                    id="admin-setup-confirm"
                     type={showPassword ? 'text' : 'password'}
                     required
                     minLength={6}
@@ -454,10 +461,11 @@ const AdminLogin = () => {
             ) : (
               <form onSubmit={handlePasswordReset} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                  <label htmlFor="admin-reset-email" className="block text-xs font-medium text-gray-300 mb-1.5">
                     Your Administrator Email Address
                   </label>
                   <input
+                    id="admin-reset-email"
                     type="email"
                     required
                     value={resetEmail}

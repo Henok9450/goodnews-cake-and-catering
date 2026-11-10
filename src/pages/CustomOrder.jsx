@@ -269,8 +269,9 @@ const CustomOrder = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Cake Type *</label>
+                    <label htmlFor="custom-cake-type" className="block text-sm font-medium text-gray-700 mb-2">Cake Type *</label>
                     <select
+                      id="custom-cake-type"
                       name="cakeType"
                       value={formData.cakeType}
                       onChange={handleInputChange}
@@ -285,8 +286,9 @@ const CustomOrder = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Cake Size *</label>
+                    <label htmlFor="custom-cake-size" className="block text-sm font-medium text-gray-700 mb-2">Cake Size *</label>
                     <select
+                      id="custom-cake-size"
                       name="cakeSize"
                       value={formData.cakeSize}
                       onChange={handleInputChange}
@@ -303,8 +305,9 @@ const CustomOrder = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Flavor *</label>
+                    <label htmlFor="custom-flavor" className="block text-sm font-medium text-gray-700 mb-2">Flavor *</label>
                     <select
+                      id="custom-flavor"
                       name="flavor"
                       value={formData.flavor}
                       onChange={handleInputChange}
@@ -319,8 +322,9 @@ const CustomOrder = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Filling</label>
+                    <label htmlFor="custom-filling" className="block text-sm font-medium text-gray-700 mb-2">Filling</label>
                     <select
+                      id="custom-filling"
                       name="filling"
                       value={formData.filling}
                       onChange={handleInputChange}
@@ -334,8 +338,9 @@ const CustomOrder = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Frosting Type *</label>
+                    <label htmlFor="custom-frosting" className="block text-sm font-medium text-gray-700 mb-2">Frosting Type *</label>
                     <select
+                      id="custom-frosting"
                       name="frosting"
                       value={formData.frosting}
                       onChange={handleInputChange}
@@ -358,8 +363,9 @@ const CustomOrder = () => {
                 <h2 className="text-2xl font-bold mb-6">Design Preferences</h2>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Theme or Occasion</label>
+                  <label htmlFor="custom-theme" className="block text-sm font-medium text-gray-700 mb-2">Theme or Occasion</label>
                   <input
+                    id="custom-theme"
                     type="text"
                     name="theme"
                     value={formData.theme}
@@ -370,8 +376,9 @@ const CustomOrder = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
+                  <label htmlFor="custom-colors" className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
                   <input
+                    id="custom-colors"
                     type="text"
                     name="colors"
                     value={formData.colors}
@@ -382,8 +389,9 @@ const CustomOrder = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Message on Cake</label>
+                  <label htmlFor="custom-message" className="block text-sm font-medium text-gray-700 mb-2">Message on Cake</label>
                   <input
+                    id="custom-message"
                     type="text"
                     name="message"
                     value={formData.message}
@@ -394,8 +402,9 @@ const CustomOrder = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests or Allergies</label>
+                  <label htmlFor="custom-special-requests" className="block text-sm font-medium text-gray-700 mb-2">Special Requests or Allergies</label>
                   <textarea
+                    id="custom-special-requests"
                     name="specialRequests"
                     value={formData.specialRequests}
                     onChange={handleInputChange}

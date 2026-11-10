@@ -68,6 +68,18 @@ const ServiceManagement = () => {
     fetchServices();
   }, []);
 
+  // Keyboard accessibility: Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (isModalOpen) setIsModalOpen(false);
+        if (serviceToDelete) setServiceToDelete(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen, serviceToDelete]);
+
   const showNotification = (type, message) => {
     setNotification({ type, message });
     setTimeout(() => setNotification({ type: '', message: '' }), 5000);
@@ -288,13 +300,23 @@ const ServiceManagement = () => {
 
       {/* CREATE / EDIT MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="service-modal-title"
+        >
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-5">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 id="service-modal-title" className="text-lg font-bold text-gray-900">
                 {editingService ? 'Edit Catering Package' : 'Create New Catering Package'}
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="p-1 text-gray-400 hover:text-gray-600 rounded-full">
+              <button 
+                type="button"
+                aria-label="Close dialog"
+                onClick={() => setIsModalOpen(false)} 
+                className="p-1 text-gray-400 hover:text-gray-600 rounded-full"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -460,12 +482,17 @@ const ServiceManagement = () => {
 
       {/* DELETE DIALOG */}
       {serviceToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-service-title"
+        >
           <div className="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl animate-fade-in">
             <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 mb-1">Delete "{serviceToDelete.title}"?</h3>
+            <h3 id="delete-service-title" className="text-base font-bold text-gray-900 mb-1">Delete "{serviceToDelete.title}"?</h3>
             <p className="text-xs text-gray-500 mb-5">
               This package will be permanently removed from the public catering listings.
             </p>

@@ -136,6 +136,7 @@ const Reviews = () => {
                                     <button
                                         key={star}
                                         type="button"
+                                        aria-label={`${star} star${star > 1 ? 's' : ''}`}
                                         onMouseEnter={() => setHoverRating(star)}
                                         onMouseLeave={() => setHoverRating(0)}
                                         onClick={() => setRating(star)}
@@ -156,12 +157,13 @@ const Reviews = () => {
 
                         <div className="grid md:grid-cols-1 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                                <label htmlFor="review-name" className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <User className="h-5 w-5 text-gray-400" />
                                     </div>
                                     <input
+                                        id="review-name"
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
@@ -174,8 +176,9 @@ const Reviews = () => {
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+                                <label htmlFor="review-comment" className="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
                                 <textarea
+                                    id="review-comment"
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
                                     placeholder="Tell us about the taste, design, and service..."

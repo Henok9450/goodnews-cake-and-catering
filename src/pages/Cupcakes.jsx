@@ -301,8 +301,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
               <h3 className="text-lg font-semibold mb-4 text-primary-600">🧁 Cupcake Specifications</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cupcake Type</label>
+                  <label htmlFor="cupcake-type" className="block text-sm font-medium text-gray-700 mb-2">Cupcake Type</label>
                   <input
+                    id="cupcake-type"
                     type="text"
                     name="cupcakeType"
                     value={formData.cupcakeType}
@@ -313,8 +314,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Quantity *</label>
+                  <label htmlFor="cupcake-quantity" className="block text-sm font-medium text-gray-700 mb-2">Quantity *</label>
                   <select
+                    id="cupcake-quantity"
                     name="quantity"
                     value={formData.quantity}
                     onChange={handleInputChange}
@@ -329,8 +331,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Flavor *</label>
+                  <label htmlFor="cupcake-flavor" className="block text-sm font-medium text-gray-700 mb-2">Flavor *</label>
                   <select
+                    id="cupcake-flavor"
                     name="cupcakeFlavor"
                     value={formData.cupcakeFlavor}
                     onChange={handleInputChange}
@@ -345,8 +348,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Frosting Type *</label>
+                  <label htmlFor="cupcake-frosting" className="block text-sm font-medium text-gray-700 mb-2">Frosting Type *</label>
                   <select
+                    id="cupcake-frosting"
                     name="frostingType"
                     value={formData.frostingType}
                     onChange={handleInputChange}
@@ -361,8 +365,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Toppings</label>
+                  <label htmlFor="cupcake-toppings" className="block text-sm font-medium text-gray-700 mb-2">Toppings</label>
                   <select
+                    id="cupcake-toppings"
                     name="toppings"
                     value={formData.toppings}
                     onChange={handleInputChange}
@@ -382,8 +387,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
               <h3 className="text-lg font-semibold mb-4 text-primary-600">🎨 Design Preferences</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Theme/Design</label>
+                  <label htmlFor="cupcake-theme" className="block text-sm font-medium text-gray-700 mb-2">Theme/Design</label>
                   <input
+                    id="cupcake-theme"
                     type="text"
                     name="cupcakeTheme"
                     value={formData.cupcakeTheme}
@@ -394,8 +400,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
+                  <label htmlFor="cupcake-colors" className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
                   <input
+                    id="cupcake-colors"
                     type="text"
                     name="cupcakeColors"
                     value={formData.cupcakeColors}
@@ -406,8 +413,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Custom Message/Toppers</label>
+                  <label htmlFor="cupcake-message" className="block text-sm font-medium text-gray-700 mb-2">Custom Message/Toppers</label>
                   <input
+                    id="cupcake-message"
                     type="text"
                     name="cupcakeMessage"
                     value={formData.cupcakeMessage}
@@ -422,7 +430,9 @@ const CupcakeOrderFormModal = ({ cupcake, isOpen, onClose, orderType }) => {
             {/* Special Requests */}
             <div className="section-card">
               <h3 className="text-lg font-semibold mb-4 text-primary-600">💫 Special Requests & Notes</h3>
+              <label htmlFor="cupcake-special-requests" className="sr-only">Special Requests & Notes</label>
               <textarea
+                id="cupcake-special-requests"
                 name="specialRequests"
                 value={formData.specialRequests}
                 onChange={handleInputChange}

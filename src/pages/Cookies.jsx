@@ -298,8 +298,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                 <h3 className="text-lg font-semibold mb-4 text-amber-600">🍪 Cookie Specifications</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Cookie Type</label>
+                    <label htmlFor="cookie-type" className="block text-sm font-medium text-gray-700 mb-2">Cookie Type</label>
                     <input
+                      id="cookie-type"
                       type="text"
                       name="cookieType"
                       value={formData.cookieType}
@@ -310,8 +311,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Quantity *</label>
+                    <label htmlFor="cookie-quantity" className="block text-sm font-medium text-gray-700 mb-2">Quantity *</label>
                     <select
+                      id="cookie-quantity"
                       name="quantity"
                       value={formData.quantity}
                       onChange={handleInputChange}
@@ -326,8 +328,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Flavor *</label>
+                    <label htmlFor="cookie-flavor" className="block text-sm font-medium text-gray-700 mb-2">Flavor *</label>
                     <select
+                      id="cookie-flavor"
                       name="cookieFlavor"
                       value={formData.cookieFlavor}
                       onChange={handleInputChange}
@@ -342,8 +345,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Icing Type *</label>
+                    <label htmlFor="cookie-icing" className="block text-sm font-medium text-gray-700 mb-2">Icing Type *</label>
                     <select
+                      id="cookie-icing"
                       name="icingType"
                       value={formData.icingType}
                       onChange={handleInputChange}
@@ -358,8 +362,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Toppings</label>
+                    <label htmlFor="cookie-toppings" className="block text-sm font-medium text-gray-700 mb-2">Toppings</label>
                     <select
+                      id="cookie-toppings"
                       name="toppings"
                       value={formData.toppings}
                       onChange={handleInputChange}
@@ -379,8 +384,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                 <h3 className="text-lg font-semibold mb-4 text-amber-600">🎨 Design Preferences</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Theme/Design</label>
+                    <label htmlFor="cookie-theme" className="block text-sm font-medium text-gray-700 mb-2">Theme/Design</label>
                     <input
+                      id="cookie-theme"
                       type="text"
                       name="cookieTheme"
                       value={formData.cookieTheme}
@@ -391,8 +397,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
+                    <label htmlFor="cookie-colors" className="block text-sm font-medium text-gray-700 mb-2">Preferred Colors</label>
                     <input
+                      id="cookie-colors"
                       type="text"
                       name="cookieColors"
                       value={formData.cookieColors}
@@ -403,8 +410,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Custom Message/Design</label>
+                    <label htmlFor="cookie-message" className="block text-sm font-medium text-gray-700 mb-2">Custom Message/Design</label>
                     <input
+                      id="cookie-message"
                       type="text"
                       name="cookieMessage"
                       value={formData.cookieMessage}
@@ -419,7 +427,9 @@ const CookieOrderFormModal = ({ cookie, isOpen, onClose, orderType }) => {
               {/* Special Requests */}
               <div className="section-card">
                 <h3 className="text-lg font-semibold mb-4 text-amber-600">💫 Special Requests & Notes</h3>
+                <label htmlFor="cookie-special-requests" className="sr-only">Special Requests & Notes</label>
                 <textarea
+                  id="cookie-special-requests"
                   name="specialRequests"
                   value={formData.specialRequests}
                   onChange={handleInputChange}

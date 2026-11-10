@@ -160,12 +160,41 @@ Compressed Media:                95 images in public/images (193.7MB -> 34.7MB)
   - Added npm `overrides` for `nth-check` (`^2.1.1`) and `postcss` (`^8.4.32`).
   - Added `"optimize:images": "node scripts/optimize-images.js"` script.
 
+### 17. Across-the-Board Form Accessibility & Label/Input Bindings
+* **Defect ID:** `DEF-A11Y-001` (Residual Component Hardening)
+* **Severity:** Medium
+* **Files Affected:** `CustomOrder.jsx`, `Reviews.jsx`, `TrackOrder.jsx`, `AdminLogin.jsx`, `Catering.jsx`, `Cookies.jsx`, `Cupcakes.jsx`, `Seasonal.jsx`, `Gallery.jsx`
+* **Changes Implemented:**
+  - Bound all `<label>` tags with explicit `htmlFor` matching exact `<input>`, `<select>`, and `<textarea>` `id` attributes across all interactive order forms and modals.
+  - Added accessible `aria-label` tags to rating buttons in `Reviews.jsx` (1 to 5 stars).
+  - Added accessible `aria-label` to password visibility eye toggles in `AdminLogin.jsx`.
+  - Added accessible labels to quantity adjustment and removal buttons in `Catering.jsx`.
+  - Added accessible search label and aria attributes to `TrackOrder.jsx`.
+
+### 18. Dynamic Per-Route Document Titles & Floating Consultation Accessibility
+* **Defect IDs:** `DEF-SEO-001`, `DEF-A11Y-001`
+* **Severity:** Medium
+* **Files Affected:** `PublicLayout.jsx`, `AdminLayout.jsx`
+* **Changes Implemented:**
+  - `PublicLayout.jsx`: Injected reactive `useEffect` monitoring `location.pathname` to update `document.title` on client-side route transitions (`/gallery`, `/custom-order`, `/catering`, `/seasonal`, `/cupcakes`, `/cookies`, `/about`, `/reviews`, `/cart`, `/track`, `/profile`).
+  - `PublicLayout.jsx`: Added explicit `aria-label="Order via WhatsApp on +251917559943"` to floating action button.
+  - `AdminLayout.jsx`: Added reactive `useEffect` dynamically titling administrative sections (`Admin | Products & Cakes - GoodNews Cake`, etc.). Added explicit `aria-label` to sidebar drawer toggles and logout buttons.
+
+### 19. Administrative Modal Keyboard & Screen Reader Accessibility
+* **Defect ID:** `DEF-A11Y-001`
+* **Severity:** Medium
+* **Files Affected:** `ProductManagement.jsx`, `CategoryManagement.jsx`, `ServiceManagement.jsx`, `PromotionManagement.jsx`
+* **Changes Implemented:**
+  - Added `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` to all create, edit, and deletion dialogs.
+  - Added global `Escape` key event listeners allowing administrators to immediately dismiss modals with standard keyboard interaction.
+  - Added explicit `aria-label="Close dialog"` to modal close buttons.
+
 ---
 
 ## 3. Verification Summary
 
 | Gate | Target Command | Result |
 | :--- | :--- | :--- |
-| **Unit Test Suite** | `npm test -- --watchAll=false` | **PASS** (6/6 tests passed in 2.88s) |
-| **Production Build** | `npm run build` | **PASS** (Compiled successfully, 223kB gzip main bundle) |
+| **Unit Test Suite** | `npm test -- --watchAll=false` | **PASS** (6/6 tests passed) |
+| **Production Build** | `npm run build` | **PASS** (Compiled successfully, 223.68 kB gzip main bundle) |
 | **Git Synchronization** | `git push origin main` | **PASS** (Committed and synced to remote repository) |
