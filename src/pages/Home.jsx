@@ -8,7 +8,7 @@ import { getContentSection } from '../services/contentService';
 
 const Home = () => {
   const [heroContent, setHeroContent] = useState({
-    heroBadge: '{heroContent.heroBadge || "Where Every Bite Brings Joy"}',
+    heroBadge: 'Where Every Bite Brings Joy',
     heroTitle: "Celebrate Life's Sweet Moments",
     heroSubtitle: 'Handcrafted cakes for every occasion. From birthdays to weddings, we bake happiness into every slice. Because every good news deserves a sweet celebration!',
     primaryCtaText: 'View Our Gallery',

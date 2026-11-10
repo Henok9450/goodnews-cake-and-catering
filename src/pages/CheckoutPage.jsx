@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, ArrowLeft, CheckCircle, Cake, Receipt } from 'lucide-react';
+import { Trash2, ArrowLeft, CheckCircle, Cake, Receipt, AlertCircle } from 'lucide-react';
 import { db } from '../config/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
@@ -14,6 +14,7 @@ const CheckoutPage = () => {
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [orderId, setOrderId] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const isProcessingRef = React.useRef(false); // Immediate lock to prevent double-clicks
 
     console.log('🚀 NUCLEAR RESET VER 2.5 - READY AT 04:58');
@@ -42,6 +43,7 @@ const CheckoutPage = () => {
         isProcessingRef.current = true;
 
         setIsCheckingOut(true);
+        setErrorMessage('');
 
         try {
             // Generate a simple human-readable order number
@@ -75,8 +77,11 @@ const CheckoutPage = () => {
                 orderNumber: orderNumber,
                 orderType: 'Bulk Web Order (Shopping Cart)',
                 name: formData.name,
-                email: formData.email,
+                customerName: formData.name,
+                email: formData.email || '',
+                customerEmail: formData.email || 'N/A',
                 phone: formData.phone,
+                customerPhone: formData.phone,
                 eventDate: formData.eventDate,
                 deliveryTime: formData.deliveryTime,
                 orderSummary: orderSummary,
@@ -111,25 +116,24 @@ const CheckoutPage = () => {
                 createdAt: serverTimestamp()
             };
 
-            // 1. Dispatch order notification email immediately in parallel
+            // 1. Dispatch order notification email in background
             console.log('📧 Dispatching order email notification...');
             const emailPromise = emailService.sendOrder({
                 ...fullOrderData
             }).catch(e => console.warn('⚠️ Email notification notice:', e));
 
-            // 2. Save to Firestore for Real-time Admin Tracking
+            // 2. Save to Firestore for Real-time Admin Tracking (BLOCKING & CRITICAL)
             console.log('💾 Saving order to Firestore...');
-            let docId = null;
-            try {
-                const docRef = await addDoc(collection(db, 'orders'), fullOrderData);
-                docId = docRef.id;
-                console.log('✅ Order saved with ID:', docId);
-            } catch (fsErr) {
-                console.warn('⚠️ Firestore order save notice (continuing order completion):', fsErr.message);
-            }
+            const docRef = await addDoc(collection(db, 'orders'), fullOrderData);
+            const docId = docRef.id;
+            console.log('✅ Order saved with ID:', docId);
 
-            // Ensure email dispatch has completed
-            await emailPromise;
+            // Wait for email dispatch
+            try {
+                await emailPromise;
+            } catch (emailErr) {
+                console.warn('⚠️ Email notification notice (order record secured):', emailErr);
+            }
 
             // --- CRITICAL SUCCESS PATH ---
             console.log('🎉 Checkout complete!');
@@ -138,7 +142,7 @@ const CheckoutPage = () => {
             setIsSuccess(true);
         } catch (error) {
             console.error("CRITICAL Checkout Error:", error);
-            alert("Checkout Error: " + error.message);
+            setErrorMessage("Order submission failed: " + (error.message || 'Please check your connection and try again.') + ". Your cart items have been preserved.");
         } finally {
             setIsCheckingOut(false);
             isProcessingRef.current = false;
@@ -225,6 +229,7 @@ const CheckoutPage = () => {
                                 onClick={() => removeFromCart(item.cartId)}
                                 className="text-gray-400 hover:text-red-500 transition-colors p-2"
                                 title="Remove item"
+                                aria-label={`Remove ${item.title || item.orderType || 'item'} from cart`}
                             >
                                 <Trash2 className="w-5 h-5" />
                             </button>
@@ -236,6 +241,16 @@ const CheckoutPage = () => {
                 <div className="lg:col-span-1">
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
                         <h2 className="text-xl font-bold mb-6">Order Summary</h2>
+
+                        {errorMessage && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start space-x-3 text-red-700 text-sm">
+                                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500" />
+                                <div>
+                                    <p className="font-semibold">Notice</p>
+                                    <p>{errorMessage}</p>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="space-y-3 mb-6">
                             <div className="flex justify-between text-gray-600">
@@ -254,9 +269,10 @@ const CheckoutPage = () => {
                         {/* Checkout Form */}
                         <form onSubmit={processOrderCheckout} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <label htmlFor="checkout-name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                                 <input
                                     type="text"
+                                    id="checkout-name"
                                     name="name"
                                     required
                                     value={formData.name}
@@ -265,9 +281,10 @@ const CheckoutPage = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                <label htmlFor="checkout-phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                                 <input
                                     type="tel"
+                                    id="checkout-phone"
                                     name="phone"
                                     required
                                     value={formData.phone}
@@ -276,9 +293,10 @@ const CheckoutPage = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email (Optional)</label>
+                                <label htmlFor="checkout-email" className="block text-sm font-medium text-gray-700 mb-1">Email (Optional)</label>
                                 <input
                                     type="email"
+                                    id="checkout-email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
@@ -287,9 +305,10 @@ const CheckoutPage = () => {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Event Date</label>
+                                    <label htmlFor="checkout-event-date" className="block text-sm font-medium text-gray-700 mb-1">Event Date</label>
                                     <input
                                         type="date"
+                                        id="checkout-event-date"
                                         name="eventDate"
                                         required
                                         min={new Date().toISOString().split('T')[0]}
@@ -299,9 +318,10 @@ const CheckoutPage = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Preferred Time</label>
+                                    <label htmlFor="checkout-delivery-time" className="block text-sm font-medium text-gray-700 mb-1">Preferred Time</label>
                                     <input
                                         type="time"
+                                        id="checkout-delivery-time"
                                         name="deliveryTime"
                                         required
                                         value={formData.deliveryTime}
@@ -311,19 +331,22 @@ const CheckoutPage = () => {
                                 </div>
                             </div>
                             <div>
+                                <label htmlFor="checkout-address" className="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
                                 <textarea
+                                    id="checkout-address"
                                     name="address"
                                     required
                                     value={formData.address}
                                     onChange={handleInputChange}
-                                    placeholder="Enter your full address"
+                                    placeholder="Enter your full delivery address"
                                     rows="2"
                                     className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
                                 ></textarea>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Additional Notes (Optional)</label>
+                                <label htmlFor="checkout-notes" className="block text-sm font-medium text-gray-700 mb-1">Additional Notes (Optional)</label>
                                 <textarea
+                                    id="checkout-notes"
                                     name="orderNotes"
                                     value={formData.orderNotes}
                                     onChange={handleInputChange}

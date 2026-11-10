@@ -2,64 +2,95 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Admins collection
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true
+      );
+    }
+
+    // Admins collection:
+    // - Authenticated users can read their own admin doc to verify status; active admins can read all
+    // - Only verified existing admins can create or delete admin records
+    // - Active admins can update, and existing active admins can update their own lastLogin
     match /admins/{adminId} {
-      allow read, write: if request.auth != null;
+      allow read: if isAuthenticated() && (request.auth.uid == adminId || isAdmin());
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (
+        isAuthenticated() && 
+        request.auth.uid == adminId && 
+        resource.data.isActive == true &&
+        request.resource.data.role == resource.data.role &&
+        request.resource.data.isActive == resource.data.isActive
+      );
     }
 
     // Products collection: public read, authenticated admin write
     match /products/{productId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
     // Categories collection: public read, authenticated admin write
     match /categories/{categoryId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
     // Services collection: public read, authenticated admin write
     match /services/{serviceId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
     // Website Content (CMS): public read, authenticated admin write
     match /website_content/{contentId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
-    // Reviews collection rules: public read & create, authenticated admin update/delete
+    // Reviews collection rules: public read & create (with content validation), authenticated admin update/delete
     match /reviews/{reviewId} {
       allow read: if true;
-      allow create: if true;
-      allow update, delete: if request.auth != null;
+      allow create: if request.resource.data.name is string &&
+                       request.resource.data.comment is string &&
+                       request.resource.data.rating is number;
+      allow update, delete: if isAdmin();
     }
 
-    // Orders collection: public read & create, authenticated admin update/delete
+    // Orders collection:
+    // - Create: Public creation with required schema fields (supports guest checkout)
+    // - Read: Restricted to authenticated admins or the customer who placed the order
+    // - Update/Delete: Restricted to authenticated admins only
     match /orders/{orderId} {
-      allow read: if true; 
-      allow create: if true;
-      allow update, delete: if request.auth != null;
+      allow create: if request.resource.data.orderNumber is string &&
+                       request.resource.data.customerName is string &&
+                       request.resource.data.items is list;
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.customerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
     }
 
     // Promotions collection: public read, authenticated admin write
     match /promotions/{promoId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
     // Payment settings: public read, authenticated admin write
     match /payment_settings/{settingId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
-    // Customers collection: authenticated admin access
+    // Customers collection: authenticated admin access or customer viewing/updating own profile
     match /customers/{customerId} {
-      allow read, write: if request.auth != null;
+      allow read: if isAdmin() || (isAuthenticated() && request.auth.uid == customerId);
+      allow write: if isAdmin() || (isAuthenticated() && request.auth.uid == customerId);
     }
   }
 }

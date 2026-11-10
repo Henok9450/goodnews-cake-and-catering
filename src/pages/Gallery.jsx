@@ -240,13 +240,26 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
     onClose();
   };
 
+  // ESC key listener for accessibility
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        resetForm();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-label="Order customization dialog">
       <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative custom-scrollbar shadow-2xl">
         <button
           onClick={resetForm}
+          aria-label="Close order dialog"
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -449,13 +462,26 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
 
 // Cake Details Modal Component
 const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
+  // ESC key listener for accessibility
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !cake) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-label="Cake details dialog">
       <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative custom-scrollbar shadow-2xl">
         <button
           onClick={onClose}
+          aria-label="Close cake details dialog"
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -597,6 +623,8 @@ const Gallery = () => {
                 <img
                   src={cake.img}
                   alt={cake.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300"
                   onClick={() => handleViewDetails(cake)}
                 />

@@ -387,6 +387,8 @@ const Catering = () => {
                     <img
                       src={item.img}
                       alt={item.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
                     />
                     {/* View Details Button Overlay */}

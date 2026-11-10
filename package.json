@@ -5,7 +5,6 @@
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@heroicons/react": "^2.2.0",
-    "emailjs-com": "^3.2.0",
     "firebase": "^10.14.1",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.294.0",
@@ -20,13 +19,19 @@
     "@tailwindcss/forms": "^0.5.6",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
+    "sharp": "^0.35.5",
     "tailwindcss": "^3.3.6"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "optimize:images": "node scripts/optimize-images.js"
+  },
+  "overrides": {
+    "nth-check": "^2.1.1",
+    "postcss": "^8.4.32"
   },
   "browserslist": {
     "production": [

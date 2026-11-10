@@ -196,6 +196,7 @@ const Header = () => {
                 className="relative p-1.5 sm:p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-all"
                 onClick={() => navigate('/cart')}
                 title="Cart"
+                aria-label={`Cart, ${getCartCount()} items`}
               >
                 <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
                 {getCartCount() > 0 && (
@@ -212,6 +213,7 @@ const Header = () => {
                     to="/profile"
                     className="flex items-center gap-1.5 p-1 sm:pr-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-all border border-gray-200"
                     title="My Account"
+                    aria-label="My Account"
                   >
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary-600 flex items-center justify-center text-white overflow-hidden shadow-inner shrink-0">
                       {user.photoURL ? (
@@ -227,6 +229,7 @@ const Header = () => {
                     onClick={() => loginWithGoogle()}
                     className="px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95 flex items-center gap-1.5"
                     title="Sign In"
+                    aria-label="Sign In with Google"
                   >
                     <User className="h-4 w-4 shrink-0" />
                     <span className="hidden sm:inline">Sign In</span>

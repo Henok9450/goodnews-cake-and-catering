@@ -1,0 +1,18 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Images uploaded by administration for products, categories, services, gallery, content
+    match /{folder}/{imageName} {
+      // Public read access for images rendered on the storefront
+      allow read: if true;
+      
+      // Upload: Only authenticated users with valid image MIME types and <= 5MB
+      allow write: if request.auth != null
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/(jpeg|jpg|png|webp)');
+                   
+      // Delete: Only authenticated users
+      allow delete: if request.auth != null;
+    }
+  }
+}

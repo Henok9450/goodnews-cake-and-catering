@@ -623,6 +623,8 @@ const Cupcakes = () => {
                 <img
                   src={cupcake.img}
                   alt={cupcake.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
                   onClick={() => handleViewDetails(cupcake)}
                 />

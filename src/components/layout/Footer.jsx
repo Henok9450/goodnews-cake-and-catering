@@ -20,10 +20,22 @@ const Footer = () => {
               Baked with love and attention to detail. Celebrate every good thing with us!
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a 
+                href="https://www.instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="GoodNews Cake Instagram"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Instagram className="h-6 w-6 text-primary-500" />
               </a>
-              <a href="https://web.facebook.com/profile.php?id=61575509915632" className="text-gray-400 hover:text-white transition-colors">
+              <a 
+                href="https://web.facebook.com/profile.php?id=61575509915632" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label="GoodNews Cake Facebook"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Facebook className="h-6 w-6 text-primary-500" />
               </a>
             </div>
@@ -50,14 +62,20 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold text-lg mb-4">Contact Info</h3>
             <div className="space-y-3 text-gray-400">
-              <div className="flex items-center space-x-3 hover:text-primary-400 transition-colors cursor-pointer">
+              <a 
+                href="tel:+251917559943" 
+                className="flex items-center space-x-3 hover:text-primary-400 transition-colors cursor-pointer"
+              >
                 <Phone className="h-4 w-4 text-primary-500" />
                 <span>+251917559943</span>
-              </div>
-              <div className="flex items-center space-x-3">
+              </a>
+              <a 
+                href="mailto:goodnewscake@gmail.com" 
+                className="flex items-center space-x-3 hover:text-primary-400 transition-colors cursor-pointer"
+              >
                 <Mail className="h-4 w-4 text-primary-500" />
-                <span>goodnewsscake@gmail.com</span>
-              </div>
+                <span>goodnewscake@gmail.com</span>
+              </a>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4 text-primary-500" />
                 <span>Ayat, Addis Ababa, Ethiopia</span>

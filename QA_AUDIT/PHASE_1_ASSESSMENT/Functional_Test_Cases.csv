@@ -1,0 +1,96 @@
+"Test Case ID","Module","Category","Test Scenario / Description","Preconditions","Test Steps","Input Test Data","Expected Result","Actual Result","Status","Severity","Related Defect ID"
+"TC-NAV-001","Navigation","Functional","Verify desktop header navigation links route to correct pages","User is on homepage","1. Click each navigation link in header
+2. Observe URL and rendered component","Links: Home, Shop (Gallery, Cupcakes, Cookies, Seasonal), Specialty (Custom, Catering), Track, About","Each route loads the corresponding page without full page reload or 404","All links route to target components seamlessly","Pass","Low","None"
+"TC-NAV-002","Header","Business Logic","Verify dynamic bakery operating status calculation based on EAT (UTC+3)","Current time in UTC","1. Header evaluates local time in UTC+3
+2. Checks if hour >= 8 and < 18
+3. Verifies badge text and indicator color","System clock","Displays ""Open Today: 8:00 AM - 6:00 PM"" with green pulse during hours, ""Opens Today at 8:00 AM"" with amber when closed","Status correctly computes Addis Ababa local time and renders appropriate badge","Pass","Low","None"
+"TC-NAV-003","Mobile UI","Responsive","Verify mobile hamburger menu drawer toggle and item selection","Viewport <= 768px","1. Click hamburger icon
+2. Observe drawer animation
+3. Click a route link","Mobile viewport (375x812)","Drawer slides out, displays full navigation hierarchy, closes upon navigation","Drawer toggles cleanly and automatically closes on route change","Pass","Low","None"
+"TC-NAV-004","Header","Integration","Verify phone contact button triggers direct telephone dialer","Mobile or desktop device with telephony","1. Click top bar phone link (+251 917 559 943)","None","Browser invokes tel:+251917559943 handler","Anchor href matches tel:+251917559943 and invokes system dialer","Pass","Low","None"
+"TC-NAV-005","Footer","Usability / Data","Verify footer links, email address accuracy, and telephone dialing protocol","User scrolls to page footer","1. Inspect Instagram link
+2. Inspect Facebook link
+3. Inspect email address
+4. Inspect phone element","Footer elements","All links lead to valid targets; email has no typos; phone number has tel: link","Instagram is dead placeholder href=""#""; email has typo ""goodnewsscake@gmail.com""; phone is unlinked div","Fail","Low","DEF-NAV-001"
+"TC-CAT-001","Gallery","Functional / Resilience","Verify cakes gallery renders products with fallback when database is empty","User navigates to /gallery","1. Load /gallery
+2. Observe cake cards, images, titles, and sizes","Default cake list","Cakes render with titles, ingredients, standard size, and servings","Cakes display correctly with robust fallback array when Firestore is empty","Pass","Medium","None"
+"TC-CAT-002","Gallery","Functional","Verify Quick Order modal opens with selected cake specifications","User on /gallery","1. Click ""Quick Order"" on any cake
+2. Inspect pre-populated modal fields","Cake: Beautiful Cake Design 1","Modal opens, pre-fills cakeType and cakeSize, displays flavor and frosting selectors","Modal opens with populated details ready for bag addition","Pass","Low","None"
+"TC-CAT-003","Gallery","Functional","Verify Customize Design modal allows entering custom messages and dietary notes","User on /gallery","1. Click ""Customize Design""
+2. Enter custom message & filling
+3. Click Add to Bag","Message: ""Happy Birthday Abebe""","Cake added to cart with custom attributes","Custom specifications properly passed into cart item object","Pass","Low","None"
+"TC-CAT-004","Cupcakes","Functional","Verify cupcakes menu loads items and opens flavor order form","User on /cupcakes","1. Browse cupcake cards
+2. Click ""Order Cupcakes""
+3. Select quantity & flavor","Cupcake: Chocolate Heaven","Modal opens with quantity selection and flavor specification","Form functions correctly and submits item to cart","Pass","Low","None"
+"TC-CAT-005","Cookies","Functional","Verify cookies catalog allows selecting batch size and submits to bag","User on /cookies","1. Browse cookies
+2. Click ""Order Batch""
+3. Select batch size & submit","Cookie: Classic Chocolate Chip","Batch size and cookie details added to cart","Operates as expected with fallback cookies array","Pass","Low","None"
+"TC-CAT-006","Seasonal","Functional","Verify seasonal catalog displays authentic Ethiopian celebrations (Enkutatash, Fasika, Genna, Timket, Meskel)","User on /seasonal","1. Navigate to /seasonal
+2. Verify presence of cultural holidays and accurate descriptions","None","Ethiopian holidays and cultural milestones displayed with authentic imagery","Authentic Ethiopian celebration cakes render with full descriptions and ingredients","Pass","Medium","None"
+"TC-CAT-007","Catering","Functional","Verify catering page displays buffet/banquet packages and opens quote modal","User on /catering","1. Browse catering packages
+2. Click ""Inquire for Event""","Package: Wedding & Event Catering Box Package","Modal opens capturing guest count, event date, and custom notes","Catering quote modal opens and submits inquiry to cart","Pass","Low","None"
+"TC-CAT-008","Catalogs","Performance","Verify catalog pages optimize image payloads and achieve acceptable LCP","User on 3G/4G network","1. Open DevTools Network tab
+2. Measure total transferred image bytes on /gallery or /seasonal","Network payload","Page weight under 3MB; images compressed in WebP/AVIF format with responsive sizes","Total image directory exceeds 193MB; single page loads 15MB-30MB of uncompressed 2MB-3.5MB PNGs; LCP > 6s on mobile","Fail","High","DEF-PERF-001"
+"TC-CUST-001","CustomOrder","Functional","Verify 3-step wizard stepper navigation forwards and backwards","User on /custom-order","1. Complete step 1
+2. Click Next to step 2
+3. Click Previous
+4. Verify preserved inputs","Cake details","Wizard advances step-by-step without losing input state","Step navigation transitions smoothly and preserves form state","Pass","Low","None"
+"TC-CUST-002","CustomOrder","Validation","Verify cake type, size, flavor, filling, and frosting selections","User on step 1 of /custom-order","1. Select cake type ""Wedding Cake""
+2. Select size ""2 kg Round""
+3. Select flavor ""Red Velvet""","Dropdown selections","Values recorded in state; Next button enabled","State updates accurately and passes selections to subsequent steps","Pass","Low","None"
+"TC-CUST-003","CustomOrder","Form Usability","Verify Enter key does not prematurely submit wizard on steps 1 or 2","User on step 1 or 2 of /custom-order","1. Focus an input field on step 1
+2. Press Enter key","Keyboard Enter key","Enter key submission intercepted and prevented","Enter key on steps 1-2 prevented via handleKeyDown handler","Pass","Low","None"
+"TC-CUST-004","CustomOrder","Functional","Verify final step submission compiles complete custom cake specifications into cart","User on step 3 of /custom-order","1. Review summary
+2. Click ""Add Custom Cake to Bag""
+3. Verify cart state","Custom order payload","Item added to cart with ""Quote on Request"" price and all custom attributes","Custom order successfully serialized to cart with unique cartId","Pass","Medium","None"
+"TC-CART-001","Cart","Functional","Verify adding items to cart updates global cart count badge in header","User on any product page","1. Add cake to bag
+2. Inspect header bag badge","Cart addition","Badge updates from 0 to 1 with smooth animation","Cart badge updates immediately via CartContext","Pass","Low","None"
+"TC-CART-002","Cart","Data Persistence","Verify cart items persist in localStorage across browser refresh","Item in cart","1. Reload browser window
+2. Inspect cart items in drawer or /cart","Local storage goodnews_cart","Cart items retained with all selected specifications","Cart items faithfully re-hydrated from localStorage","Pass","Medium","None"
+"TC-CART-003","Cart","Functional","Verify item removal removes targeted item and recalculates total","Multiple items in cart","1. Click trash icon on specific item
+2. Verify remaining items and total","CartId","Targeted item removed; remaining items intact; count decremented","Item removed cleanly without affecting other items","Pass","Low","None"
+"TC-CART-004","Cart","Business Logic","Verify cart total calculates price for alphanumeric strings (""ETB 150"")","Items with price ""ETB 150""","1. Add items
+2. Call getCartTotal()","Price strings","Strips non-numeric characters and sums total","Correctly parses numeric portion and sums total","Pass","Low","None"
+"TC-CART-005","Cart","Resilience / Negative","Verify cart total calculation when item price is undefined or null","Item in cart without price property","1. Push item with price: undefined
+2. Invoke getCartTotal()","{ title: ""Cake"", price: undefined }","getCartTotal handles missing price gracefully and treats as 0","Throws fatal unhandled TypeError: Cannot read properties of undefined (reading ""toString"")","Fail","High","DEF-CART-001"
+"TC-CHK-001","Checkout","Functional","Verify empty cart view renders helpful empty state with browse CTA","Cart is empty","1. Navigate to /cart","None","Displays empty bag illustration and ""Browse Cakes"" button","Empty state renders properly with link to /gallery","Pass","Low","None"
+"TC-CHK-002","Checkout","Validation","Verify checkout form enforces required customer details (name, phone, delivery date)","Items in cart","1. Click ""Place Order"" with empty name and phone
+2. Verify browser validation","Empty inputs","Form blocks submission and highlights invalid required fields","HTML5 required validation blocks submission and prompts user","Pass","Low","None"
+"TC-CHK-003","Checkout","Functional","Verify order generation creates unique format Order Number (GNC-...) and success screen","Valid form inputs","1. Fill customer details
+2. Submit order","Customer: Abebe Kebede, Phone: 0911223344","Generates GNC-XXXXXX, displays confirmation with tracking button","Order placed screen displayed with generated Order Number","Pass","Medium","None"
+"TC-CHK-004","Checkout","Data Integrity","Verify order persistence to Firestore database and failure handling","Valid order submission","1. Simulate Firestore permission error or network drop
+2. Submit order","Simulated DB failure","System detects write failure, notifies user, and does not claim success","Checkout catches Firestore error, logs console warning, and still displays ""Order Placed Successfully!""; order is silently lost","Fail","Critical","DEF-ORD-001"
+"TC-CHK-005","Checkout","Integration","Verify email notification dispatch via Google Apps Script webhook","Valid order submission","1. Dispatch order email
+2. Inspect network request and error handling","Google Script URL","Webhook sends order; failures detected and reported","Requests dispatched with mode: ""no-cors""; browser cannot verify HTTP status; resolves true even on HTTP 500 error","Fail","High","DEF-INT-001"
+"TC-CHK-006","Checkout","Workflow","Verify successful order clears shopping cart from localStorage","Order placed","1. Complete checkout
+2. Inspect localStorage goodnews_cart","Completed order","goodnews_cart array is cleared to []","clearCart() executes and localStorage resets to empty array","Pass","Low","None"
+"TC-TRK-001","TrackOrder","Functional","Verify order lookup by valid order number renders tracking timeline","Order exists in DB","1. Enter order number in search
+2. Click search","Valid Order Number","Renders 5-step status stepper (Received, Confirmed, Preparing, Ready, Delivered)","Stepper renders with active stage highlighted based on order status","Pass","Medium","None"
+"TC-TRK-002","TrackOrder","Negative","Verify tracking with non-existent order number displays friendly error","User on /track","1. Enter ""GNC-999999""
+2. Search","Invalid order number","Displays ""Order not found. Please check the number and try again.""","Error banner displayed correctly","Pass","Low","None"
+"TC-TRK-003","TrackOrder","Deep Linking","Verify direct URL /track/:orderNumber automatically queries and loads order","Valid order URL","1. Navigate directly to /track/GNC-123456","URL parameter","Order details load automatically without requiring manual search","useEffect hook detects urlOrderNumber and fetches record","Pass","Low","None"
+"TC-TRK-004","TrackOrder","Security / Privacy","Verify order tracking enforces authorization to prevent unauthenticated data harvesting","Public visitor","1. Inspect firestore.rules for orders collection
+2. Test unauthenticated read from DevTools","collection(db, ""orders"")","Orders restricted to owner (customerUid) or admin; public cannot query arbitrary records","firestore.rules grants allow read: if true; any public visitor can dump all customer orders, names, addresses, and phone numbers","Fail","Critical","DEF-SEC-001"
+"TC-REV-001","Reviews","Functional","Verify customer review submission saves with pending status requiring moderation","User on /reviews","1. Enter name, rating (5), and comment
+2. Click Submit","Rating: 5, Comment: ""Delicious cake!""","Review saved to Firestore with status: ""pending""","Review written to Firestore with pending status; hidden from public until approved","Pass","Low","None"
+"TC-REV-002","Reviews","Functional","Verify public reviews list displays only status == ""approved"" testimonials","Public reviews page","1. Observe rendered testimonials","Firestore reviews","Only approved reviews shown; pending/rejected reviews hidden","Client filters reviewsData.filter(r => r.status === ""approved"")","Pass","Low","None"
+"TC-REV-003","Reviews","Resilience","Verify homepage and reviews page fallback when no approved reviews exist","Empty reviews collection","1. Load homepage reviews section","Empty collection","Renders curated default review without crashing","Renders fallback testimonial aesthetic card seamlessly","Pass","Low","None"
+"TC-ADM-001","Admin","Security","Verify unauthenticated access to /admin routes redirects to /admin/login","Unauthenticated visitor","1. Navigate directly to /admin/products
+2. Observe URL and access","Direct route access","Redirected to /admin/login with state.from preserved","AdminRoute intercepts access and redirects to /admin/login","Pass","Medium","None"
+"TC-ADM-002","Admin","Authentication","Verify bootstrap administrator login with pre-computed SHA-256 hash","Admin user on /admin/login","1. Enter designated admin credentials
+2. Submit login","Bootstrap Admin Account","AuthContext verifies SHA-256 hash and grants superadmin privileges","Admin authorized and redirected to /admin dashboard","Pass","High","None"
+"TC-ADM-003","Admin","Security / Privilege Escalation","Verify role authorization security boundary against regular authenticated users","Regular customer authenticated via Google","1. Authenticate with standard Google account
+2. Execute setDoc(doc(db, ""admins"", uid), { role: ""admin"", isActive: true })
+3. Reload /admin","Standard user token","Firestore rules reject write to /admins/; user blocked from admin privileges","firestore.rules grants allow write: if request.auth != null; any authenticated user can write to /admins/ and escalate to full Admin","Fail","Critical","DEF-SEC-002"
+"TC-ADM-004","Admin","Functional","Verify product management catalog CRUD operations in admin portal","Authenticated admin","1. Navigate to /admin/products
+2. Create new product
+3. Edit product
+4. Delete product","Product payload","Product created in Firestore, displayed in catalog, updated, and deleted cleanly","CRUD operations execute and update Firestore catalog records","Pass","Medium","None"
+"TC-ADM-005","Admin","Functional","Verify admin order status update appends history record with timestamp and admin name","Authenticated admin","1. Open /admin/orders
+2. Change status to ""Preparing""
+3. Check statusHistory array","Status update","orderStatus updated and statusHistory array contains new audit entry","arrayUnion updates statusHistory with ISO timestamp and changedBy","Pass","Medium","None"
+"TC-ADM-006","Admin","Security / Storage","Verify image file upload validation and Firebase Storage security rules","Authenticated admin uploading image","1. Inspect storageService.js
+2. Check repository for storage.rules","Uploaded file","Storage enforces server-side MIME verification and restricts write to verified admins in storage.rules","MIME check is client-only; zero storage.rules file in repository; storage bucket vulnerable if default test rules active","Fail","High","DEF-SEC-004"
+"TC-ADM-007","Admin","Functional","Verify payment method configuration updates (Telebirr, CBE Bank, Cash)","Authenticated admin","1. Navigate to /admin/payments
+2. Update CBE account number
+3. Save configuration","CBE Account Data","Configuration saved to website_content/payment_settings and reflected in customer checkout","Settings update saved and re-hydrated dynamically","Pass","Low","None"
