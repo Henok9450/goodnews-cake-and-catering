@@ -4,5 +4,6 @@ Disallow: /admin/
 Disallow: /admin
 Disallow: /cart
 Disallow: /track
+Disallow: /profile
 
 Sitemap: https://goodnews-cake-and-catering.vercel.app/sitemap.xml

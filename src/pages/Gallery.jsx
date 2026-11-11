@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { getProducts } from '../services/productService';
 import OptimizedImage from '../components/common/OptimizedImage';
+import SEOHead from '../components/common/SEOHead';
+import { Share2, MessageCircle } from 'lucide-react';
 
 const defaultCakes = [
   {
@@ -470,6 +472,8 @@ const OrderFormModal = ({ cake, isOpen, onClose, orderType }) => {
 
 // Cake Details Modal Component
 const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
+  const [copied, setCopied] = useState(false);
+
   // ESC key listener for accessibility
   React.useEffect(() => {
     if (!isOpen) return;
@@ -481,6 +485,14 @@ const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  const handleCopyLink = () => {
+    try {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch (e) {}
+  };
 
   if (!isOpen || !cake) return null;
 
@@ -511,7 +523,7 @@ const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-3xl font-extrabold text-gray-900">{cake.title}</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">{cake.title}</h2>
             <div>
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Description</h3>
               <p className="text-gray-600 text-sm leading-relaxed">{cake.description}</p>
@@ -553,6 +565,29 @@ const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
                 Customize Design
               </button>
             </div>
+
+            {/* Social Share & WhatsApp Consultation Row */}
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="inline-flex items-center gap-1.5 text-gray-500 hover:text-primary-600 font-medium py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                title="Copy shareable link to this cake"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>{copied ? '✓ Link Copied!' : 'Share Cake'}</span>
+              </button>
+              <a
+                href={`https://wa.me/251917559943?text=${encodeURIComponent(`Hello GoodNews Cake, I would like to inquire about the "${cake.title}": ${window.location.href}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-emerald-600 hover:text-emerald-700 font-bold py-1.5 px-3 rounded-lg hover:bg-emerald-50 transition-colors"
+                title="Inquire about this cake on WhatsApp"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Order via WhatsApp</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -591,14 +626,33 @@ const Gallery = () => {
 
   const displayCakes = liveCakes.length > 0 ? liveCakes : defaultCakes;
 
+  // Helper to convert cake title to URL slug
+  const toSlug = (text) => (text || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+  // Deep linking: read ?cake=... from URL on mount/update
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cakeSlug = params.get('cake');
+    if (cakeSlug && displayCakes.length > 0) {
+      const match = displayCakes.find(c => toSlug(c.title) === cakeSlug);
+      if (match) {
+        setSelectedCake(match);
+        setIsModalOpen(true);
+      }
+    }
+  }, [displayCakes]);
+
   const handleViewDetails = (cake) => {
     setSelectedCake(cake);
     setIsModalOpen(true);
+    const slug = toSlug(cake.title);
+    window.history.replaceState({ cake: slug }, '', `${window.location.pathname}?cake=${slug}`);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedCake(null);
+    window.history.replaceState({}, '', window.location.pathname);
   };
 
   const handleOrder = (cake) => {
@@ -618,14 +672,27 @@ const Gallery = () => {
   const handleCloseOrderForm = () => {
     setIsOrderFormOpen(false);
     setSelectedCake(null);
+    window.history.replaceState({}, '', window.location.pathname);
   };
 
   return (
     <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
+      {/* Product-level dynamic SEO head when modal is open */}
+      {selectedCake && isModalOpen && (
+        <SEOHead
+          customTitle={`${selectedCake.title} | GoodNews Cake Addis Ababa`}
+          customDescription={selectedCake.description}
+          customImage={selectedCake.img.startsWith('http') ? selectedCake.img : `https://goodnews-cake-and-catering.vercel.app${selectedCake.img}`}
+          customCanonical={`https://goodnews-cake-and-catering.vercel.app/gallery?cake=${toSlug(selectedCake.title)}`}
+        />
+      )}
+
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">Our Cake Gallery</h1>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto text-sm sm:text-base">
-          Browse through our collection of beautifully crafted cakes. Each one is made with love, fresh ingredients, and attention to detail.
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">
+          Artisanal Cake Gallery in Addis Ababa
+        </h1>
+        <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          Explore handcrafted celebration cakes in Addis Ababa, Ethiopia. From multi-tiered wedding cakes and Habesha traditional bridal designs to whimsical children's birthday cakes and rich chocolate drips, every cake is baked fresh to order using premium natural ingredients.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

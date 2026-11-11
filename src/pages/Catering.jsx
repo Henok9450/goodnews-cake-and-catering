@@ -1,9 +1,10 @@
 import { getServices } from '../services/serviceService';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import OptimizedImage from '../components/common/OptimizedImage';
-// import { emailService } from '../services/emailService';
+import SEOHead from '../components/common/SEOHead';
+import { Share2, MessageCircle } from 'lucide-react';
 
 const cateringItems = [
   {
@@ -141,11 +142,33 @@ const Catering = () => {
     'Other'
   ];
 
+  // Slug generator
+  const toSlug = (text) => (text || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const [copied, setCopied] = useState(false);
+
+  // Deep linking: read ?package=... from URL on mount/update
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pkgSlug = params.get('package');
+    if (pkgSlug && displayCateringItems.length > 0) {
+      const match = displayCateringItems.find(p => toSlug(p.title) === pkgSlug);
+      if (match) {
+        setCurrentImage(match.img);
+        setCurrentImageTitle(match.title);
+        setSelectedItem(match);
+        setShowImageModal(true);
+      }
+    }
+  }, [displayCateringItems]);
+
   // Function to handle viewing image in modal
-  const handleViewImage = (img, title) => {
+  const handleViewImage = (img, title, item = null) => {
     setCurrentImage(img);
     setCurrentImageTitle(title);
+    setSelectedItem(item);
     setShowImageModal(true);
+    const slug = toSlug(title);
+    window.history.replaceState({ package: slug }, '', `${window.location.pathname}?package=${slug}`);
   };
 
   // Function to close image modal
@@ -153,6 +176,16 @@ const Catering = () => {
     setShowImageModal(false);
     setCurrentImage('');
     setCurrentImageTitle('');
+    setSelectedItem(null);
+    window.history.replaceState({}, '', window.location.pathname);
+  };
+
+  const handleCopyLink = () => {
+    try {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch (e) {}
   };
 
   const handleInputChange = (e) => {
@@ -337,35 +370,72 @@ const Catering = () => {
 
   return (
     <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
-      {/* Image Modal */}
+      {/* Package & Image Detail Modal */}
       {showImageModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] w-full overflow-auto">
-            <div className="p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-semibold">{currentImageTitle}</h3>
-                <button
-                  onClick={handleCloseImageModal}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-label="Catering package details">
+          {/* Dynamic SEO Head when catering package is viewed */}
+          <SEOHead
+            customTitle={`${currentImageTitle} | GoodNews Catering Addis Ababa`}
+            customDescription={selectedItem?.description || 'Premium event catering package by GoodNews Cake & Catering in Addis Ababa.'}
+            customImage={currentImage.startsWith('http') ? currentImage : `https://goodnews-cake-and-catering.vercel.app${currentImage}`}
+            customCanonical={`https://goodnews-cake-and-catering.vercel.app/catering?package=${toSlug(currentImageTitle)}`}
+          />
+
+          <div className="bg-white rounded-3xl max-w-4xl max-h-[90vh] w-full overflow-y-auto p-6 relative custom-scrollbar shadow-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">{currentImageTitle}</h3>
+              <button
+                onClick={handleCloseImageModal}
+                aria-label="Close catering details"
+                className="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                &times;
+              </button>
+            </div>
+            
+            <div className="flex justify-center max-h-[60vh] h-80 sm:h-96 rounded-2xl bg-gray-50 overflow-hidden mb-4 border border-gray-100">
+              <OptimizedImage
+                src={currentImage}
+                alt={currentImageTitle}
+                width="800"
+                height="600"
+                cardMode={false}
+                priority={true}
+                className="max-w-full max-h-[60vh] object-contain rounded-xl"
+              />
+            </div>
+
+            {selectedItem?.description && (
+              <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                {selectedItem.description}
+              </p>
+            )}
+
+            {/* Social Share & WhatsApp Consultation Row */}
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="inline-flex items-center gap-1.5 text-gray-500 hover:text-primary-600 font-medium py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                title="Copy shareable link to this catering package"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>{copied ? '✓ Link Copied!' : 'Share Package'}</span>
+              </button>
+              <div className="flex items-center gap-3">
+                <a
+                  href={`https://wa.me/251917559943?text=${encodeURIComponent(`Hello GoodNews Cake, I would like to inquire about the "${currentImageTitle}" catering package: ${window.location.href}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-emerald-600 hover:text-emerald-700 font-bold py-1.5 px-3 rounded-lg hover:bg-emerald-50 transition-colors"
+                  title="Inquire about this catering package on WhatsApp"
                 >
-                  &times;
-                </button>
-              </div>
-              <div className="flex justify-center max-h-[70vh] h-96">
-                <OptimizedImage
-                  src={currentImage}
-                  alt={currentImageTitle}
-                  width="800"
-                  height="600"
-                  cardMode={false}
-                  priority={true}
-                  className="max-w-full max-h-[70vh] object-contain rounded-lg"
-                />
-              </div>
-              <div className="flex justify-center mt-4">
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  <span>Inquire on WhatsApp</span>
+                </a>
                 <button
                   onClick={handleCloseImageModal}
-                  className="btn-secondary"
+                  className="btn-secondary py-1.5 px-4 text-xs font-semibold rounded-lg"
                 >
                   Close
                 </button>
@@ -376,9 +446,11 @@ const Catering = () => {
       )}
 
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">Catering Services</h1>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Perfect for events, parties, and corporate gatherings. Browse our curated menu and place your order.
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">
+          Catering Services in Addis Ababa
+        </h1>
+        <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          Elevate your celebration with premium event catering, dessert table buffets, and morning breakfast spreads in Addis Ababa. From luxury wedding banquets and corporate conferences to birthday celebrations and intimate cocktail gatherings.
         </p>
 
         {!showForm ? (
@@ -403,7 +475,7 @@ const Catering = () => {
                     {/* View Details Button Overlay */}
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <button
-                        onClick={() => handleViewImage(item.img, item.title)}
+                        onClick={() => handleViewImage(item.img, item.title, item)}
                         className="bg-white text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
                       >
                         View Details
@@ -424,7 +496,7 @@ const Catering = () => {
                         Add to Order
                       </button>
                       <button
-                        onClick={() => handleViewImage(item.img, item.title)}
+                        onClick={() => handleViewImage(item.img, item.title, item)}
                         className="btn-secondary px-4"
                         title="View larger image"
                       >

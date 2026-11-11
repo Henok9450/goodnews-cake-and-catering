@@ -10,7 +10,7 @@ const Home = () => {
   const [heroContent, setHeroContent] = useState({
     heroBadge: 'Where Every Bite Brings Joy',
     heroTitle: "Celebrate Life's Sweet Moments",
-    heroSubtitle: 'Handcrafted cakes for every occasion. From birthdays to weddings, we bake happiness into every slice. Because every good news deserves a sweet celebration!',
+    heroSubtitle: 'Handcrafted cakes for every occasion in Addis Ababa. From birthdays to weddings, we bake happiness into every slice. Because every good news deserves a sweet celebration!',
     primaryCtaText: 'View Our Gallery',
     primaryCtaLink: '/gallery',
     secondaryCtaText: 'Start Custom Order',

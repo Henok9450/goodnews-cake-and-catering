@@ -622,9 +622,11 @@ const Cookies = () => {
   return (
     <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">Our Cookie Collection</h1>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Discover our delicious assortment of freshly baked cookies. From classic favorites to custom decorated treats, each cookie is made with love and the finest ingredients.
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">
+          Fresh Artisanal Cookies in Addis Ababa
+        </h1>
+        <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          Freshly baked artisanal cookies in Addis Ababa, Ethiopia. From rich chunky chocolate chip and buttery golden crumbles to decorated celebration gift boxes, baked daily with natural butter and fine cocoa.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

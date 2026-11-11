@@ -688,9 +688,11 @@ const Seasonal = () => {
   return (
     <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">Seasonal Specialties</h1>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Celebrate every season with our specially crafted cakes and desserts. From winter wonderlands to summer sunshine, we create memorable treats for every occasion throughout the year.
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">
+          Ethiopian Holiday & Seasonal Cakes in Addis Ababa
+        </h1>
+        <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          Celebrate Ethiopian holidays and cherished festive seasons with authentic custom cakes in Addis Ababa. Featuring cultural specialty designs for Enkutatash (Ethiopian New Year), Fasika (Easter), Gena (Christmas), and festive milestones.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

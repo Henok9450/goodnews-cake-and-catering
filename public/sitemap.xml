@@ -22,7 +22,7 @@
     <loc>https://goodnews-cake-and-catering.vercel.app/catering</loc>
     <lastmod>2026-11-11</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://goodnews-cake-and-catering.vercel.app/seasonal</loc>
@@ -34,30 +34,30 @@
     <loc>https://goodnews-cake-and-catering.vercel.app/cupcakes</loc>
     <lastmod>2026-11-11</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://goodnews-cake-and-catering.vercel.app/cookies</loc>
     <lastmod>2026-11-11</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://goodnews-cake-and-catering.vercel.app/about</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://goodnews-cake-and-catering.vercel.app/reviews</loc>
     <lastmod>2026-11-11</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://goodnews-cake-and-catering.vercel.app/track-order</loc>
     <lastmod>2026-11-11</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://goodnews-cake-and-catering.vercel.app/about</loc>
-    <lastmod>2026-11-11</lastmod>
-    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 </urlset>

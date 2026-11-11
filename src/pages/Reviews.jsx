@@ -122,17 +122,17 @@ const Reviews = () => {
                     <motion.h1
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl font-bold text-gray-900 mb-4 font-display"
+                        className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 font-display"
                     >
-                        Customer Reviews
+                        Customer Reviews & Testimonials
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-gray-600"
+                        className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto"
                     >
-                        Real experiences from our sweet community
+                        Real experiences and feedback from our sweet community in Addis Ababa
                     </motion.p>
                 </div>
 

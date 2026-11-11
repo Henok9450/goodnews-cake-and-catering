@@ -225,9 +225,11 @@ const CustomOrder = () => {
   return (
     <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">Custom Cake Order</h1>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Create your dream cake! Tell us about your vision and we'll bring it to life with our expert baking skills.
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">
+          Custom Cake Studio in Addis Ababa
+        </h1>
+        <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          Design your personalized celebration cake online. Select custom tiers, gourmet sponge flavors, fillings, frostings, and special inscription messages for weddings, birthdays, anniversaries, and graduations in Addis Ababa.
         </p>
 
         {submissionError && (

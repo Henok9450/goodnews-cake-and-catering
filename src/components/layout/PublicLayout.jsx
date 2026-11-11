@@ -1,35 +1,14 @@
-import React, { useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import SEOHead from '../common/SEOHead';
 import { MessageCircle } from 'lucide-react';
 
-const PAGE_TITLES = {
-  '/': 'GoodNews Cake & Catering | Artisanal Cakes & Catering in Addis Ababa',
-  '/gallery': 'Artisanal Cake Gallery | GoodNews Cake & Catering',
-  '/custom-order': 'Custom Cake Studio & Design | GoodNews Cake & Catering',
-  '/catering': 'Catering Packages & Buffets | GoodNews Cake & Catering',
-  '/seasonal': 'Ethiopian Holiday & Seasonal Cakes | GoodNews Cake & Catering',
-  '/cupcakes': 'Gourmet Handcrafted Cupcakes | GoodNews Cake & Catering',
-  '/cookies': 'Fresh Artisanal Cookies | GoodNews Cake & Catering',
-  '/about': 'Our Story & Philosophy | GoodNews Cake & Catering',
-  '/reviews': 'Customer Testimonials & Reviews | GoodNews Cake & Catering',
-  '/cart': 'Shopping Cart & Secure Checkout | GoodNews Cake & Catering',
-  '/track': 'Track Your Cake Order Status | GoodNews Cake & Catering',
-  '/profile': 'Customer Profile & Order History | GoodNews Cake & Catering',
-};
-
 const PublicLayout = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    const basePath = location.pathname.startsWith('/track/') ? '/track' : location.pathname;
-    const title = PAGE_TITLES[basePath] || 'GoodNews Cake & Catering | Addis Ababa';
-    document.title = title;
-  }, [location.pathname]);
-
   return (
     <div className="flex flex-col min-h-screen relative">
+      <SEOHead />
       <Header />
       <main className="flex-grow">
         <Outlet />

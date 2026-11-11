@@ -148,6 +148,7 @@ function App() {
                   <Route path="/cart" element={<CheckoutPage />} />
                   <Route path="/track" element={<TrackOrder />} />
                   <Route path="/track/:orderNumber" element={<TrackOrder />} />
+                  <Route path="/track-order" element={<TrackOrder />} />
                   <Route path="/profile" element={<Profile />} />
                 </Route>
 

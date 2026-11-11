@@ -21,7 +21,9 @@ const About = () => {
   return (
     <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-4 text-gray-900 font-display">About GoodNews Cake</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-center mb-4 text-gray-900 font-display">
+          About GoodNews Cake & Catering in Addis Ababa
+        </h1>
         <p className="text-xl text-primary-600 text-center font-medium italic mb-12">"Where Every Bite Brings Joy"</p>
         
         <div className="max-w-4xl mx-auto">
