@@ -8,33 +8,33 @@ const cateringItems = [
   {
     id: 1,
     img: '/images/catering/catering1.png',
-    title: 'Assorted Cupcake Platter',
-    description: 'A delightful selection of our most popular cupcakes, perfect for any gathering. Includes chocolate, vanilla, red velvet, and lemon flavors.',
-    serves: '12-15 people',
+    title: 'Grand Continental Dessert & Pastry Banquet Table',
+    description: 'A lavish multi-tiered dessert buffet presentation featuring woven strawberry basket cake, glazed fresh fruit tarts, golden croissants, fruit danishes, and gourmet confections.',
+    serves: '40-75 people',
     category: 'desserts'
   },
   {
     id: 2,
     img: '/images/catering/catering2.png',
-    title: 'Mini Dessert Shots',
-    description: 'Elegant and portion-controlled dessert shots. Choose from tiramisu, strawberry cheesecake, or chocolate mousse.',
-    serves: '15-20 shots',
+    title: 'Elegant Wedding & Celebration Dessert Table Display',
+    description: 'Sophisticated dessert display centered around a floral-topped semi-naked celebration cake, flanked by tall taper candles, mini cupcake risers, brownie towers, and dessert shooter parfaits.',
+    serves: '30-60 people',
     category: 'desserts'
   },
   {
     id: 3,
     img: '/images/catering/catering3.png',
-    title: 'Gourmet Brownie & Bar Box',
-    description: 'A rich assortment of fudgy brownies and decadent dessert bars, including caramel, nuts, and chocolate chips.',
-    serves: '10-12 people',
-    category: 'desserts'
+    title: 'Modern Minimalist Plinth Pastry & Fruit Display',
+    description: 'Contemporary stepped white plinth buffet presentation showcasing flaky golden croissants, piped cream tartlets, French macaron tower, and fresh seasonal berry bowls.',
+    serves: '20-35 people',
+    category: 'breakfast'
   },
   {
     id: 4,
     img: '/images/catering/catering4.png',
-    title: 'Mixed Pastry Basket',
-    description: 'An elegant selection of croissants, danishes, and scones, ideal for corporate brunches or morning events.',
-    serves: '8-10 people',
+    title: 'Executive Brunch & Cocktail Pastry Spread',
+    description: 'A vibrant catering spread featuring colorful stemmed cocktail goblets, glazed morning donuts, raspberry waffle bites, lemon curd tarts, mini cupcakes, and fresh sliced fruit platters.',
+    serves: '25-40 people',
     category: 'breakfast'
   },
   {

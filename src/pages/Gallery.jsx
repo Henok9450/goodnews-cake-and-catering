@@ -6,75 +6,75 @@ import { getProducts } from '../services/productService';
 const defaultCakes = [
   {
     img: '/images/cakes/cake1.png',
-    title: 'Beautiful Cake Design 1',
-    description: 'A stunning vanilla cake with buttercream frosting and fresh fruit decorations.',
-    ingredients: ['Vanilla sponge', 'Buttercream frosting', 'Fresh fruits', 'Edible flowers'],
+    title: 'Romantic Proposal Silhouette Cake',
+    description: 'A graceful single-tier ivory celebration cake decorated with edible gold pearls, two fluttering pink butterflies, and a black silhouette cutout of a marriage proposal.',
+    ingredients: ['Vanilla velvet sponge', 'Smooth buttercream frosting', 'Edible gold pearls', 'Silhouette fondant cutout', 'Sugar butterflies'],
     size: '1 kg',
     servings: '8-10 people'
   },
   {
     img: '/images/cakes/cake2.png',
-    title: 'Chocolate Delight',
-    description: 'Rich chocolate cake with ganache filling and chocolate shavings.',
-    ingredients: ['Chocolate sponge', 'Dark chocolate ganache', 'Chocolate shavings', 'Whipped cream'],
-    size: '1.5 kg',
-    servings: '10-12 people'
+    title: 'Blush Bridal Gown Celebration Cake',
+    description: 'An exquisite two-tier soft blush pink cake embellished with silver pearls and a sculpted blonde bride figurine wearing a low-back wedding gown with a flowing fondant train.',
+    ingredients: ['Almond sponge', 'Blush buttercream frosting', 'Silver sugar pearls', 'Hand-sculpted bride figurine', 'Fondant gown train'],
+    size: 'Two-tier (2 kg)',
+    servings: '18-22 people'
   },
   {
     img: '/images/cakes/cake3.png',
-    title: 'Red Velvet Elegance',
-    description: 'Classic red velvet cake with cream cheese frosting and red velvet crumbs.',
-    ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'White chocolate', 'Red velvet crumbs'],
-    size: '1 kg',
-    servings: '8-10 people'
+    title: 'Modern Floating Tier Wedding Cake',
+    description: 'A sophisticated contemporary two-tier ivory celebration cake featuring a vertical golden hoop separator, gold-vein gilded edges, and handcrafted blush pink sugar roses.',
+    ingredients: ['Vanilla bean sponge', 'Ivory smooth buttercream', 'Edible gold leaf trim', 'Handcrafted sugar roses', 'Sugar leaves'],
+    size: 'Two-tier (2 kg)',
+    servings: '18-22 people'
   },
   {
     img: '/images/cakes/cake4.png',
-    title: 'Wedding Special',
-    description: 'Elegant multi-tier wedding cake with intricate piping and pearl decorations.',
-    ingredients: ['Vanilla and chocolate layers', 'Swiss meringue buttercream', 'Edible pearls', 'Gold leaf'],
-    size: 'Two-tier (6" & 8")',
-    servings: '30-40 people'
+    title: 'Maternity & Baby Shower Celebration Cake',
+    description: 'A heartfelt single-tier white textured buttercream cake featuring an expectant mother silhouette topper, framed by a cascading arch of pink and ivory fondant bubbles and silver pearls.',
+    ingredients: ['Vanilla sponge', 'Whipped buttercream frosting', 'Fondant bubble spheres', 'Silver dragees', 'Maternity silhouette topper'],
+    size: '1.5 kg',
+    servings: '12-15 people'
   },
   {
     img: '/images/cakes/cake5.png',
-    title: 'Fruit Fantasy',
-    description: 'Light sponge cake loaded with seasonal fruits and whipped cream.',
-    ingredients: ['Vanilla sponge', 'Fresh whipped cream', 'Seasonal fruits', 'Fruit glaze'],
-    size: '1.5 kg',
+    title: 'Vintage Crimson Lambeth Ribbon Cake',
+    description: 'A dramatic baroque Lambeth-style cake finished in rich crimson-red frosting, featuring ornate piped shell borders, side swags, and contrasting black satin ribbon bows.',
+    ingredients: ['Rich chocolate sponge', 'Crimson buttercream', 'Lambeth piped swags', 'Black satin ribbon bows'],
+    size: '1.2 kg',
     servings: '10-12 people'
   },
   {
     img: '/images/cakes/cake6.png',
-    title: 'Caramel Dream',
-    description: 'Moist caramel cake with salted caramel filling and caramel drizzle.',
-    ingredients: ['Caramel sponge', 'Salted caramel filling', 'Caramel buttercream', 'Caramel sauce'],
-    size: '1 kg',
-    servings: '8-10 people'
+    title: 'Couture Low-Back Bridal Silhouette Cake',
+    description: 'A stunning bridal celebration cake featuring an illustrated bride figurine in a low-back lace gown with a cascading tiered white petal skirt, golden waist corsage, and piped floral rim.',
+    ingredients: ['Vanilla velvet sponge', 'White buttercream frosting', 'Fondant petal tiers', 'Gold luster dust', 'Handmade floral accents'],
+    size: '1.5 kg',
+    servings: '12-15 people'
   },
   {
     img: '/images/cakes/cake7.png',
-    title: 'Lemon Zest',
-    description: 'Tangy lemon cake with lemon curd filling and lemon glaze.',
-    ingredients: ['Lemon sponge', 'Lemon curd', 'Lemon buttercream', 'Candied lemon'],
-    size: '1 kg',
-    servings: '8-10 people'
+    title: 'Habesha Traditional Bridal & Milestone Cake',
+    description: 'A meaningful Ethiopian celebration cake decorated with an Ethiopian maiden figurine in Habesha Kemis, floral wreath, gold pearls, and heart toppers scripted in Ge\'ez Amharic fidel.',
+    ingredients: ['Spiced vanilla sponge', 'Whipped buttercream', 'Edible Habesha gown motif', 'Amharic fidel toppers', 'Gold sugar pearls'],
+    size: '1.5 kg',
+    servings: '12-15 people'
   },
   {
     img: '/images/cakes/cake8.png',
-    title: 'Birthday Special',
-    description: 'Fun birthday cake with colorful sprinkles and personalized message.',
-    ingredients: ['Choice of flavor', 'Buttercream frosting', 'Colorful sprinkles', 'Custom message'],
+    title: 'Romantic "LOVE" Anniversary Cake',
+    description: 'A pristine white anniversary cake featuring bold sculpted red letters spelling "LOVE", red rosebuds, scattered red hearts, and "HAPPY ANNIVERSARY" lettering on the cake board.',
+    ingredients: ['Red velvet & vanilla sponge', 'Smooth buttercream', 'Sculpted red fondant roses', 'Red fondant lettering', 'Silver dragees'],
     size: '1.5 kg',
     servings: '12-15 people'
   },
   {
     img: '/images/cakes/cake9.png',
-    title: 'Celebration Delight',
-    description: 'Festive tiered party cake with edible decorations and custom messaging.',
-    ingredients: ['Choice of flavor', 'Buttercream frosting', 'Colorful sprinkles', 'Custom message'],
-    size: '1.5 kg',
-    servings: '12-15 people'
+    title: 'Semi-Naked Cherry Chocolate Drip Cake',
+    description: 'A rustic semi-naked chocolate layer cake coated in decadent dark chocolate ganache drip, topped with fresh dark cherries on the stem, edible pink blossom flowers, and delicate petals.',
+    ingredients: ['Dark cocoa sponge', 'Vanilla buttercream crumb coat', 'Dark chocolate ganache drip', 'Fresh whole cherries', 'Edible flowers'],
+    size: '1.2 kg',
+    servings: '10-12 people'
   },
   {
     img: '/images/cakes/wedding-cake-strawberry.png',

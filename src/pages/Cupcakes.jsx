@@ -7,57 +7,57 @@ import { useCart } from '../contexts/CartContext';
 const cupcakes = [
   {
     img: '/images/cupcakes/cupcake1.png',
-    title: 'Vanilla Dream',
-    description: 'Classic vanilla cupcakes with creamy buttercream frosting and sprinkles.',
-    ingredients: ['Vanilla sponge', 'Buttercream frosting', 'Colorful sprinkles', 'Vanilla extract'],
+    title: 'Cream-Filled Chocolate Confetti Cupcakes',
+    description: 'Tender dark chocolate cupcakes with a surprise vanilla marshmallow-cream center, coated in chocolate icing and dense rainbow nonpareil sprinkles.',
+    ingredients: ['Dark cocoa sponge', 'Vanilla marshmallow-cream filling', 'Chocolate fudge icing', 'Rainbow nonpareil sprinkles'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake2.png',
-    title: 'Chocolate Heaven',
-    description: 'Rich chocolate cupcakes with chocolate ganache and chocolate curls.',
-    ingredients: ['Chocolate sponge', 'Dark chocolate ganache', 'Chocolate curls', 'Cocoa powder'],
+    title: 'Easter Bunny Sprinkled Cupcakes',
+    description: 'Playful golden sponge cupcakes topped with a rounded vanilla frosting dome rolled in white sugar sprinkles, marshmallow bunny ears, and pink candy accents.',
+    ingredients: ['Golden sponge', 'Vanilla buttercream', 'Crisp white sprinkles', 'Marshmallow bunny ears', 'Jelly bean accents'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake3.png',
-    title: 'Red Velvet Bliss',
-    description: 'Moist red velvet cupcakes with cream cheese frosting and red velvet crumbs.',
-    ingredients: ['Red velvet sponge', 'Cream cheese frosting', 'Red velvet crumbs', 'Buttermilk'],
+    title: 'Fresh Strawberry Buttercream Swirl Cupcakes',
+    description: 'Golden vanilla cupcakes baked in crimson fluted liners, crowned with towering swirls of strawberry buttercream and garnished with fresh ripe strawberry slices.',
+    ingredients: ['Vanilla sponge', 'Real strawberry buttercream', 'Fresh ripe strawberries', 'Strawberry glaze'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake4.png',
-    title: 'Lemon Zest',
-    description: 'Tangy lemon cupcakes with lemon buttercream and candied lemon peel.',
-    ingredients: ['Lemon sponge', 'Lemon buttercream', 'Candied lemon', 'Lemon zest'],
+    title: 'Spring Farmyard Animal Cupcake Assortment',
+    description: 'Delightful chocolate cupcakes whimsically decorated as spring farmyard friends: yellow marshmallow baby chicks, mini-marshmallow lambs, and digging bunny paws.',
+    ingredients: ['Moist chocolate sponge', 'Miniature marshmallows', 'Vanilla buttercream', 'Fondant animal faces', 'Pastel candy accents'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake5.png',
-    title: 'Caramel Delight',
-    description: 'Caramel-infused cupcakes with salted caramel frosting and caramel drizzle.',
-    ingredients: ['Caramel sponge', 'Salted caramel frosting', 'Caramel sauce', 'Sea salt'],
+    title: 'Fudge Swirl Chocolate Cupcake with Pastel Sprinkles',
+    description: 'Moist dark chocolate cupcake in a plum liner, piped with a generous swirl of silky milk chocolate frosting and topped with colorful pastel sugar confetti.',
+    ingredients: ['Dark cocoa sponge', 'Silky milk chocolate frosting', 'Pastel sugar confetti', 'Pure vanilla extract'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake6.png',
-    title: 'Strawberry Swirl',
-    description: 'Fresh strawberry cupcakes with strawberry buttercream and fresh berry.',
-    ingredients: ['Strawberry sponge', 'Strawberry buttercream', 'Fresh strawberry', 'Strawberry puree'],
+    title: 'Funfetti Birthday Cupcakes with Vanilla Swirl',
+    description: 'Celebration golden cupcakes baked with rainbow sprinkles inside, topped with a tall spiral of whipped vanilla buttercream and showered with rainbow jimmies.',
+    ingredients: ['Confetti sprinkle sponge', 'Whipped vanilla buttercream', 'Rainbow sugar jimmies', 'Pure vanilla'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },
   {
     img: '/images/cupcakes/cupcake7.png',
-    title: 'Cookies & Cream',
-    description: 'Chocolate cupcakes with cookies and cream frosting and cookie crumbs.',
-    ingredients: ['Chocolate sponge', 'Oreo buttercream', 'Crushed cookies', 'Vanilla extract'],
+    title: 'Spiderweb Chocolate Halloween Cupcakes',
+    description: 'Spooky dark cocoa cupcakes glazed in porcelain-white royal icing with an intricate dark chocolate feather-dragged spiderweb pattern.',
+    ingredients: ['Dark chocolate sponge', 'Vanilla royal glaze', 'Chocolate feathering', 'Dutch cocoa powder'],
     size: 'Standard cupcake',
     servings: '1 person per cupcake'
   },

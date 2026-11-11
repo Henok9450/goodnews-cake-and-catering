@@ -7,73 +7,73 @@ import { useCart } from '../contexts/CartContext';
 const cookies = [
   {
     img: '/images/cookies/cookie1.png',
-    title: 'Classic Chocolate Chip',
-        description: 'Buttery cookies loaded with rich chocolate chips for the perfect classic treat.',
-    ingredients: ['All-purpose flour', 'Butter', 'Brown sugar', 'Chocolate chips', 'Vanilla extract', 'Baking soda'],
+    title: 'Warm Brown Butter Chocolate Chip Cookies',
+    description: 'Golden brown, crispy-edged cookies with soft chewy centers, bursting with melted chocolate chips, served warm with a fresh glass of milk.',
+    ingredients: ['Brown butter', 'Semi-sweet chocolate chips', 'Brown sugar', 'Vanilla extract', 'Flour', 'Sea salt'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie2.png',
-    title: 'Double Chocolate',
-        description: 'Rich chocolate cookies with double the chocolate goodness and soft centers.',
-    ingredients: ['Cocoa powder', 'Butter', 'Sugar', 'Chocolate chunks', 'Eggs', 'Flour'],
+    title: 'Fudgy Double Chocolate Chunk Cookies',
+    description: 'Decadent dark Dutch cocoa cookies loaded with molten dark chocolate chunks and a rich, gooey chocolate fudge center.',
+    ingredients: ['Dutch cocoa powder', 'Dark chocolate chunks', 'Creamery butter', 'Cane sugar', 'Flour', 'Vanilla'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie3.png',
-    title: 'Oatmeal Raisin',
-        description: 'Hearty oatmeal cookies with plump raisins and warm cinnamon spice.',
-    ingredients: ['Rolled oats', 'Butter', 'Brown sugar', 'Raisins', 'Cinnamon', 'Flour'],
+    title: 'Rustic Cinnamon Oatmeal Raisin Cookies',
+    description: 'Hearty rolled-oat bakery cookies packed with plump sweet raisins, warm aromatic cinnamon, and a delicate dusting of confectioners\' sugar.',
+    ingredients: ['Rolled oats', 'Plump raisins', 'Ground cinnamon', 'Brown sugar', 'Creamery butter', 'Flour'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie4.png',
-    title: 'Sugar Cookies',
-        description: 'Soft, buttery sugar cookies perfect for decorating with royal icing.',
-    ingredients: ['Butter', 'Sugar', 'Flour', 'Eggs', 'Vanilla extract', 'Baking powder'],
-    size: '3-inch diameter',
+    title: 'Holiday Decorated Sugar Cookie Collection',
+    description: 'Hand-decorated artisanal holiday butter sugar cookies topped with colorful royal icing in Christmas tree, snowflake, stocking, and ornament designs.',
+    ingredients: ['Pure butter sugar cookie', 'Artisan royal icing', 'Sugar pearls', 'Festive edible shimmer'],
+    size: 'Assorted holiday shapes',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie5.png',
-    title: 'Peanut Butter',
-        description: 'Rich peanut butter cookies with classic criss-cross pattern and soft texture.',
-    ingredients: ['Peanut butter', 'Butter', 'Brown sugar', 'Flour', 'Egg', 'Vanilla'],
+    title: 'Classic Criss-Cross Peanut Butter Cookies',
+    description: 'Rich and tender roasted peanut butter cookies baked with the timeless fork-pressed criss-cross pattern, featuring soft melt-in-your-mouth centers.',
+    ingredients: ['Roasted peanut butter', 'Creamery butter', 'Cane sugar', 'Brown sugar', 'Flour', 'Vanilla'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie6.png',
-    title: 'Snickerdoodle',
-        description: 'Soft, pillowy cookies rolled in cinnamon sugar for a cozy, comforting treat.',
-    ingredients: ['Flour', 'Butter', 'Sugar', 'Cream of tartar', 'Cinnamon', 'Eggs'],
+    title: 'Cinnamon Sugar Cloud Snickerdoodles',
+    description: 'Pillowy-soft, fresh-from-the-oven cookies generously rolled in sweet aromatic cinnamon sugar with classic crackled tops.',
+    ingredients: ['Creamery butter', 'Cinnamon sugar coating', 'Flour', 'Cream of tartar', 'Cane sugar', 'Eggs'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie7.png',
-    title: 'White Chocolate Macadamia',
-        description: 'Buttery cookies with creamy white chocolate chunks and crunchy macadamia nuts.',
-    ingredients: ['Butter', 'Flour', 'White chocolate chunks', 'Macadamia nuts', 'Brown sugar', 'Vanilla'],
+    title: 'White Chocolate Macadamia Nut Cookies',
+    description: 'Chewy golden butter cookies loaded with rich, creamy white chocolate puddles and slow-roasted Hawaiian macadamia nuts.',
+    ingredients: ['White chocolate chunks', 'Toasted macadamia nuts', 'Brown sugar', 'Creamery butter', 'Flour', 'Vanilla'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie8.png',
-    title: 'Red Velvet Crinkle',
-        description: 'Festive red velvet cookies with cream cheese flavor and powdered sugar coating.',
-    ingredients: ['Cocoa powder', 'Red food coloring', 'Cream cheese', 'Flour', 'Sugar', 'Eggs'],
+    title: 'Festive Red Velvet Snow Crinkle Cookies',
+    description: 'Vibrant crimson red velvet cookies with fudgy chocolate centers, rolled in powdered confectioners\' sugar that creates snowy crackled fissures as they bake.',
+    ingredients: ['Red velvet cocoa dough', 'Confectioners sugar coating', 'Cream cheese touch', 'Vanilla', 'Flour'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   },
   {
     img: '/images/cookies/cookie9.png',
-    title: 'Lemon Glaze',
-        description: 'Zesty lemon cookies topped with sweet lemon glaze for a refreshing treat.',
-    ingredients: ['Lemon zest', 'Lemon juice', 'Butter', 'Flour', 'Sugar', 'Eggs'],
+    title: 'Zesty Iced Lemon Glaze Cookies',
+    description: 'Tender citrus butter cookies finished with a dripping sweet-tart lemon glaze and freshly grated fragrant lemon zest.',
+    ingredients: ['Fresh lemon zest', 'Lemon juice glaze', 'Creamery butter', 'Flour', 'Sugar', 'Vanilla'],
     size: '3-inch diameter',
     servings: '12 cookies per batch'
   }
