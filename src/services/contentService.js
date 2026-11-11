@@ -12,7 +12,7 @@ export const getContentSection = async (sectionName) => {
         }
         return null;
     } catch (error) {
-        console.error(`Error fetching CMS section [${sectionName}]:`, error);
+        console.warn(`CMS section [${sectionName}] using local defaults (Firestore status: ${error.code || error.message})`);
         return null;
     }
 };
