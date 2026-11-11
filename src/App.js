@@ -50,7 +50,7 @@ const PageFallback = () => (
 class GlobalErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, copied: false };
   }
 
   static getDerivedStateFromError(error) {
@@ -59,7 +59,34 @@ class GlobalErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('GoodNews App Error:', error, errorInfo);
+    try {
+      const telemetryRecord = {
+        timestamp: new Date().toISOString(),
+        url: typeof window !== 'undefined' ? window.location.href : '',
+        error: error?.message || String(error),
+        stack: error?.stack?.slice(0, 500) || '',
+        component: errorInfo?.componentStack?.slice(0, 500) || '',
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : ''
+      };
+      const existing = JSON.parse(sessionStorage.getItem('app_error_telemetry') || '[]');
+      existing.unshift(telemetryRecord);
+      sessionStorage.setItem('app_error_telemetry', JSON.stringify(existing.slice(0, 10)));
+      if (typeof window !== 'undefined') {
+        window.__GET_APP_TELEMETRY__ = () => JSON.parse(sessionStorage.getItem('app_error_telemetry') || '[]');
+      }
+    } catch (e) {
+      // ignore storage serialization errors
+    }
   }
+
+  copyTelemetry = () => {
+    try {
+      const logs = sessionStorage.getItem('app_error_telemetry') || '[]';
+      navigator.clipboard.writeText(logs);
+      this.setState({ copied: true });
+      setTimeout(() => this.setState({ copied: false }), 3000);
+    } catch (e) {}
+  };
 
   render() {
     if (this.state.hasError) {
@@ -75,12 +102,21 @@ class GlobalErrorBoundary extends React.Component {
             <p className="text-sm text-gray-600 mb-6">
               An unexpected display issue occurred. Your shopping bag and details remain safely saved.
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="w-full btn-primary py-3 rounded-xl font-bold"
-            >
-              Reload Page
-            </button>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full btn-primary py-3 rounded-xl font-bold"
+              >
+                Reload Page
+              </button>
+              <button
+                type="button"
+                onClick={this.copyTelemetry}
+                className="w-full py-2 px-4 text-xs text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors font-medium"
+              >
+                {this.state.copied ? '✓ Diagnostic Report Copied' : 'Copy Diagnostic Report'}
+              </button>
+            </div>
           </div>
         </div>
       );

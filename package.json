@@ -18,6 +18,7 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.6",
     "autoprefixer": "^10.4.16",
+    "baseline-browser-mapping": "^2.11.35",
     "postcss": "^8.4.32",
     "sharp": "^0.35.5",
     "tailwindcss": "^3.3.6",

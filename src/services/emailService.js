@@ -9,7 +9,7 @@ const REQUEST_TIMEOUT_MS = 10000;
  * @returns {Promise<{success: boolean, error?: string}>}
  */
 export const emailService = {
-  sendOrder: async (orderData) => {
+  sendOrder: async (orderData, retryCount = 1) => {
     if (!orderData || typeof orderData !== 'object') {
       return { success: false, error: 'Invalid order data provided' };
     }
@@ -30,30 +30,44 @@ export const emailService = {
       itemsCount: Array.isArray(orderData.items) ? orderData.items.length : 0
     };
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const attemptSend = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify(sanitizedData),
+          signal: controller.signal
+        });
+        return { success: true };
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    };
 
     try {
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(sanitizedData),
-        signal: controller.signal
-      });
-
-      return { success: true };
-    } catch (error) {
-      const isTimeout = error.name === 'AbortError';
+      return await attemptSend();
+    } catch (primaryError) {
+      if (retryCount > 0 && primaryError.name !== 'AbortError') {
+        console.warn('⚠️ Primary email dispatch failed, retrying in 1.5s...', primaryError.message);
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+          return await attemptSend();
+        } catch (retryError) {
+          console.warn('⚠️ Retry email dispatch notice:', retryError.message);
+          return { success: false, error: retryError.message };
+        }
+      }
+      const isTimeout = primaryError.name === 'AbortError';
       const errorMessage = isTimeout 
         ? `Notification request timed out after ${REQUEST_TIMEOUT_MS / 1000}s` 
-        : error.message;
+        : primaryError.message;
       console.warn('⚠️ Order notification dispatch notice:', errorMessage);
       return { success: false, error: errorMessage };
-    } finally {
-      clearTimeout(timeoutId);
     }
   },
 

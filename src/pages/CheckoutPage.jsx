@@ -18,20 +18,47 @@ const CheckoutPage = () => {
     const isProcessingRef = React.useRef(false); // Immediate lock to prevent double-clicks
     const formMountedAtRef = React.useRef(Date.now()); // Anti-bot submission speed check
 
-    // Checkout Form State
-    const [formData, setFormData] = useState({
-        name: user?.displayName || '',
-        email: user?.email || '',
-        phone: '',
-        eventDate: '',
-        deliveryTime: '',
-        address: '',
-        orderNotes: '',
-        companyUrl: '' // Honeypot anti-bot trap
+    // Checkout Form State with session draft restoration
+    const [formData, setFormData] = useState(() => {
+        try {
+            const savedDraft = sessionStorage.getItem('checkout_draft_data');
+            if (savedDraft) {
+                const parsed = JSON.parse(savedDraft);
+                return {
+                    name: parsed.name || user?.displayName || '',
+                    email: parsed.email || user?.email || '',
+                    phone: parsed.phone || '',
+                    eventDate: parsed.eventDate || '',
+                    deliveryTime: parsed.deliveryTime || '',
+                    address: parsed.address || '',
+                    orderNotes: parsed.orderNotes || '',
+                    companyUrl: ''
+                };
+            }
+        } catch (e) {
+            // ignore storage read exceptions
+        }
+        return {
+            name: user?.displayName || '',
+            email: user?.email || '',
+            phone: '',
+            eventDate: '',
+            deliveryTime: '',
+            address: '',
+            orderNotes: '',
+            companyUrl: '' // Honeypot anti-bot trap
+        };
     });
 
     const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const nextData = { ...formData, [e.target.name]: e.target.value };
+        setFormData(nextData);
+        try {
+            const { companyUrl, ...cleanDraft } = nextData;
+            sessionStorage.setItem('checkout_draft_data', JSON.stringify(cleanDraft));
+        } catch (err) {
+            // ignore storage write errors
+        }
     };
 
     const processOrderCheckout = async (e) => {
@@ -70,16 +97,25 @@ const CheckoutPage = () => {
             return;
         }
 
+        // 4. Rate-limiting check (prevent multiple rapid orders within 15 seconds)
+        const lastOrderTime = sessionStorage.getItem('last_order_timestamp');
+        if (lastOrderTime && Date.now() - Number(lastOrderTime) < 15000) {
+            setErrorMessage("An order submission was recently received. Please wait a moment before submitting another order.");
+            setIsCheckingOut(false);
+            isProcessingRef.current = false;
+            return;
+        }
+
         try {
             // Generate a simple human-readable order number
             const orderNumber = `GN-${Math.floor(100000 + Math.random() * 900000)}`;
 
-            // Sanitize customer inputs to prevent oversized field payloads
-            const cleanName = String(formData.name || '').trim().slice(0, 100);
-            const cleanEmail = String(formData.email || '').trim().slice(0, 100);
-            const cleanPhone = String(formData.phone || '').trim().slice(0, 30);
-            const cleanAddress = String(formData.address || '').trim().slice(0, 300);
-            const cleanNotes = String(formData.orderNotes || '').trim().slice(0, 500);
+            // Sanitize customer inputs to prevent script injection and oversized field payloads
+            const cleanName = String(formData.name || '').replace(/[<>]/g, '').trim().slice(0, 100);
+            const cleanEmail = String(formData.email || '').replace(/[<>]/g, '').trim().slice(0, 100);
+            const cleanPhone = String(formData.phone || '').replace(/[<>]/g, '').trim().slice(0, 30);
+            const cleanAddress = String(formData.address || '').replace(/[<>]/g, '').trim().slice(0, 300);
+            const cleanNotes = String(formData.orderNotes || '').replace(/[<>]/g, '').trim().slice(0, 500);
 
             // Prepare the bulk order data for email summary
             const orderSummary = cartItems.map(item => {
@@ -169,6 +205,10 @@ const CheckoutPage = () => {
 
             // --- CRITICAL SUCCESS PATH ---
             console.log('🎉 Checkout complete!');
+            try {
+                sessionStorage.removeItem('checkout_draft_data');
+                sessionStorage.setItem('last_order_timestamp', Date.now().toString());
+            } catch (err) {}
             setOrderId(orderNumber);
             clearCart();
             setIsSuccess(true);

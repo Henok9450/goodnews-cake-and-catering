@@ -9,8 +9,9 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() && (
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true
+        request.auth.token.admin == true ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true)
       );
     }
 
@@ -54,23 +55,39 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Reviews collection rules: public read & create (with content validation), authenticated admin update/delete
+    // Reviews collection rules: public read & create (with content validation and length bounds), authenticated admin update/delete
     match /reviews/{reviewId} {
       allow read: if true;
-      allow create: if request.resource.data.name is string &&
+      allow create: if ((request.resource.data.userName is string && request.resource.data.userName.size() > 0 && request.resource.data.userName.size() <= 100) ||
+                        (request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100)) &&
                        request.resource.data.comment is string &&
-                       request.resource.data.rating is number;
+                       request.resource.data.comment.size() > 0 &&
+                       request.resource.data.comment.size() <= 1000 &&
+                       request.resource.data.rating is number &&
+                       request.resource.data.rating >= 1 &&
+                       request.resource.data.rating <= 5;
       allow update, delete: if isAdmin();
     }
 
+    // Gallery Photos: public read, authenticated admin write
+    match /gallery_photos/{photoId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Orders collection:
-    // - Create: Public creation with required schema fields (supports guest checkout)
+    // - Create: Public creation with required schema fields and size bounds (supports guest checkout)
     // - Read: Restricted to authenticated admins or the customer who placed the order
     // - Update/Delete: Restricted to authenticated admins only
     match /orders/{orderId} {
       allow create: if request.resource.data.orderNumber is string &&
                        request.resource.data.customerName is string &&
-                       request.resource.data.items is list;
+                       request.resource.data.customerName.size() <= 100 &&
+                       request.resource.data.phoneNumber is string &&
+                       request.resource.data.phoneNumber.size() <= 20 &&
+                       request.resource.data.items is list &&
+                       request.resource.data.items.size() > 0 &&
+                       request.resource.data.items.size() <= 50;
       allow read: if isAdmin() || (isAuthenticated() && resource.data.customerUid == request.auth.uid);
       allow update, delete: if isAdmin();
     }

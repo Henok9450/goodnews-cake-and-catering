@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Quote, Send, User } from 'lucide-react';
 import { db } from '../config/firebase';
@@ -9,12 +9,14 @@ const Reviews = () => {
     const { user } = useAuth();
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
+    const formMountedAtRef = useRef(Date.now());
     
     // Form State
     const [rating, setRating] = useState(5);
     const [hoverRating, setHoverRating] = useState(0);
     const [comment, setComment] = useState('');
     const [name, setName] = useState('');
+    const [companyUrl, setCompanyUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [submitError, setSubmitError] = useState('');
@@ -49,8 +51,34 @@ const Reviews = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name.trim() || !comment.trim()) {
-            setSubmitError("Please provide both your name and a comment.");
+        
+        // 1. Anti-bot honeypot check
+        if (companyUrl) {
+            console.warn('Bot review blocked via honeypot');
+            await new Promise(resolve => setTimeout(resolve, 800));
+            setSubmitSuccess(true);
+            setComment('');
+            return;
+        }
+
+        // 2. Anti-bot rapid submission check (< 1.2s)
+        if (Date.now() - formMountedAtRef.current < 1200) {
+            setSubmitError("Submission occurred unusually quickly. Please verify your review and submit again.");
+            return;
+        }
+
+        // 3. Rate limiting (minimum 30 seconds between reviews per session)
+        const lastSubmit = sessionStorage.getItem('last_review_submit');
+        if (lastSubmit && Date.now() - Number(lastSubmit) < 30000) {
+            setSubmitError("Please wait a moment before submitting another review.");
+            return;
+        }
+
+        const cleanName = String(name || '').replace(/[<>]/g, '').trim().slice(0, 100);
+        const cleanComment = String(comment || '').replace(/[<>]/g, '').trim().slice(0, 1000);
+
+        if (!cleanName || !cleanComment) {
+            setSubmitError("Please provide both your name and a valid comment.");
             return;
         }
 
@@ -59,16 +87,18 @@ const Reviews = () => {
 
         try {
             await addDoc(collection(db, 'reviews'), {
-                userName: name,
+                name: cleanName,
+                userName: cleanName,
                 userPhoto: user?.photoURL || null,
                 userId: user?.uid || null,
-                rating,
-                comment,
+                rating: Math.max(1, Math.min(5, Number(rating) || 5)),
+                comment: cleanComment,
                 status: 'pending', // Requires admin approval
                 createdAt: serverTimestamp(),
                 dateDisplay: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
             });
 
+            sessionStorage.setItem('last_review_submit', Date.now().toString());
             setSubmitSuccess(true);
             setComment('');
             setRating(5);
@@ -129,6 +159,19 @@ const Reviews = () => {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+                        {/* Anti-bot honeypot field - invisible to humans */}
+                        <div style={{ display: 'none', position: 'absolute', left: '-9999px' }} aria-hidden="true">
+                            <label htmlFor="website-url-check">Website</label>
+                            <input
+                                id="website-url-check"
+                                type="text"
+                                name="companyUrl"
+                                tabIndex="-1"
+                                autoComplete="off"
+                                value={companyUrl}
+                                onChange={(e) => setCompanyUrl(e.target.value)}
+                            />
+                        </div>
                         <div className="flex flex-col items-center mb-6">
                             <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Rate Your Order</label>
                             <div className="flex gap-2">
