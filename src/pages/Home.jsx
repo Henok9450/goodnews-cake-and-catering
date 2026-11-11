@@ -85,7 +85,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-dark-50 via-white to-primary-50 py-20 lg:py-28">
+      <section className="bg-gradient-to-br from-dark-50 via-white to-primary-50 pt-28 pb-16 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-28">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

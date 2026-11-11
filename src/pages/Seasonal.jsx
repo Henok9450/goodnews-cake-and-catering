@@ -681,7 +681,7 @@ const Seasonal = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">Seasonal Specialties</h1>
         <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">

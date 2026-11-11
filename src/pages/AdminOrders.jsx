@@ -155,7 +155,7 @@ const AdminOrders = () => {
 
   if (ordersLoading) {
     return (
-      <div className="min-h-screen pt-24 bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
       </div>
     );
@@ -164,7 +164,7 @@ const AdminOrders = () => {
   const pendingReviewsCount = reviews.filter(r => r.status === 'pending').length;
 
   return (
-    <div className="min-h-screen pt-24 bg-gray-50 pb-12">
+    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 bg-gray-50 pb-12">
       <div className="container mx-auto px-4">
         
         {/* Header Section (Dark Premium) Navigational wrapper */}

@@ -616,7 +616,7 @@ const Gallery = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-extrabold text-center mb-4 text-gray-900 tracking-tight">Our Cake Gallery</h1>
         <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto text-sm sm:text-base">

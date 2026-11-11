@@ -178,7 +178,7 @@ const CustomOrder = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen pt-20">
+      <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto text-center">
             <div className="card p-8">
@@ -223,7 +223,7 @@ const CustomOrder = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 bg-gray-50">
+    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">Custom Cake Order</h1>
         <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">

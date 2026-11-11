@@ -280,7 +280,7 @@ const Catering = () => {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen pt-20">
+      <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto text-center">
             <div className="card p-8">
@@ -335,7 +335,7 @@ const Catering = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36">
       {/* Image Modal */}
       {showImageModal && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">

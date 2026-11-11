@@ -53,7 +53,7 @@ const Profile = () => {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen pt-24 bg-gray-50 pb-12">
+        <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 bg-gray-50 pb-12">
             <div className="container mx-auto px-4 max-w-6xl">
                 <div className="grid lg:grid-cols-4 gap-8">
                     

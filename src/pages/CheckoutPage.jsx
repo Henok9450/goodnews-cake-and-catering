@@ -270,7 +270,7 @@ const CheckoutPage = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 pt-24">
+        <div className="container mx-auto px-4 py-8 pt-28 sm:pt-32 lg:pt-36">
             <h1 className="text-3xl font-bold mb-8 text-gray-900">Your Shopping Cart</h1>
 
             <div className="grid lg:grid-cols-3 gap-8">
