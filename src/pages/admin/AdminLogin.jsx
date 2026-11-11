@@ -102,8 +102,8 @@ const AdminLogin = () => {
     setSuccessMessage('');
     setIsLoading(true);
     try {
-      // Use redirect authentication directly (100% reliable, zero COOP popup warnings)
-      await loginWithGoogle(true);
+      await loginWithGoogle(false);
+      navigate(redirectPath, { replace: true });
     } catch (err) {
       console.error('Google admin login error:', err);
       if (err.code === 'auth/unauthorized-domain') {

@@ -3,18 +3,29 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Phone, Menu, X, User, ChevronDown, LayoutDashboard, Clock, Sparkles } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
-import AuthModal from '../auth/AuthModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   
   const location = useLocation();
   const navigate = useNavigate();
   const { getCartCount } = useCart();
   const { user, loginWithGoogle, loading, isAdmin } = useAuth();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await loginWithGoogle(false);
+    } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user') return;
+      if (err.code === 'auth/unauthorized-domain') {
+        alert('Domain not authorized in Firebase: Please add "goodnews-cake-and-catering.vercel.app" to Authorized Domains in Firebase Console > Authentication > Settings.');
+      } else {
+        alert('Google Sign-In: ' + (err.message || 'Please check your connection and try again.'));
+      }
+    }
+  };
 
   // Handle scroll for glassmorphism effect
   useEffect(() => {
@@ -228,13 +239,13 @@ const Header = () => {
                   </Link>
                 ) : (
                   <button
-                    onClick={() => setIsAuthModalOpen(true)}
+                    onClick={handleGoogleSignIn}
                     className="px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95 flex items-center gap-1.5"
-                    title="Sign In"
-                    aria-label="Sign In or Create Account"
+                    title="Sign In with Google"
+                    aria-label="Sign In with Google"
                   >
                     <User className="h-4 w-4 shrink-0" />
-                    <span className="hidden sm:inline">Sign In</span>
+                    <span className="hidden sm:inline">Sign In with Google</span>
                   </button>
                 )
               )}
@@ -311,11 +322,11 @@ const Header = () => {
                 {/* Mobile Sign In button when unauthenticated */}
                 {!loading && !user && (
                   <button
-                    onClick={() => { setIsMenuOpen(false); setIsAuthModalOpen(true); }}
+                    onClick={() => { setIsMenuOpen(false); handleGoogleSignIn(); }}
                     className="mx-4 mt-3 flex items-center justify-center gap-2 bg-primary-600 text-white px-4 py-3 rounded-xl text-sm font-bold hover:bg-primary-700 transition-all shadow-md active:scale-95"
                   >
                     <User className="w-5 h-5" />
-                    SIGN IN / CREATE ACCOUNT
+                    SIGN IN WITH GOOGLE
                   </button>
                 )}
 
@@ -335,9 +346,6 @@ const Header = () => {
           )}
         </div>
       </div>
-
-      {/* Customer & Admin Authentication Modal */}
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </header>
   );
 };

@@ -160,7 +160,7 @@ export const AuthProvider = ({ children }) => {
     return cred.user;
   };
 
-  const loginWithGoogle = async (useRedirect = true) => {
+  const loginWithGoogle = async (useRedirect = false) => {
     if (useRedirect) {
       return signInWithRedirect(auth, googleProvider);
     }
@@ -169,12 +169,12 @@ export const AuthProvider = ({ children }) => {
       await verifyAdminRole(cred.user);
       return cred.user;
     } catch (popupError) {
+      console.warn('Google Popup Error:', popupError.code, popupError.message);
       if (
         popupError.code === 'auth/popup-blocked' ||
-        popupError.code === 'auth/cancelled-popup-request' ||
-        popupError.message?.includes('Cross-Origin-Opener-Policy')
+        popupError.code === 'auth/cancelled-popup-request'
       ) {
-        console.warn('Popup interrupted or blocked, redirecting to Google sign in...');
+        console.warn('Popup blocked by browser, falling back to redirect...');
         return signInWithRedirect(auth, googleProvider);
       }
       throw popupError;

@@ -130,10 +130,17 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     setSuccess('');
     setIsLoading(true);
     try {
-      await loginWithGoogle(true);
+      await loginWithGoogle(false);
+      onClose();
     } catch (err) {
       console.error('Google Auth error:', err);
-      setError('Google authentication failed. Please try again.');
+      if (err.code === 'auth/unauthorized-domain') {
+        setError('This domain is not authorized in Firebase Console. Please add "goodnews-cake-and-catering.vercel.app" under Firebase Console > Authentication > Settings > Authorized domains.');
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        // user simply closed popup, do not show error
+      } else {
+        setError(err.message || 'Google authentication failed. Please try again.');
+      }
       setIsLoading(false);
     }
   };
