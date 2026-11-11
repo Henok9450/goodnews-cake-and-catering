@@ -281,7 +281,15 @@ const CheckoutPage = () => {
                             {/* Image Thumbnail */}
                             <div className="w-24 h-24 bg-gray-50 rounded-lg flex-shrink-0 overflow-hidden">
                                 {item.img ? (
-                                    <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                                    <img
+                                        src={item.img}
+                                        alt={item.title}
+                                        width="96"
+                                        height="96"
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="w-full h-full object-cover"
+                                    />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-gray-300">
                                         <Cake className="w-8 h-8" />

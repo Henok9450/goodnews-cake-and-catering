@@ -214,7 +214,15 @@ const Home = () => {
                 <div className="flex items-center justify-center space-x-3 mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-dark-100 rounded-full flex items-center justify-center text-xl overflow-hidden font-bold">
                     {testimonial.userPhoto ? (
-                       <img src={testimonial.userPhoto} alt={testimonial.userName} className="w-full h-full object-cover" />
+                       <img
+                         src={testimonial.userPhoto}
+                         alt={testimonial.userName}
+                         width="48"
+                         height="48"
+                         loading="lazy"
+                         decoding="async"
+                         className="w-full h-full object-cover"
+                       />
                     ) : (
                        testimonial.userName ? testimonial.userName.charAt(0).toUpperCase() : 'G'
                     )}

@@ -298,7 +298,15 @@ const Reviews = () => {
                                     </div>
                                     <div className="h-10 w-10 bg-gradient-to-br from-primary-100 to-dark-100 rounded-full flex items-center justify-center text-primary-700 font-bold overflow-hidden shadow-sm">
                                         {review.userPhoto ? (
-                                            <img src={review.userPhoto} alt={review.userName} className="w-full h-full object-cover" />
+                                            <img
+                                                src={review.userPhoto}
+                                                alt={review.userName}
+                                                width="40"
+                                                height="40"
+                                                loading="lazy"
+                                                decoding="async"
+                                                className="w-full h-full object-cover"
+                                            />
                                         ) : (
                                             review.userName.charAt(0).toUpperCase()
                                         )}

@@ -2,6 +2,7 @@ import { getServices } from '../services/serviceService';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import OptimizedImage from '../components/common/OptimizedImage';
 // import { emailService } from '../services/emailService';
 
 const cateringItems = [
@@ -350,10 +351,14 @@ const Catering = () => {
                   &times;
                 </button>
               </div>
-              <div className="flex justify-center">
-                <img
+              <div className="flex justify-center max-h-[70vh] h-96">
+                <OptimizedImage
                   src={currentImage}
                   alt={currentImageTitle}
+                  width="800"
+                  height="600"
+                  cardMode={false}
+                  priority={true}
                   className="max-w-full max-h-[70vh] object-contain rounded-lg"
                 />
               </div>
@@ -380,17 +385,19 @@ const Catering = () => {
           <>
             {/* Using the same image logic as Gallery component */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {displayCateringItems.map((item) => (
+              {displayCateringItems.map((item, index) => (
                 <div key={item.id} className="card p-6 text-center flex flex-col">
                   {/* Same image container logic as Gallery */}
                   <div className="w-full h-96 flex items-center justify-center rounded-lg mb-4 overflow-hidden relative group">
-                    <img
+                    <OptimizedImage
                       src={item.img}
                       alt={item.title}
                       loading="lazy"
                       decoding="async"
                       width="400"
                       height="384"
+                      cardMode={true}
+                      priority={index < 3}
                       className="w-full h-full object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
                     />
                     {/* View Details Button Overlay */}

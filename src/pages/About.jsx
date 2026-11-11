@@ -28,8 +28,13 @@ const About = () => {
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <div className="text-center card p-6">
               <img 
-                src="/images/logo/logo3.png"
+                src="/images/logo/logo3.webp"
                 alt="GoodNews Cake Logo"
+                width="48"
+                height="48"
+                loading="lazy"
+                decoding="async"
+                onError={(e) => { e.currentTarget.src = "/images/logo/logo3.png"; }}
                 className="h-12 w-12 mx-auto mb-4 object-contain" 
               /> 
               <h3 className="text-xl font-semibold mb-2">Our Passion</h3>

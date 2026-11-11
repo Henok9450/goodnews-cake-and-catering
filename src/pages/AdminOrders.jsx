@@ -440,7 +440,15 @@ const AdminOrders = () => {
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-dark-100 text-primary-700 font-bold rounded-full flex items-center justify-center">
                             {review.userPhoto ? (
-                                <img src={review.userPhoto} alt={review.userName} className="w-full h-full object-cover rounded-full" />
+                                <img
+                                  src={review.userPhoto}
+                                  alt={review.userName}
+                                  width="40"
+                                  height="40"
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="w-full h-full object-cover rounded-full"
+                                />
                             ) : (
                                 review.userName.charAt(0).toUpperCase()
                             )}

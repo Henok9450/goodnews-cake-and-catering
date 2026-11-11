@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { getProducts } from '../services/productService';
+import OptimizedImage from '../components/common/OptimizedImage';
 
 const defaultCakes = [
   {
@@ -497,10 +498,14 @@ const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
         </button>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center p-4 border border-gray-100">
-            <img
+          <div className="rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center p-4 border border-gray-100 h-96">
+            <OptimizedImage
               src={cake.img}
               alt={cake.title}
+              width="600"
+              height="450"
+              cardMode={false}
+              priority={true}
               className="w-full max-h-[380px] object-contain rounded-xl"
             />
           </div>
@@ -627,13 +632,15 @@ const Gallery = () => {
           {displayCakes.map((cake, index) => (
             <div key={cake.id || index} className="card p-6 text-center flex flex-col justify-between hover:shadow-xl transition-shadow rounded-3xl border border-gray-100">
               <div className="w-full h-80 flex items-center justify-center rounded-2xl mb-4 overflow-hidden bg-gray-50/50">
-                <img
+                <OptimizedImage
                   src={cake.img}
                   alt={cake.title}
                   loading="lazy"
                   decoding="async"
                   width="400"
                   height="320"
+                  cardMode={true}
+                  priority={index < 3}
                   className="w-full h-full object-contain rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300"
                   onClick={() => handleViewDetails(cake)}
                 />

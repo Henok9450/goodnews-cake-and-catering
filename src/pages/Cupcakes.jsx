@@ -2,6 +2,7 @@ import { getProducts } from '../services/productService';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import OptimizedImage from '../components/common/OptimizedImage';
 // import { emailService } from '../services/emailService';
 
 const cupcakes = [
@@ -501,11 +502,15 @@ const CupcakeModal = ({ cupcake, isOpen, onClose, onOrder, onCustomize }) => {
 
           <div className="grid md:grid-cols-2 gap-8 p-6">
             {/* Image Section */}
-            <div className="flex items-center justify-center">
-              <img
+            <div className="flex items-center justify-center h-80">
+              <OptimizedImage
                 src={cupcake.img}
                 alt={cupcake.title}
-                className="w-full h-auto object-contain rounded-lg"
+                width="600"
+                height="600"
+                cardMode={false}
+                priority={true}
+                className="w-full h-auto object-contain rounded-lg max-h-80"
               />
             </div>
 
@@ -630,13 +635,15 @@ const Cupcakes = () => {
           {displayCupcakes.map((cupcake, index) => (
             <div key={index} className="card p-6 text-center flex flex-col">
               <div className="w-full h-96 flex items-center justify-center rounded-lg mb-4 overflow-hidden">
-                <img
+                <OptimizedImage
                   src={cupcake.img}
                   alt={cupcake.title}
                   loading="lazy"
                   decoding="async"
                   width="400"
                   height="384"
+                  cardMode={true}
+                  priority={index < 3}
                   className="w-full h-full object-contain rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
                   onClick={() => handleViewDetails(cupcake)}
                 />

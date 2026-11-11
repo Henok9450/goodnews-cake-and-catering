@@ -62,7 +62,15 @@ const Profile = () => {
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
                             <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-md">
                                 {user.photoURL ? (
-                                    <img src={user.photoURL} alt={user.displayName} className="w-full h-full rounded-full object-cover" />
+                                    <img
+                                        src={user.photoURL}
+                                        alt={user.displayName}
+                                        width="96"
+                                        height="96"
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="w-full h-full rounded-full object-cover"
+                                    />
                                 ) : (
                                     <User className="w-12 h-12 text-primary-600" />
                                 )}
