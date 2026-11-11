@@ -16,9 +16,7 @@ const CheckoutPage = () => {
     const [orderId, setOrderId] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const isProcessingRef = React.useRef(false); // Immediate lock to prevent double-clicks
-
-    console.log('🚀 NUCLEAR RESET VER 2.5 - READY AT 04:58');
-    console.log('Path: src/pages/Cart.jsx');
+    const formMountedAtRef = React.useRef(Date.now()); // Anti-bot submission speed check
 
     // Checkout Form State
     const [formData, setFormData] = useState({
@@ -28,7 +26,8 @@ const CheckoutPage = () => {
         eventDate: '',
         deliveryTime: '',
         address: '',
-        orderNotes: ''
+        orderNotes: '',
+        companyUrl: '' // Honeypot anti-bot trap
     });
 
     const handleInputChange = (e) => {
@@ -45,9 +44,42 @@ const CheckoutPage = () => {
         setIsCheckingOut(true);
         setErrorMessage('');
 
+        // 1. Offline connection check
+        if (typeof navigator !== 'undefined' && !navigator.onLine) {
+            setErrorMessage("You appear to be offline. Please reconnect to the internet and try again. Your cart items have been preserved.");
+            setIsCheckingOut(false);
+            isProcessingRef.current = false;
+            return;
+        }
+
+        // 2. Anti-bot honeypot evaluation
+        if (formData.companyUrl) {
+            console.warn('Bot submission blocked via honeypot');
+            await new Promise(resolve => setTimeout(resolve, 800));
+            setIsCheckingOut(false);
+            isProcessingRef.current = false;
+            setIsSuccess(true);
+            return;
+        }
+
+        // 3. Anti-bot rapid programmatic submission check (< 1.2 seconds)
+        if (Date.now() - formMountedAtRef.current < 1200) {
+            setErrorMessage("Submission occurred unusually quickly. Please verify your order details and click Place Order once more.");
+            setIsCheckingOut(false);
+            isProcessingRef.current = false;
+            return;
+        }
+
         try {
             // Generate a simple human-readable order number
             const orderNumber = `GN-${Math.floor(100000 + Math.random() * 900000)}`;
+
+            // Sanitize customer inputs to prevent oversized field payloads
+            const cleanName = String(formData.name || '').trim().slice(0, 100);
+            const cleanEmail = String(formData.email || '').trim().slice(0, 100);
+            const cleanPhone = String(formData.phone || '').trim().slice(0, 30);
+            const cleanAddress = String(formData.address || '').trim().slice(0, 300);
+            const cleanNotes = String(formData.orderNotes || '').trim().slice(0, 500);
 
             // Prepare the bulk order data for email summary
             const orderSummary = cartItems.map(item => {
@@ -76,12 +108,12 @@ const CheckoutPage = () => {
             const fullOrderData = {
                 orderNumber: orderNumber,
                 orderType: 'Bulk Web Order (Shopping Cart)',
-                name: formData.name,
-                customerName: formData.name,
-                email: formData.email || '',
-                customerEmail: formData.email || 'N/A',
-                phone: formData.phone,
-                customerPhone: formData.phone,
+                name: cleanName,
+                customerName: cleanName,
+                email: cleanEmail,
+                customerEmail: cleanEmail || 'N/A',
+                phone: cleanPhone,
+                customerPhone: cleanPhone,
                 eventDate: formData.eventDate,
                 deliveryTime: formData.deliveryTime,
                 orderSummary: orderSummary,
@@ -105,8 +137,8 @@ const CheckoutPage = () => {
                     }
                 })),
 
-                deliveryAddress: formData.address || '',
-                deliveryNotes: formData.orderNotes || '',
+                deliveryAddress: cleanAddress,
+                deliveryNotes: cleanNotes,
 
                 // Tracking & Metadata
                 status: 'Received', // Initial status
@@ -268,6 +300,20 @@ const CheckoutPage = () => {
 
                         {/* Checkout Form */}
                         <form onSubmit={processOrderCheckout} className="space-y-4">
+                            {/* Anti-bot Honeypot field (hidden from genuine users) */}
+                            <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
+                                <label htmlFor="checkout-company-url">Company Website</label>
+                                <input
+                                    type="text"
+                                    id="checkout-company-url"
+                                    name="companyUrl"
+                                    value={formData.companyUrl || ''}
+                                    onChange={handleInputChange}
+                                    tabIndex="-1"
+                                    autoComplete="off"
+                                />
+                            </div>
+
                             <div>
                                 <label htmlFor="checkout-name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                                 <input

@@ -389,6 +389,8 @@ const Catering = () => {
                       alt={item.title}
                       loading="lazy"
                       decoding="async"
+                      width="400"
+                      height="384"
                       className="w-full h-full object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
                     />
                     {/* View Details Button Overlay */}

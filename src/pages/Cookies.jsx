@@ -631,6 +631,8 @@ const Cookies = () => {
                   alt={cookie.title}
                   loading="lazy"
                   decoding="async"
+                  width="400"
+                  height="384"
                   className="w-full h-full object-contain rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
                   onClick={() => handleViewDetails(cookie)}
                 />

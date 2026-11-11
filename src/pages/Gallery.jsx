@@ -632,6 +632,8 @@ const Gallery = () => {
                   alt={cake.title}
                   loading="lazy"
                   decoding="async"
+                  width="400"
+                  height="320"
                   className="w-full h-full object-contain rounded-2xl cursor-pointer hover:scale-105 transition-transform duration-300"
                   onClick={() => handleViewDetails(cake)}
                 />

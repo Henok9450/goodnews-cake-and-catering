@@ -14,6 +14,22 @@ export const emailService = {
       return { success: false, error: 'Invalid order data provided' };
     }
 
+    // Sanitize order payload to prevent prototype pollution or oversized payloads
+    const sanitizedData = {
+      orderNumber: String(orderData.orderNumber || '').slice(0, 50),
+      orderType: String(orderData.orderType || '').slice(0, 100),
+      customerName: String(orderData.customerName || orderData.name || '').slice(0, 100),
+      customerEmail: String(orderData.customerEmail || orderData.email || '').slice(0, 100),
+      customerPhone: String(orderData.customerPhone || orderData.phone || '').slice(0, 50),
+      eventDate: String(orderData.eventDate || '').slice(0, 30),
+      deliveryTime: String(orderData.deliveryTime || '').slice(0, 30),
+      deliveryAddress: String(orderData.deliveryAddress || '').slice(0, 300),
+      deliveryNotes: String(orderData.deliveryNotes || '').slice(0, 500),
+      orderSummary: String(orderData.orderSummary || '').slice(0, 2000),
+      totalPrice: String(orderData.totalPrice || '').slice(0, 50),
+      itemsCount: Array.isArray(orderData.items) ? orderData.items.length : 0
+    };
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
@@ -24,7 +40,7 @@ export const emailService = {
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(sanitizedData),
         signal: controller.signal
       });
 
