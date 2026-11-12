@@ -3,16 +3,15 @@ import {
     doc, 
     getDocs, 
     getDoc, 
-    setDoc,
     updateDoc, 
     deleteDoc, 
     query, 
+    where,
     orderBy, 
     serverTimestamp, 
     arrayUnion 
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { INITIAL_ORDERS } from '../utils/seedData';
 
 const COLLECTION = 'orders';
 
@@ -32,27 +31,78 @@ export const PAYMENT_STATUSES = [
     'Refunded'
 ];
 
+const TEST_ORDER_IDS = ['order-gn-1001', 'order-gn-1002', 'order-gn-1003', 'order-gn-1004', 'order-gn-1005'];
+const TEST_ORDER_NUMBERS = ['GN-202611-1001', 'GN-202611-1002', 'GN-202611-1003', 'GN-202611-1004', 'GN-202611-1005'];
+
+/**
+ * Fetch ALL real customer orders directly from Firebase Firestore.
+ * Automatically handles unindexed collections and filters out any mock/seed test artifacts.
+ */
 export const getOrders = async () => {
     try {
         let snapshot;
+        
+        // 1. Try ordered query
         try {
             const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
             snapshot = await getDocs(q);
         } catch (orderErr) {
-            // Fallback without orderBy if index is missing
+            console.warn('Orders orderBy fetch notice, using collection fetch:', orderErr.message);
             snapshot = await getDocs(collection(db, COLLECTION));
         }
-        let orders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // Seamless catalog fallback if Firestore orders collection is empty
-        if (orders.length === 0) {
-            orders = INITIAL_ORDERS;
+        // 2. If ordered query returned 0 documents, fetch collection directly
+        // (in Firestore, orderBy('createdAt') omits documents where createdAt is missing or stored as a string!)
+        if (!snapshot || snapshot.empty) {
+            try {
+                const directSnap = await getDocs(collection(db, COLLECTION));
+                if (directSnap && !directSnap.empty) {
+                    snapshot = directSnap;
+                }
+            } catch (directErr) {
+                console.warn('Direct collection fetch notice:', directErr.message);
+            }
         }
 
-        return orders;
+        if (!snapshot || snapshot.empty) {
+            return [];
+        }
+
+        // 3. Map all documents
+        const allDocs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // 4. Clean up any lingering test orders in background and strictly exclude them
+        const realOrders = allDocs.filter(o => {
+            const isTest = TEST_ORDER_IDS.includes(o.id) || 
+                           TEST_ORDER_NUMBERS.includes(o.orderNumber) || 
+                           (o.id && o.id.startsWith('order-gn-100'));
+            if (isTest) {
+                // Delete test order artifact from Firestore in background
+                deleteDoc(doc(db, COLLECTION, o.id)).catch(() => {});
+                return false;
+            }
+            return true;
+        });
+
+        // 5. Sort real orders by timestamp or date descending
+        realOrders.sort((a, b) => {
+            const dateA = a.createdAt?.toMillis?.() || 
+                          (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : null) || 
+                          (a.createdAt ? new Date(a.createdAt).getTime() : 0) || 
+                          (a.eventDate ? new Date(a.eventDate).getTime() : 0) || 
+                          (a.orderDate ? new Date(a.orderDate).getTime() : 0) || 0;
+            const dateB = b.createdAt?.toMillis?.() || 
+                          (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : null) || 
+                          (b.createdAt ? new Date(b.createdAt).getTime() : 0) || 
+                          (b.eventDate ? new Date(b.eventDate).getTime() : 0) || 
+                          (b.orderDate ? new Date(b.orderDate).getTime() : 0) || 0;
+            return dateB - dateA;
+        });
+
+        return realOrders;
     } catch (error) {
-        console.warn('Orders fetch notice (using baseline fallback):', error.message);
-        return INITIAL_ORDERS;
+        console.error('Error fetching live orders from Firebase Firestore:', error.message);
+        return [];
     }
 };
 
@@ -61,11 +111,18 @@ export const getOrderById = async (id) => {
         const docRef = doc(db, COLLECTION, id);
         const snap = await getDoc(docRef);
         if (snap.exists()) return { id: snap.id, ...snap.data() };
-    } catch (e) {
-        // Fall back below
-    }
-    const fallback = INITIAL_ORDERS.find(o => o.id === id || o.orderNumber === id);
-    if (fallback) return fallback;
+    } catch (e) {}
+
+    // Fallback search by orderNumber
+    try {
+        const q = query(collection(db, COLLECTION), where('orderNumber', '==', id));
+        const numSnap = await getDocs(q);
+        if (!numSnap.empty) {
+            const first = numSnap.docs[0];
+            return { id: first.id, ...first.data() };
+        }
+    } catch (numErr) {}
+
     throw new Error('Order not found');
 };
 
@@ -80,7 +137,7 @@ export const updateOrderStatus = async (orderId, newStatus, adminNote = '', chan
 
     const updatePayload = {
         orderStatus: newStatus,
-        status: newStatus, // maintain compatibility with existing fields
+        status: newStatus,
         updatedAt: serverTimestamp(),
         statusHistory: arrayUnion(historyEntry)
     };
@@ -89,17 +146,7 @@ export const updateOrderStatus = async (orderId, newStatus, adminNote = '', chan
         updatePayload.adminNotes = adminNote;
     }
 
-    try {
-        await updateDoc(docRef, updatePayload);
-    } catch (err) {
-        // If order does not exist in Firestore yet (e.g., initial baseline), set it with payload
-        const existing = INITIAL_ORDERS.find(o => o.id === orderId || o.orderNumber === orderId) || {};
-        await setDoc(docRef, {
-            ...existing,
-            ...updatePayload,
-            createdAt: serverTimestamp()
-        }, { merge: true });
-    }
+    await updateDoc(docRef, updatePayload);
     return true;
 };
 
@@ -119,16 +166,7 @@ export const updatePaymentStatus = async (orderId, paymentStatus, paymentReferen
         statusHistory: arrayUnion(historyEntry)
     };
 
-    try {
-        await updateDoc(docRef, updatePayload);
-    } catch (err) {
-        const existing = INITIAL_ORDERS.find(o => o.id === orderId || o.orderNumber === orderId) || {};
-        await setDoc(docRef, {
-            ...existing,
-            ...updatePayload,
-            createdAt: serverTimestamp()
-        }, { merge: true });
-    }
+    await updateDoc(docRef, updatePayload);
     return true;
 };
 
@@ -137,10 +175,6 @@ export const cancelOrder = async (orderId, cancelReason, cancelledBy = 'Admin') 
 };
 
 export const deleteOrder = async (orderId) => {
-    try {
-        await deleteDoc(doc(db, COLLECTION, orderId));
-    } catch (e) {
-        console.warn('Delete order notice:', e.message);
-    }
+    await deleteDoc(doc(db, COLLECTION, orderId));
     return true;
 };

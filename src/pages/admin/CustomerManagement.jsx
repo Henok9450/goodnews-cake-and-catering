@@ -17,17 +17,17 @@ const CustomerManagement = () => {
       const customerMap = {};
 
       orders.forEach(order => {
-        const key = (order.phone || order.email || order.name || 'guest').trim().toLowerCase();
+        const key = (order.phoneNumber || order.customerPhone || order.phone || order.customerEmail || order.email || order.customerName || order.name || order.id || 'guest').trim().toLowerCase();
         if (!customerMap[key]) {
           customerMap[key] = {
             id: key,
-            name: order.name || order.customerName || order.customer?.name || 'Customer',
-            phone: order.phone || order.customerPhone || order.customer?.phone || '',
-            email: order.email || order.customerEmail || order.customer?.email || '',
-            address: order.address || order.deliveryAddress || order.customer?.address || '',
+            name: order.customerName || order.name || order.customer?.name || order.fullName || 'Customer',
+            phone: order.customerPhone || order.phoneNumber || order.phone || order.customer?.phone || '',
+            email: order.customerEmail || order.email || order.customer?.email || '',
+            address: order.deliveryAddress || order.address || order.customer?.address || order.location || '',
             ordersCount: 0,
             totalSpent: 0,
-            lastOrderDate: order.eventDate || order.orderDate || '',
+            lastOrderDate: order.eventDate || order.deliveryDate || order.orderDate || (order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : '') || '',
             orders: []
           };
         }
@@ -39,8 +39,12 @@ const CustomerManagement = () => {
         if (order.totalPrice && typeof order.totalPrice === 'string') {
           const num = parseFloat(order.totalPrice.replace(/[^0-9.]/g, ''));
           if (!isNaN(num)) customerMap[key].totalSpent += num;
-        } else if (order.totalPrice && typeof order.totalPrice === 'number') {
+        } else if (typeof order.totalPrice === 'number') {
           customerMap[key].totalSpent += order.totalPrice;
+        } else if (typeof order.total === 'number') {
+          customerMap[key].totalSpent += order.total;
+        } else if (typeof order.amount === 'number') {
+          customerMap[key].totalSpent += order.amount;
         }
       });
 

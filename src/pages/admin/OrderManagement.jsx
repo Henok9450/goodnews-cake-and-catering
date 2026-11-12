@@ -252,10 +252,10 @@ const OrderManagement = () => {
                         {order.orderNumber || order.id?.slice(0, 8)}
                       </td>
                       <td className="py-3.5 px-4">
-                        <p className="font-bold text-gray-900">{order.name || order.customer?.name || 'Guest Customer'}</p>
+                        <p className="font-bold text-gray-900">{order.customerName || order.name || order.customer?.name || order.fullName || 'Guest Customer'}</p>
                         <p className="text-[11px] text-gray-500 flex items-center gap-1 mt-0.5">
                           <Phone className="w-3 h-3 text-gray-400" />
-                          {order.phone || order.customer?.phone || 'No phone'}
+                          {order.customerPhone || order.phoneNumber || order.phone || order.customer?.phone || 'No phone'}
                         </p>
                       </td>
                       <td className="py-3.5 px-4 text-gray-600">
@@ -373,10 +373,10 @@ const OrderManagement = () => {
               <div className="space-y-2">
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Customer & Delivery</h3>
                 <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 space-y-2 text-xs text-gray-700">
-                  <p><strong>Name:</strong> {selectedOrder.name || selectedOrder.customer?.name || 'Guest'}</p>
-                  <p><strong>Phone:</strong> {selectedOrder.phone || selectedOrder.customer?.phone || 'Not provided'}</p>
-                  {selectedOrder.email && <p><strong>Email:</strong> {selectedOrder.email}</p>}
-                  <p><strong>Address:</strong> {selectedOrder.address || selectedOrder.customer?.address || 'Pickup at bakery'}</p>
+                  <p><strong>Name:</strong> {selectedOrder.customerName || selectedOrder.name || selectedOrder.customer?.name || selectedOrder.fullName || 'Guest'}</p>
+                  <p><strong>Phone:</strong> {selectedOrder.customerPhone || selectedOrder.phoneNumber || selectedOrder.phone || selectedOrder.customer?.phone || 'Not provided'}</p>
+                  {(selectedOrder.customerEmail || selectedOrder.email) && <p><strong>Email:</strong> {selectedOrder.customerEmail || selectedOrder.email}</p>}
+                  <p><strong>Address:</strong> {selectedOrder.deliveryAddress || selectedOrder.address || selectedOrder.customer?.address || selectedOrder.location || 'Pickup at bakery'}</p>
                   <p><strong>Scheduled Date:</strong> {selectedOrder.eventDate || selectedOrder.deliveryDate || 'Not specified'}</p>
                   {selectedOrder.deliveryTime && <p><strong>Delivery Time:</strong> {selectedOrder.deliveryTime}</p>}
                   {selectedOrder.orderNotes && (

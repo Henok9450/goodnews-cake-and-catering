@@ -325,8 +325,8 @@ const DashboardOverview = () => {
                       <tr key={order.id} className="hover:bg-gray-50/70 transition-colors">
                         <td className="py-3 font-mono font-bold text-gray-900">{order.orderNumber || order.id?.slice(0, 8)}</td>
                         <td className="py-3">
-                          <p className="font-semibold text-gray-800">{order.name || order.customer?.name || 'Guest'}</p>
-                          <p className="text-[11px] text-gray-400">{order.phone || order.customer?.phone}</p>
+                          <p className="font-semibold text-gray-800">{order.customerName || order.name || order.customer?.name || order.fullName || 'Guest'}</p>
+                          <p className="text-[11px] text-gray-400">{order.customerPhone || order.phoneNumber || order.phone || order.customer?.phone || ''}</p>
                         </td>
                         <td className="py-3 text-gray-600">{order.eventDate || 'Not specified'}</td>
                         <td className="py-3">
