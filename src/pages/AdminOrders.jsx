@@ -46,7 +46,18 @@ const AdminOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
-  const statuses = ['Received', 'Baking', 'Decorating', 'Ready', 'Delivered', 'Cancelled'];
+  const statuses = [
+    'Received', 
+    'Confirmed', 
+    'Scheduled for Preparation', 
+    'Preparation Started', 
+    'Baking', 
+    'Decorating', 
+    'Ready', 
+    'Out for Delivery', 
+    'Delivered', 
+    'Cancelled'
+  ];
   const reviewStatuses = ['pending', 'approved', 'rejected', 'All'];
 
   useEffect(() => {

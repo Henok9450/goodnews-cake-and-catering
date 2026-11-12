@@ -16,11 +16,15 @@ import { db } from '../config/firebase';
 const COLLECTION = 'orders';
 
 export const ORDER_STATUSES = [
-    'Pending',
+    'Received',
     'Confirmed',
-    'Preparing',
-    'Ready for Pickup / Out for Delivery',
-    'Delivered / Completed',
+    'Scheduled for Preparation',
+    'Preparation Started',
+    'Baking',
+    'Decorating',
+    'Ready for Delivery',
+    'Out for Delivery',
+    'Delivered',
     'Cancelled'
 ];
 
@@ -138,6 +142,7 @@ export const updateOrderStatus = async (orderId, newStatus, adminNote = '', chan
     const updatePayload = {
         orderStatus: newStatus,
         status: newStatus,
+        manualStatus: newStatus,
         updatedAt: serverTimestamp(),
         statusHistory: arrayUnion(historyEntry)
     };

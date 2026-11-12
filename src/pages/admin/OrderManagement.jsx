@@ -28,6 +28,7 @@ import {
   ORDER_STATUSES, 
   PAYMENT_STATUSES 
 } from '../../services/orderService';
+import { getStatusBadgeStyle } from '../../utils/statusUtils';
 
 const FIRESTORE_RULES_GUIDE = `rules_version = '2';
 service cloud.firestore {
@@ -174,8 +175,15 @@ const OrderManagement = () => {
   };
 
   const filteredOrders = orders.filter(order => {
-    const currentStatus = order.orderStatus || order.status || 'Pending';
-    const matchesStatus = statusFilter === 'All' || currentStatus === statusFilter;
+    const currentStatus = order.orderStatus || order.status || 'Received';
+    const matchesStatus = statusFilter === 'All' || 
+      currentStatus === statusFilter ||
+      (statusFilter === 'Received' && (currentStatus === 'Received' || currentStatus === 'Pending')) ||
+      (statusFilter === 'Scheduled' && (currentStatus.includes('Scheduled') || currentStatus === 'Confirmed')) ||
+      (statusFilter === 'Baking' && currentStatus === 'Baking') ||
+      (statusFilter === 'Decorating' && currentStatus === 'Decorating') ||
+      (statusFilter === 'Ready' && currentStatus.includes('Ready')) ||
+      (statusFilter === 'Delivered' && (currentStatus.includes('Delivered') || currentStatus === 'Completed'));
     const term = search.toLowerCase().trim();
     const matchesSearch = !term ||
       (order.orderNumber && order.orderNumber.toLowerCase().includes(term)) ||
@@ -264,7 +272,7 @@ const OrderManagement = () => {
 
         <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
           <span className="text-xs text-gray-400 font-medium">Status:</span>
-          {['All', 'Pending', 'Confirmed', 'Preparing', 'Ready', 'Delivered', 'Cancelled'].map(st => (
+          {['All', 'Received', 'Confirmed', 'Scheduled', 'Baking', 'Decorating', 'Ready', 'Delivered', 'Cancelled'].map(st => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
@@ -344,15 +352,7 @@ const OrderManagement = () => {
                         {order.totalPrice || 'Quote on Request'}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className={`inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          isPending 
-                            ? 'bg-amber-100 text-amber-800' 
-                            : isCancelled 
-                            ? 'bg-red-100 text-red-700' 
-                            : isDone 
-                            ? 'bg-emerald-100 text-emerald-800' 
-                            : 'bg-blue-100 text-blue-800'
-                        }`}>
+                        <span className={getStatusBadgeStyle(order, status)}>
                           {status}
                         </span>
                       </td>
