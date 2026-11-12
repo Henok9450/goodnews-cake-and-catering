@@ -29,10 +29,35 @@ import {
   PAYMENT_STATUSES 
 } from '../../services/orderService';
 
+const FIRESTORE_RULES_GUIDE = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() { return request.auth != null; }
+    function isAdmin() { return isAuthenticated(); }
+
+    match /admins/{adminId} { allow read, write: if isAuthenticated(); }
+    match /products/{productId} { allow read: if true; allow write: if isAdmin(); }
+    match /categories/{categoryId} { allow read: if true; allow write: if isAdmin(); }
+    match /services/{serviceId} { allow read: if true; allow write: if isAdmin(); }
+    match /website_content/{contentId} { allow read: if true; allow write: if isAdmin(); }
+    match /reviews/{reviewId} { allow read, create: if true; allow update, delete: if isAdmin(); }
+    match /gallery_photos/{photoId} { allow read: if true; allow write: if isAdmin(); }
+    match /promotions/{promoId} { allow read: if true; allow write: if isAdmin(); }
+    match /payment_settings/{settingId} { allow read: if true; allow write: if isAdmin(); }
+    match /customers/{customerId} { allow read, write: if isAuthenticated(); }
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read, update, delete: if isAuthenticated();
+    }
+  }
+}`;
+
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
+  const [permissionError, setPermissionError] = useState(false);
+  const [copiedRules, setCopiedRules] = useState(false);
 
   // Filters
   const [search, setSearch] = useState('');
@@ -51,6 +76,7 @@ const OrderManagement = () => {
 
   const fetchAllOrders = async () => {
     setLoading(true);
+    setPermissionError(false);
     try {
       const data = await getOrders();
       setOrders(data);
@@ -62,10 +88,22 @@ const OrderManagement = () => {
         if (found) setSelectedOrder(found);
       }
     } catch (err) {
-      showNotification('error', 'Failed to fetch orders: ' + err.message);
+      if (err.message && err.message.toLowerCase().includes('permission')) {
+        setPermissionError(true);
+      } else {
+        showNotification('error', 'Failed to fetch orders: ' + err.message);
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCopyRules = () => {
+    try {
+      navigator.clipboard.writeText(FIRESTORE_RULES_GUIDE);
+      setCopiedRules(true);
+      setTimeout(() => setCopiedRules(false), 4000);
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -167,6 +205,41 @@ const OrderManagement = () => {
           </button>
         </div>
       </div>
+
+      {permissionError && (
+        <div className="bg-amber-50 border border-amber-300 rounded-2xl p-5 shadow-xs animate-fade-in">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-amber-100 rounded-xl text-amber-800 shrink-0 mt-0.5">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-bold text-amber-950">Firebase Security Rules Permission Notice</h3>
+              <p className="text-xs text-amber-800 mt-1 leading-relaxed">
+                Your live orders are safely stored in Firebase Firestore, but reading the <code>orders</code> collection was denied by your Firebase Console Security Rules. To grant immediate access to your administrator account, publish the authorized Firestore rules.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2.5 items-center">
+                <button
+                  type="button"
+                  onClick={handleCopyRules}
+                  className="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+                >
+                  {copiedRules ? '✓ Security Rules Copied to Clipboard!' : 'Copy Firestore Rules for Firebase Console'}
+                </button>
+                <button
+                  type="button"
+                  onClick={fetchAllOrders}
+                  className="px-4 py-2 bg-white border border-amber-300 text-amber-900 hover:bg-amber-100 rounded-xl text-xs font-bold transition-all"
+                >
+                  Retry Connection
+                </button>
+              </div>
+              <p className="text-[11px] text-amber-700 mt-2">
+                Open <strong>Firebase Console &gt; Firestore Database &gt; Rules</strong>, paste, and click <strong>Publish</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {notification.message && (
         <div className={`p-4 rounded-xl text-xs font-bold flex items-center gap-2 ${

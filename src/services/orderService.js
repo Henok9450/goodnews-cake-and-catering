@@ -102,7 +102,7 @@ export const getOrders = async () => {
         return realOrders;
     } catch (error) {
         console.error('Error fetching live orders from Firebase Firestore:', error.message);
-        return [];
+        throw error;
     }
 };
 

@@ -37,15 +37,24 @@ const DashboardOverview = () => {
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [seedNotice, setSeedNotice] = useState('');
+  const [ordersPermissionNotice, setOrdersPermissionNotice] = useState(false);
 
   const loadDashboardData = async () => {
     setLoading(true);
     try {
+      let ordersBlockedByRules = false;
       const [allOrders, allProducts, allServices] = await Promise.all([
-        getOrders().catch(() => []),
+        getOrders().catch((err) => {
+          if (err.message && err.message.toLowerCase().includes('permission')) {
+            ordersBlockedByRules = true;
+          }
+          return [];
+        }),
         getProducts({ status: 'all' }).catch(() => []),
         getServices(true).catch(() => [])
       ]);
+
+      setOrdersPermissionNotice(ordersBlockedByRules);
 
       // Calculate order statistics
       const pending = allOrders.filter(o => (o.orderStatus || o.status) === 'Pending').length;
@@ -200,6 +209,28 @@ const DashboardOverview = () => {
         <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800 flex items-center justify-between gap-3">
           <span>{seedNotice}</span>
           <button onClick={() => setSeedNotice('')} className="text-emerald-700 hover:text-emerald-900 font-bold text-sm px-2">×</button>
+        </div>
+      )}
+
+      {ordersPermissionNotice && (
+        <div className="bg-amber-50 border border-amber-300 rounded-2xl p-5 shadow-xs animate-fade-in flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-amber-100 rounded-xl text-amber-800 shrink-0 mt-0.5">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-amber-950">Firebase Security Rules Permission Notice for Orders</h4>
+              <p className="text-xs text-amber-800 mt-0.5 leading-relaxed">
+                Your live customer orders are securely stored in Firebase Firestore, but reading <code>/orders</code> was denied by your Firebase Console Security Rules. Publish the updated rules in your Firebase Console to display live revenue and orders.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/admin/orders"
+            className="px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-xl text-xs font-bold whitespace-nowrap shadow-xs"
+          >
+            Review &amp; Fix Rules
+          </Link>
         </div>
       )}
 
