@@ -505,6 +505,228 @@ export const INITIAL_CMS_CONTENT = {
     }
 };
 
+export const INITIAL_ORDERS = [
+    {
+        id: 'order-gn-1001',
+        orderNumber: 'GN-202611-1001',
+        orderType: 'Custom Wedding Cake Order',
+        name: 'Selamawit Tadesse',
+        customerName: 'Selamawit Tadesse',
+        email: 'selamawit.t@gmail.com',
+        customerEmail: 'selamawit.t@gmail.com',
+        phone: '+251 911 234 567',
+        customerPhone: '+251 911 234 567',
+        deliveryAddress: 'Bole Medhanealem, Atlas area, House #402, Addis Ababa',
+        address: 'Bole Medhanealem, Atlas area, House #402, Addis Ababa',
+        eventDate: '2026-11-15',
+        deliveryTime: '2:00 PM',
+        orderSummary: 'Modern Floating Tier Wedding Cake (Two-tier, Vanilla & Almond)',
+        totalPrice: 'ETB 4,500',
+        orderStatus: 'Confirmed',
+        status: 'Confirmed',
+        paymentStatus: 'Paid',
+        paymentReference: 'CBE-BIRR-98437291',
+        customerUid: 'guest',
+        orderDate: '11/10/2026',
+        orderTime: '10:30 AM',
+        items: [
+            {
+                id: 'item-1001',
+                title: 'Modern Floating Tier Wedding Cake',
+                price: 'ETB 4,500',
+                details: {
+                    quantity: 1,
+                    size: 'Two-tier (2 kg)',
+                    flavor: 'Vanilla Bean & Almond Velvet',
+                    filling: 'White Chocolate Ganache',
+                    frosting: 'Ivory Smooth Buttercream',
+                    message: 'Congratulations Selam & Dawit',
+                    special: 'Deliver in air-conditioned vehicle. Call wedding coordinator on arrival.'
+                }
+            }
+        ],
+        statusHistory: [
+            { status: 'Pending', timestamp: '2026-11-10T07:30:00.000Z', note: 'Order submitted via website', changedBy: 'System' },
+            { status: 'Confirmed', timestamp: '2026-11-10T08:15:00.000Z', note: 'Deposit verified via CBE Birr', changedBy: 'Admin' }
+        ]
+    },
+    {
+        id: 'order-gn-1002',
+        orderNumber: 'GN-202611-1002',
+        orderType: 'Birthday Celebration Cake',
+        name: 'Yonas Birhanu',
+        customerName: 'Yonas Birhanu',
+        email: 'yonas.birhanu@gmail.com',
+        customerEmail: 'yonas.birhanu@gmail.com',
+        phone: '+251 912 345 678',
+        customerPhone: '+251 912 345 678',
+        deliveryAddress: 'Kazanchis, UNECA area, Grand Palace Apts, Addis Ababa',
+        address: 'Kazanchis, UNECA area, Grand Palace Apts, Addis Ababa',
+        eventDate: '2026-11-18',
+        deliveryTime: '11:30 AM',
+        orderSummary: 'Romantic Proposal Silhouette Cake (1.5 kg, Chocolate Fudge)',
+        totalPrice: 'ETB 2,800',
+        orderStatus: 'Preparing',
+        status: 'Preparing',
+        paymentStatus: 'Paid',
+        paymentReference: 'TELEBIRR-82746194',
+        customerUid: 'guest',
+        orderDate: '11/11/2026',
+        orderTime: '02:15 PM',
+        items: [
+            {
+                id: 'item-1002',
+                title: 'Romantic Proposal Silhouette Cake',
+                price: 'ETB 2,800',
+                details: {
+                    quantity: 1,
+                    size: '1.5 kg',
+                    flavor: 'Rich Chocolate Fudge',
+                    frosting: 'Smooth Buttercream',
+                    message: 'Happy 30th Birthday Aster!',
+                    special: 'Add extra edible gold pearls around the base'
+                }
+            }
+        ],
+        statusHistory: [
+            { status: 'Pending', timestamp: '2026-11-11T11:15:00.000Z', note: 'Order submitted online', changedBy: 'System' },
+            { status: 'Confirmed', timestamp: '2026-11-11T11:45:00.000Z', note: 'Payment confirmed via Telebirr', changedBy: 'Admin' },
+            { status: 'Preparing', timestamp: '2026-11-12T06:00:00.000Z', note: 'Cake base baked, decorating in progress', changedBy: 'Bakery Chef' }
+        ]
+    },
+    {
+        id: 'order-gn-1003',
+        orderNumber: 'GN-202611-1003',
+        orderType: 'Holiday Celebration & Pastry Batch',
+        name: 'Bethlehem Haile',
+        customerName: 'Bethlehem Haile',
+        email: 'bethlehem.haile@yahoo.com',
+        customerEmail: 'bethlehem.haile@yahoo.com',
+        phone: '+251 922 456 789',
+        customerPhone: '+251 922 456 789',
+        deliveryAddress: 'CMC Michael, Sunshine Real Estate, Villa 12, Addis Ababa',
+        address: 'CMC Michael, Sunshine Real Estate, Villa 12, Addis Ababa',
+        eventDate: '2026-11-20',
+        deliveryTime: '3:00 PM',
+        orderSummary: 'Enkutatash Golden Honey Cake + Dozen Chocolate Cupcakes',
+        totalPrice: 'ETB 4,400',
+        orderStatus: 'Pending',
+        status: 'Pending',
+        paymentStatus: 'Pending',
+        paymentReference: null,
+        customerUid: 'guest',
+        orderDate: '11/12/2026',
+        orderTime: '09:00 AM',
+        items: [
+            {
+                id: 'item-1003a',
+                title: 'Enkutatash Golden Honey Cake (Ethiopian New Year)',
+                price: 'ETB 3,200',
+                details: {
+                    quantity: 1,
+                    size: '1.5 kg round cake',
+                    flavor: 'Teff Honey & Vanilla',
+                    frosting: 'Golden Honey Buttercream',
+                    message: 'Melkam Beal!'
+                }
+            },
+            {
+                id: 'item-1003b',
+                title: 'Cream-Filled Chocolate Confetti Cupcakes (Dozen)',
+                price: 'ETB 1,200',
+                details: {
+                    quantity: 12,
+                    flavor: 'Dark Cocoa with Marshmallow Cream'
+                }
+            }
+        ],
+        statusHistory: [
+            { status: 'Pending', timestamp: '2026-11-12T06:00:00.000Z', note: 'New customer order awaiting review', changedBy: 'System' }
+        ]
+    },
+    {
+        id: 'order-gn-1004',
+        orderNumber: 'GN-202611-1004',
+        orderType: 'Corporate Catering Service',
+        name: 'Dawit Alemayehu',
+        customerName: 'Dawit Alemayehu',
+        email: 'dawit.alemayehu@corp-events.et',
+        customerEmail: 'dawit.alemayehu@corp-events.et',
+        phone: '+251 930 567 890',
+        customerPhone: '+251 930 567 890',
+        deliveryAddress: 'Sarbet, Old Airport Commercial Center, 3rd Floor, Addis Ababa',
+        address: 'Sarbet, Old Airport Commercial Center, 3rd Floor, Addis Ababa',
+        eventDate: '2026-11-22',
+        deliveryTime: '10:00 AM',
+        orderSummary: 'Corporate Pastry & Dessert Catering Platter (Serves 40-50)',
+        totalPrice: 'ETB 8,500',
+        orderStatus: 'Confirmed',
+        status: 'Confirmed',
+        paymentStatus: 'Paid',
+        paymentReference: 'ZEMEN-TRF-440291',
+        customerUid: 'guest',
+        orderDate: '11/08/2026',
+        orderTime: '04:30 PM',
+        items: [
+            {
+                id: 'item-1004',
+                title: 'Corporate Pastry & Dessert Catering Platter',
+                price: 'ETB 8,500',
+                details: {
+                    serves: '40-50 people',
+                    features: 'Assorted fruit tarts, chocolate eclairs, savory mini quiches'
+                }
+            }
+        ],
+        statusHistory: [
+            { status: 'Pending', timestamp: '2026-11-08T13:30:00.000Z', note: 'Corporate quote accepted', changedBy: 'System' },
+            { status: 'Confirmed', timestamp: '2026-11-09T08:00:00.000Z', note: 'Bank transfer verified from Zemen Bank', changedBy: 'Admin' }
+        ]
+    },
+    {
+        id: 'order-gn-1005',
+        orderNumber: 'GN-202611-1005',
+        orderType: 'Anniversary Cake Order',
+        name: 'Rahel Bekele',
+        customerName: 'Rahel Bekele',
+        email: 'rahel.bekele@outlook.com',
+        customerEmail: 'rahel.bekele@outlook.com',
+        phone: '+251 913 678 901',
+        customerPhone: '+251 913 678 901',
+        deliveryAddress: 'Piazza, Cunningham St, House #88, Addis Ababa',
+        address: 'Piazza, Cunningham St, House #88, Addis Ababa',
+        eventDate: '2026-11-10',
+        deliveryTime: '1:00 PM',
+        orderSummary: 'Romantic "LOVE" Anniversary Cake (1.5 kg, Red Velvet)',
+        totalPrice: 'ETB 3,500',
+        orderStatus: 'Delivered / Completed',
+        status: 'Delivered / Completed',
+        paymentStatus: 'Paid',
+        paymentReference: 'TELEBIRR-10928374',
+        customerUid: 'guest',
+        orderDate: '11/05/2026',
+        orderTime: '11:00 AM',
+        items: [
+            {
+                id: 'item-1005',
+                title: 'Romantic "LOVE" Anniversary Cake',
+                price: 'ETB 3,500',
+                details: {
+                    quantity: 1,
+                    size: '1.5 kg',
+                    flavor: 'Red Velvet Sponge & Cream Cheese',
+                    message: 'Happy 10th Anniversary!'
+                }
+            }
+        ],
+        statusHistory: [
+            { status: 'Pending', timestamp: '2026-11-05T08:00:00.000Z', note: 'Order placed', changedBy: 'System' },
+            { status: 'Confirmed', timestamp: '2026-11-05T09:00:00.000Z', note: 'Confirmed with customer', changedBy: 'Admin' },
+            { status: 'Delivered / Completed', timestamp: '2026-11-10T10:30:00.000Z', note: 'Hand-delivered to Piazza location. Customer delighted!', changedBy: 'Courier' }
+        ]
+    }
+];
+
 /**
  * Seed initial data into Firestore if collections are empty or force requested.
  * Uses deterministic document slugs with { merge: true } for idempotent writes.
@@ -572,6 +794,21 @@ export const seedDatabaseIfEmpty = async (force = false) => {
             }
         }
 
+        console.log('🚀 Seeding initial orders...');
+        let orderCount = 0;
+        for (const order of INITIAL_ORDERS) {
+            try {
+                await setDoc(doc(db, 'orders', order.id), {
+                    ...order,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                orderCount++;
+            } catch (err) {
+                console.warn(`Order ${order.orderNumber} seed notice:`, err.message);
+            }
+        }
+
         console.log('🚀 Seeding CMS content...');
         try {
             await setDoc(doc(db, 'website_content', 'homepage'), {
@@ -586,12 +823,13 @@ export const seedDatabaseIfEmpty = async (force = false) => {
             console.warn('CMS seed notice:', cmsErr.message);
         }
 
-        console.log(`✅ Initial database seed completed: ${prodCount} products, ${catCount} categories, ${servCount} services.`);
+        console.log(`✅ Initial database seed completed: ${prodCount} products, ${catCount} categories, ${servCount} services, ${orderCount} orders.`);
         return { 
             seeded: true, 
             productsCount: prodCount || INITIAL_PRODUCTS.length,
             categoriesCount: catCount || INITIAL_CATEGORIES.length,
-            servicesCount: servCount || INITIAL_SERVICES.length
+            servicesCount: servCount || INITIAL_SERVICES.length,
+            ordersCount: orderCount || INITIAL_ORDERS.length
         };
     } catch (error) {
         console.error('❌ Failed to seed initial database:', error);

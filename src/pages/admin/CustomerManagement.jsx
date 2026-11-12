@@ -21,10 +21,10 @@ const CustomerManagement = () => {
         if (!customerMap[key]) {
           customerMap[key] = {
             id: key,
-            name: order.name || order.customer?.name || 'Customer',
-            phone: order.phone || order.customer?.phone || '',
-            email: order.email || order.customer?.email || '',
-            address: order.address || order.customer?.address || '',
+            name: order.name || order.customerName || order.customer?.name || 'Customer',
+            phone: order.phone || order.customerPhone || order.customer?.phone || '',
+            email: order.email || order.customerEmail || order.customer?.email || '',
+            address: order.address || order.deliveryAddress || order.customer?.address || '',
             ordersCount: 0,
             totalSpent: 0,
             lastOrderDate: order.eventDate || order.orderDate || '',
@@ -39,6 +39,8 @@ const CustomerManagement = () => {
         if (order.totalPrice && typeof order.totalPrice === 'string') {
           const num = parseFloat(order.totalPrice.replace(/[^0-9.]/g, ''));
           if (!isNaN(num)) customerMap[key].totalSpent += num;
+        } else if (order.totalPrice && typeof order.totalPrice === 'number') {
+          customerMap[key].totalSpent += order.totalPrice;
         }
       });
 

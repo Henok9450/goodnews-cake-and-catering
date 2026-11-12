@@ -94,7 +94,7 @@ const DashboardOverview = () => {
     setSeedNotice('🌱 Connecting to Firebase Firestore and syncing products, categories, and catering...');
     try {
       const res = await seedDatabaseIfEmpty(true);
-      setSeedNotice(`✅ Live database sync complete! Populated ${res.productsCount || 35} products, ${res.categoriesCount || 4} categories, and ${res.servicesCount || 6} services into Firestore.`);
+      setSeedNotice(`✅ Live database sync complete! Populated ${res.productsCount || 35} products, ${res.categoriesCount || 4} categories, ${res.servicesCount || 6} services, and ${res.ordersCount || 5} orders into Firestore.`);
       await loadDashboardData();
     } catch (err) {
       console.warn('Seed database notice:', err);
