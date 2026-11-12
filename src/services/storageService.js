@@ -24,13 +24,63 @@ export const validateImageFile = (file) => {
 };
 
 /**
+ * Draws the elegant "GoodNews Cake and Catering" watermark onto a canvas
+ * @param {HTMLCanvasElement} canvas 
+ * @param {CanvasRenderingContext2D} ctx 
+ */
+export const drawWatermarkOnCanvas = (canvas, ctx) => {
+    try {
+        const { width, height } = canvas;
+        const baseDim = Math.min(width, height);
+        const fontSize = Math.max(14, Math.min(26, Math.round(baseDim * 0.024)));
+        const marginRight = Math.max(18, Math.min(36, Math.round(width * 0.035)));
+        const marginBottom = Math.max(18, Math.min(36, Math.round(height * 0.035)));
+
+        // Analyze corner brightness
+        const cornerW = Math.min(300, Math.round(width * 0.35));
+        const cornerH = Math.min(100, Math.round(height * 0.12));
+        const cornerData = ctx.getImageData(width - cornerW, height - cornerH, cornerW, cornerH).data;
+        let totalBrightness = 0;
+        let count = 0;
+        for (let i = 0; i < cornerData.length; i += 16) {
+            const r = cornerData[i];
+            const g = cornerData[i + 1];
+            const b = cornerData[i + 2];
+            totalBrightness += (r + g + b) / 3;
+            count++;
+        }
+        const avgBrightness = count > 0 ? totalBrightness / count : 150;
+        const isLightBg = avgBrightness > 195;
+
+        ctx.save();
+        ctx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        
+        // Soft drop shadow / glow
+        ctx.shadowOffsetX = 0.5;
+        ctx.shadowOffsetY = 1.0;
+        ctx.shadowBlur = 2.0;
+        ctx.shadowColor = isLightBg ? 'rgba(255, 255, 255, 0.50)' : 'rgba(0, 0, 0, 0.38)';
+
+        ctx.fillStyle = isLightBg ? 'rgba(15, 23, 42, 0.28)' : 'rgba(255, 255, 255, 0.30)';
+        ctx.fillText('GoodNews Cake and Catering', width - marginRight, height - marginBottom);
+        ctx.restore();
+    } catch {
+        // Fallback silently if canvas context or security error
+    }
+};
+
+/**
  * Pre-compress an image client-side before upload to preserve high clarity while slashing upload payload
+ * Optionally applies the official GoodNews watermark for cake photographs.
  * @param {File} file 
  * @param {number} maxWidth 
  * @param {number} quality 
+ * @param {boolean} shouldWatermark
  * @returns {Promise<File|Blob>}
  */
-export const compressImageForUpload = async (file, maxWidth = 1600, quality = 0.88) => {
+export const compressImageForUpload = async (file, maxWidth = 1600, quality = 0.88, shouldWatermark = false) => {
     if (typeof window === 'undefined' || typeof document === 'undefined' || typeof Image === 'undefined') {
         return file; // Node/Jest test environment fallback
     }
@@ -57,6 +107,12 @@ export const compressImageForUpload = async (file, maxWidth = 1600, quality = 0.
                 if (!ctx) return resolve(file);
 
                 ctx.drawImage(img, 0, 0, width, height);
+
+                // Apply watermark if cake image upload
+                if (shouldWatermark) {
+                    drawWatermarkOnCanvas(canvas, ctx);
+                }
+
                 // Prefer WebP for high compression with alpha support, fallback to original type
                 const outputType = 'image/webp';
                 canvas.toBlob(
@@ -88,19 +144,24 @@ export const compressImageForUpload = async (file, maxWidth = 1600, quality = 0.
 
 /**
  * Upload an image file to Firebase Storage
+ * Automatically applies the elegant "GoodNews Cake and Catering" watermark to cake photographs.
  * @param {File} file - The file to upload
  * @param {string} folder - Destination folder (e.g., 'products', 'categories', 'services', 'gallery')
  * @param {Function} [onProgress] - Optional progress callback: (percent: number) => void
+ * @param {object} [options] - Options e.g. { isCake: boolean }
  * @returns {Promise<string>} Resolves with public download URL
  */
-export const uploadImage = async (file, folder = 'products', onProgress = null) => {
+export const uploadImage = async (file, folder = 'products', onProgress = null, options = {}) => {
     const validation = validateImageFile(file);
     if (!validation.valid) {
         throw new Error(validation.error);
     }
 
-    // Client-side pre-compression to reduce payload by 70-90% without quality loss
-    const uploadReadyFile = await compressImageForUpload(file);
+    // Automatically watermark cake products and cake gallery items
+    const shouldWatermark = (folder === 'products' || folder === 'gallery' || options.isCake === true);
+
+    // Client-side pre-compression and watermarking
+    const uploadReadyFile = await compressImageForUpload(file, 1600, 0.88, shouldWatermark);
 
     return new Promise((resolve, reject) => {
         // Clean filename and create unique storage path
