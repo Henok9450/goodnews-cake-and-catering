@@ -1,118 +1,82 @@
 # GoodNews Cake and Catering – Future Admin Upload Watermarking
 
-**Feature:** Automatic Client-Side Watermarking for Admin & Future Uploads  
+**Feature:** Automatic Dual-Zone Watermarking for Admin & Future Uploads  
 **Integration Point:** `src/services/storageService.js`  
 **Status:** Verified & Fully Operational  
 **Date:** November 2026
 
 ---
 
-## 1. Objective & Architecture
+## 1. Automatic Dual-Zone Canvas Architecture
 
-To ensure that newly added cake photographs uploaded through the administrative dashboard automatically receive the official **`GoodNews Cake and Catering`** watermark without burdening staff with manual editing:
+Every cake image uploaded via the administrative dashboard automatically receives both watermark zones client-side before binary dispatch to Firebase Storage:
 
-```
-[ Admin Dashboard: Product / Gallery Upload ]
-                     |
-                     v
-   uploadImage(file, folder, onProgress, options)
-                     |
-    folder === 'products' || folder === 'gallery'?
-          /                                \
-        YES                                 NO (e.g., logo, banners)
-         |                                   |
-         v                                   v
-compressImageForUpload(..., watermark=true)   compressImageForUpload(..., watermark=false)
-         |                                   |
-         v                                   v
-drawWatermarkOnCanvas(canvas, ctx)           Standard Compression
-         |                                   |
-         +-----------------+-----------------+
-                           |
-                           v
-          [ Direct Upload to Firebase Storage ]
-```
+1. **Zone 1: Lower-Third Subject Protection Mark**
+   - Transformed with $-6^\circ$ rotation and centered horizontally at $72\%$ image height.
+   - Whisper-soft opacity ($14\%–16\%$) to protect against cropping without obstructing cake details.
+2. **Zone 2: Bottom-Right Corner Brand Signature**
+   - Classic brand signature anchored with $3.5\%$ edge margin.
+   - Dual-luminance adaptation (white on dark backgrounds, charcoal slate on bright backgrounds).
 
 ---
 
-## 2. Implementation Specifications in `storageService.js`
-
-### 2.1 The HTML5 Canvas Watermark Renderer
-The client-side canvas engine inspects the bottom-right corner of the resized image in memory, calculates luminance, and applies the adaptive watermark before binary serialization:
+## 2. Code Implementation in `src/services/storageService.js`
 
 ```javascript
+// Dual-Zone Canvas Watermark Renderer
 export const drawWatermarkOnCanvas = (canvas, ctx) => {
-  if (!canvas || !ctx || typeof canvas.width !== 'number') return;
-  const width = canvas.width;
-  const height = canvas.height;
+    if (!canvas || !ctx || typeof canvas.width !== 'number') return;
+    try {
+        const { width, height } = canvas;
+        const baseDim = Math.min(width, height);
 
-  // 1. Proportional font sizing
-  const baseDim = Math.min(width, height);
-  const fontSize = Math.max(14, Math.min(26, Math.round(baseDim * 0.024)));
-  const margin = Math.max(18, Math.min(36, Math.round(baseDim * 0.035)));
+        // 1. Bottom-Right Corner Signature
+        const cornerFontSize = Math.max(14, Math.min(24, Math.round(baseDim * 0.022)));
+        const marginRight = Math.max(18, Math.min(36, Math.round(width * 0.035)));
+        const marginBottom = Math.max(18, Math.min(36, Math.round(height * 0.035)));
 
-  // 2. Corner luminance detection
-  const sampleW = Math.min(120, width);
-  const sampleH = Math.min(60, height);
-  let isBright = false;
+        // 2. Anti-Crop Lower-Third Subject Watermark
+        const midFontSize = Math.max(16, Math.min(28, Math.round(baseDim * 0.026)));
+        const midX = Math.round(width / 2);
+        const midY = Math.round(height * 0.72);
 
-  try {
-    const imgData = ctx.getImageData(width - sampleW, height - sampleH, sampleW, sampleH);
-    const data = imgData.data;
-    let totalLuminance = 0;
-    const pixelCount = data.length / 4;
-    for (let i = 0; i < data.length; i += 4) {
-      totalLuminance += 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+        // Render Anti-Crop Lower-Third Mark (Angled -6deg, whisper-subtle)
+        ctx.save();
+        ctx.translate(midX, midY);
+        ctx.rotate(-6 * Math.PI / 180);
+        ctx.font = `600 ${midFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowOffsetX = 0.5;
+        ctx.shadowOffsetY = 0.8;
+        ctx.shadowBlur = 2.0;
+        ctx.shadowColor = isMidLight ? 'rgba(255, 255, 255, 0.40)' : 'rgba(0, 0, 0, 0.28)';
+        ctx.fillStyle = isMidLight ? 'rgba(15, 23, 42, 0.14)' : 'rgba(255, 255, 255, 0.16)';
+        ctx.fillText('GOODNEWS CAKE AND CATERING', 0, 0);
+        ctx.restore();
+
+        // Render Bottom-Right Corner Signature
+        ctx.save();
+        ctx.font = `600 ${cornerFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        ctx.shadowOffsetX = 0.5;
+        ctx.shadowOffsetY = 1.0;
+        ctx.shadowBlur = 2.0;
+        ctx.shadowColor = isCornerLight ? 'rgba(255, 255, 255, 0.50)' : 'rgba(0, 0, 0, 0.38)';
+        ctx.fillStyle = isCornerLight ? 'rgba(15, 23, 42, 0.28)' : 'rgba(255, 255, 255, 0.30)';
+        ctx.fillText('GoodNews Cake and Catering', width - marginRight, height - marginBottom);
+        ctx.restore();
+    } catch {
+        // Fallback silently if canvas context error
     }
-    const avgLuminance = totalLuminance / pixelCount;
-    isBright = avgLuminance > 195;
-  } catch (e) {
-    isBright = false;
-  }
-
-  // 3. Render watermark
-  ctx.save();
-  ctx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'bottom';
-
-  const x = width - margin;
-  const y = height - margin;
-  const text = 'GoodNews Cake and Catering';
-
-  if (isBright) {
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.45)';
-    ctx.shadowBlur = 4;
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
-  } else {
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
-    ctx.shadowBlur = 3;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.30)';
-  }
-
-  ctx.fillText(text, x, y);
-  ctx.restore();
-};
-```
-
-### 2.2 Automated Scope Gating in `uploadImage`
-```javascript
-export const uploadImage = async (file, folder = 'products', onProgress = null, options = {}) => {
-  // Determine if image should be watermarked
-  // Auto-watermark products and gallery photos unless explicitly disabled
-  const isCakeAsset = (folder === 'products' || folder === 'gallery');
-  const shouldWatermark = options.watermark !== undefined ? options.watermark : isCakeAsset;
-  
-  const compressed = await compressImageForUpload(file, 1600, 0.88, shouldWatermark);
-  // ... upload compressed blob to Firebase Storage ...
 };
 ```
 
 ---
 
-## 3. Operational Guarantees
+## 3. Scope Gating & Automation
 
-1. **Zero Database Changes:** No database fields, schema changes, or migration scripts were introduced. Watermarking happens in-flight prior to storage.
-2. **Zero Admin Friction:** Bakery administrators do not need to check a box or select watermarking parameters; uploading any cake photograph to catalog products or gallery automatically stamps it.
-3. **Safe Fallbacks:** If the browser or runtime environment lacks HTML5 canvas support, `compressImageForUpload` safely falls back to uploading the original file rather than failing the transaction.
-4. **Explicit Override Capability:** Administrative tasks requiring raw logo uploads or non-watermarked assets can supply `{ watermark: false }` in `options`.
+- **Automatic Trigger:** Triggered for `folder === 'products'` and `folder === 'gallery'` or when `{ isCake: true }` is supplied.
+- **Excluded Folders:** `services` (catering), `logo`, and general UI assets remain un-watermarked.
+- **Zero Admin Burden:** Bakery administrators do not have to manually edit or position marks; uploading a cake photo through the standard dashboard automatically applies the dual-zone brand protection.

@@ -32,7 +32,9 @@ export const drawWatermarkOnCanvas = (canvas, ctx) => {
     try {
         const { width, height } = canvas;
         const baseDim = Math.min(width, height);
-        const fontSize = Math.max(14, Math.min(26, Math.round(baseDim * 0.024)));
+
+        // 1. Bottom-Right Corner Signature
+        const cornerFontSize = Math.max(14, Math.min(24, Math.round(baseDim * 0.022)));
         const marginRight = Math.max(18, Math.min(36, Math.round(width * 0.035)));
         const marginBottom = Math.max(18, Math.min(36, Math.round(height * 0.035)));
 
@@ -43,27 +45,57 @@ export const drawWatermarkOnCanvas = (canvas, ctx) => {
         let totalBrightness = 0;
         let count = 0;
         for (let i = 0; i < cornerData.length; i += 16) {
-            const r = cornerData[i];
-            const g = cornerData[i + 1];
-            const b = cornerData[i + 2];
-            totalBrightness += (r + g + b) / 3;
+            totalBrightness += (cornerData[i] + cornerData[i + 1] + cornerData[i + 2]) / 3;
             count++;
         }
-        const avgBrightness = count > 0 ? totalBrightness / count : 150;
-        const isLightBg = avgBrightness > 195;
+        const cornerAvg = count > 0 ? totalBrightness / count : 150;
+        const isCornerLight = cornerAvg > 195;
 
+        // 2. Anti-Crop Lower-Third Subject Watermark (Anchored across lower body / pedestal)
+        const midFontSize = Math.max(16, Math.min(28, Math.round(baseDim * 0.026)));
+        const midX = Math.round(width / 2);
+        const midY = Math.round(height * 0.72);
+
+        // Analyze mid-lower brightness
+        const sampleW = Math.min(400, Math.round(width * 0.50));
+        const sampleH = Math.min(100, Math.round(height * 0.12));
+        const midLeft = Math.max(0, Math.round((width - sampleW) / 2));
+        const midTop = Math.max(0, Math.round(height * 0.68));
+        const midData = ctx.getImageData(midLeft, midTop, sampleW, sampleH).data;
+        let midTotal = 0;
+        let midCount = 0;
+        for (let i = 0; i < midData.length; i += 16) {
+            midTotal += (midData[i] + midData[i + 1] + midData[i + 2]) / 3;
+            midCount++;
+        }
+        const midAvg = midCount > 0 ? midTotal / midCount : 150;
+        const isMidLight = midAvg > 195;
+
+        // Render Anti-Crop Lower-Third Mark (Angled -6deg, whisper-subtle)
         ctx.save();
-        ctx.font = `600 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+        ctx.translate(midX, midY);
+        ctx.rotate(-6 * Math.PI / 180);
+        ctx.font = `600 ${midFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowOffsetX = 0.5;
+        ctx.shadowOffsetY = 0.8;
+        ctx.shadowBlur = 2.0;
+        ctx.shadowColor = isMidLight ? 'rgba(255, 255, 255, 0.40)' : 'rgba(0, 0, 0, 0.28)';
+        ctx.fillStyle = isMidLight ? 'rgba(15, 23, 42, 0.14)' : 'rgba(255, 255, 255, 0.16)';
+        ctx.fillText('GOODNEWS CAKE AND CATERING', 0, 0);
+        ctx.restore();
+
+        // Render Bottom-Right Corner Signature
+        ctx.save();
+        ctx.font = `600 ${cornerFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
         ctx.textAlign = 'right';
         ctx.textBaseline = 'bottom';
-        
-        // Soft drop shadow / glow
         ctx.shadowOffsetX = 0.5;
         ctx.shadowOffsetY = 1.0;
         ctx.shadowBlur = 2.0;
-        ctx.shadowColor = isLightBg ? 'rgba(255, 255, 255, 0.50)' : 'rgba(0, 0, 0, 0.38)';
-
-        ctx.fillStyle = isLightBg ? 'rgba(15, 23, 42, 0.28)' : 'rgba(255, 255, 255, 0.30)';
+        ctx.shadowColor = isCornerLight ? 'rgba(255, 255, 255, 0.50)' : 'rgba(0, 0, 0, 0.38)';
+        ctx.fillStyle = isCornerLight ? 'rgba(15, 23, 42, 0.28)' : 'rgba(255, 255, 255, 0.30)';
         ctx.fillText('GoodNews Cake and Catering', width - marginRight, height - marginBottom);
         ctx.restore();
     } catch {

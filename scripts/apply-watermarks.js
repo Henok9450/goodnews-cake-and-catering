@@ -5,43 +5,78 @@ const path = require('path');
 const WATERMARK_TEXT = 'GoodNews Cake and Catering';
 
 /**
- * Creates an SVG watermark buffer tailored for the given dimensions and corner brightness.
+ * Creates an SVG watermark buffer tailored for the given dimensions and luminance.
+ * Implements DUAL-ZONE protection:
+ * 1. Bottom-Right Corner Brand Signature
+ * 2. Anti-Crop Lower-Third Subject Overlay (slight -6deg tilt, whisper-subtle ~15% opacity)
  */
-function createWatermarkSvg(width, height, cornerBrightness = 150) {
+function createWatermarkSvg(width, height, cornerBrightness = 150, midBrightness = 150) {
   const baseDim = Math.min(width, height);
-  const fontSize = Math.max(14, Math.min(26, Math.round(baseDim * 0.024)));
   
+  // 1. Corner Signature Parameters
+  const cornerFontSize = Math.max(14, Math.min(24, Math.round(baseDim * 0.022)));
   const marginRight = Math.max(18, Math.min(36, Math.round(width * 0.035)));
   const marginBottom = Math.max(18, Math.min(36, Math.round(height * 0.035)));
   
-  const isLightBg = cornerBrightness > 195;
-  const textColor = isLightBg ? '#0F172A' : '#FFFFFF';
-  const textOpacity = isLightBg ? 0.28 : 0.30;
-  const shadowColor = isLightBg ? '#FFFFFF' : '#000000';
-  const shadowOpacity = isLightBg ? 0.40 : 0.35;
+  const isCornerLight = cornerBrightness > 195;
+  const cornerTextColor = isCornerLight ? '#0F172A' : '#FFFFFF';
+  const cornerTextOpacity = isCornerLight ? 0.28 : 0.30;
+  const cornerShadowColor = isCornerLight ? '#FFFFFF' : '#000000';
+  const cornerShadowOpacity = isCornerLight ? 0.40 : 0.35;
 
-  const textX = width - marginRight;
-  const textY = height - marginBottom;
+  const cornerX = width - marginRight;
+  const cornerY = height - marginBottom;
+
+  // 2. Anti-Crop Lower-Third Subject Overlay
+  const midFontSize = Math.max(16, Math.min(28, Math.round(baseDim * 0.026)));
+  const midX = Math.round(width / 2);
+  const midY = Math.round(height * 0.72);
+  
+  const isMidLight = midBrightness > 195;
+  const midTextColor = isMidLight ? '#0F172A' : '#FFFFFF';
+  const midTextOpacity = isMidLight ? 0.14 : 0.16; // Whisper-subtle so cake decorations stay 100% visible
+  const midShadowColor = isMidLight ? '#FFFFFF' : '#000000';
+  const midShadowOpacity = isMidLight ? 0.30 : 0.25;
 
   const svg = `
   <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <filter id="wm-shadow" x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow dx="0.5" dy="1.0" stdDeviation="1.0" flood-color="${shadowColor}" flood-opacity="${shadowOpacity}"/>
+      <filter id="corner-shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0.5" dy="1.0" stdDeviation="1.0" flood-color="${cornerShadowColor}" flood-opacity="${cornerShadowOpacity}"/>
+      </filter>
+      <filter id="mid-shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0.5" dy="0.8" stdDeviation="1.2" flood-color="${midShadowColor}" flood-opacity="${midShadowOpacity}"/>
       </filter>
     </defs>
     <style>
-      .wm-text {
+      .wm-corner {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: ${fontSize}px;
+        font-size: ${cornerFontSize}px;
         font-weight: 600;
-        letter-spacing: 0.10em;
-        fill: ${textColor};
-        fill-opacity: ${textOpacity};
-        filter: url(#wm-shadow);
+        letter-spacing: 0.08em;
+        fill: ${cornerTextColor};
+        fill-opacity: ${cornerTextOpacity};
+        filter: url(#corner-shadow);
+      }
+      .wm-subject {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: ${midFontSize}px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        fill: ${midTextColor};
+        fill-opacity: ${midTextOpacity};
+        filter: url(#mid-shadow);
       }
     </style>
-    <text x="${textX}" y="${textY}" text-anchor="end" class="wm-text">
+    <!-- Anti-Crop Subject Protection: Lower-Third Tier / Pedestal Anchor -->
+    <g transform="rotate(-6, ${midX}, ${midY})">
+      <text x="${midX}" y="${midY}" text-anchor="middle" class="wm-subject">
+        ${WATERMARK_TEXT}
+      </text>
+    </g>
+    <!-- Bottom-Right Brand Signature -->
+    <text x="${cornerX}" y="${cornerY}" text-anchor="end" class="wm-corner">
       ${WATERMARK_TEXT}
     </text>
   </svg>
@@ -50,7 +85,7 @@ function createWatermarkSvg(width, height, cornerBrightness = 150) {
   return Buffer.from(svg.trim());
 }
 
-async function analyzeCornerBrightness(imagePath, width, height) {
+async function analyzeLuminance(imagePath, width, height) {
   try {
     const cornerW = Math.min(300, Math.round(width * 0.35));
     const cornerH = Math.min(100, Math.round(height * 0.12));
@@ -62,10 +97,25 @@ async function analyzeCornerBrightness(imagePath, width, height) {
         height: cornerH
       })
       .stats();
-    
-    return Math.round(corner.channels.slice(0, 3).reduce((acc, c) => acc + c.mean, 0) / 3);
+    const cornerBrightness = Math.round(corner.channels.slice(0, 3).reduce((acc, c) => acc + c.mean, 0) / 3);
+
+    const midW = Math.min(500, Math.round(width * 0.60));
+    const midH = Math.min(120, Math.round(height * 0.15));
+    const midLeft = Math.max(0, Math.round((width - midW) / 2));
+    const midTop = Math.max(0, Math.round(height * 0.68));
+    const mid = await sharp(imagePath)
+      .extract({
+        left: midLeft,
+        top: midTop,
+        width: midW,
+        height: midH
+      })
+      .stats();
+    const midBrightness = Math.round(mid.channels.slice(0, 3).reduce((acc, c) => acc + c.mean, 0) / 3);
+
+    return { cornerBrightness, midBrightness };
   } catch (e) {
-    return 150; // default mid-tone
+    return { cornerBrightness: 150, midBrightness: 150 };
   }
 }
 
@@ -100,7 +150,7 @@ async function processFolder(folderName) {
     const srcPath = path.join(sourceDir, filename);
     const backupPath = path.join(backupDir, filename);
 
-    // 1. Permanent Pristine Backup
+    // 1. Ensure pristine backup exists
     if (!fs.existsSync(backupPath)) {
       fs.copyFileSync(srcPath, backupPath);
       console.log(`  [BACKUP] Preserved pristine source: ${backupPath}`);
@@ -108,8 +158,8 @@ async function processFolder(folderName) {
 
     // Always process from the untouched pristine backup
     const meta = await sharp(backupPath).metadata();
-    const cornerBrightness = await analyzeCornerBrightness(backupPath, meta.width, meta.height);
-    const watermarkSvg = createWatermarkSvg(meta.width, meta.height, cornerBrightness);
+    const { cornerBrightness, midBrightness } = await analyzeLuminance(backupPath, meta.width, meta.height);
+    const watermarkSvg = createWatermarkSvg(meta.width, meta.height, cornerBrightness, midBrightness);
 
     // 2. Generate Watermarked Full-Resolution Primary Asset
     const baseExt = path.extname(filename).toLowerCase();
@@ -154,7 +204,7 @@ async function processFolder(folderName) {
     const webpStats = fs.statSync(webpPath);
     const cardStats = fs.statSync(cardWebpPath);
 
-    console.log(`  ✓ Watermarked: ${filename} (${meta.width}x${meta.height}) | Corner Brightness: ${cornerBrightness} | Primary: ${Math.round(stats.size/1024)}KB | WebP: ${Math.round(webpStats.size/1024)}KB | Card: ${Math.round(cardStats.size/1024)}KB`);
+    console.log(`  ✓ Dual-Watermarked: ${filename} (${meta.width}x${meta.height}) | Corner: ${cornerBrightness}, Mid: ${midBrightness} | Primary: ${Math.round(stats.size/1024)}KB | WebP: ${Math.round(webpStats.size/1024)}KB | Card: ${Math.round(cardStats.size/1024)}KB`);
 
     inventory.push({
       folder: folderName,
@@ -162,6 +212,7 @@ async function processFolder(folderName) {
       width: meta.width,
       height: meta.height,
       cornerBrightness,
+      midBrightness,
       backupPath,
       publicPath: srcPath,
       webpPath,
@@ -176,25 +227,15 @@ async function processFolder(folderName) {
 }
 
 async function main() {
-  console.log('Starting GoodNews Cake and Catering Watermark Pipeline...');
+  console.log('Starting GoodNews Cake and Catering Dual-Zone Watermark Pipeline...');
   const cakesInv = await processFolder('cakes');
   const seasonalInv = await processFolder('seasonal');
-
-  const total = cakesInv.length + seasonalInv.length;
-  console.log(`\n========================================`);
-  console.log(`WATERMARK PIPELINE COMPLETE!`);
-  console.log(`Total Cake Photographs Watermarked: ${total}`);
-  console.log(`  - Cakes Gallery: ${cakesInv.length}`);
-  console.log(`  - Seasonal / Holiday Cakes: ${seasonalInv.length}`);
-  console.log(`All original source files preserved in public/images/originals/`);
-  console.log(`========================================`);
-
-  // Write inventory JSON for QA reporting
-  const reportPath = path.join(__dirname, '../originals/watermark-inventory.json');
-  fs.writeFileSync(reportPath, JSON.stringify([...cakesInv, ...seasonalInv], null, 2));
+  
+  const fullInventory = [...cakesInv, ...seasonalInv];
+  const invPath = path.join(__dirname, '../originals/watermark-inventory.json');
+  fs.writeFileSync(invPath, JSON.stringify(fullInventory, null, 2));
+  console.log(`\nInventory successfully written to ${invPath}`);
+  console.log(`Total Cake Photographs Dual-Watermarked: ${fullInventory.length}`);
 }
 
-main().catch(err => {
-  console.error('Fatal error during watermarking:', err);
-  process.exit(1);
-});
+main().catch(console.error);

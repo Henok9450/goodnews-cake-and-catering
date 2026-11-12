@@ -59,7 +59,10 @@ const OptimizedImage = ({
   const imgFitClass = objectFit === 'cover' ? 'object-cover' : 'object-contain';
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+    <div
+      className="relative w-full h-full flex items-center justify-center overflow-hidden select-none"
+      onContextMenu={(e) => e.preventDefault()}
+    >
       {/* Shimmer skeleton placeholder */}
       {!isLoaded && !hasError && (
         <div
@@ -76,7 +79,7 @@ const OptimizedImage = ({
           <span className="text-xs text-gray-500 font-medium">Image preview</span>
         </div>
       ) : isLocalImage && webpFullSrc ? (
-        <picture className={`${pictureClassName}`}>
+        <picture className={`${pictureClassName} select-none pointer-events-auto`}>
           <source
             type="image/webp"
             srcSet={
@@ -94,9 +97,12 @@ const OptimizedImage = ({
             loading={priority ? 'eager' : 'lazy'}
             fetchPriority={priority ? 'high' : 'auto'}
             decoding={priority ? 'sync' : 'async'}
+            draggable="false"
+            onContextMenu={(e) => e.preventDefault()}
             onClick={onClick}
             onLoad={handleLoad}
             onError={handleError}
+            style={{ WebkitUserDrag: 'none', userSelect: 'none' }}
             className={`${className} ${imgFitClass} transition-opacity duration-300 ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
@@ -111,9 +117,12 @@ const OptimizedImage = ({
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority ? 'high' : 'auto'}
           decoding={priority ? 'sync' : 'async'}
+          draggable="false"
+          onContextMenu={(e) => e.preventDefault()}
           onClick={onClick}
           onLoad={handleLoad}
           onError={handleError}
+          style={{ WebkitUserDrag: 'none', userSelect: 'none' }}
           className={`${className} ${imgFitClass} transition-opacity duration-300 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
