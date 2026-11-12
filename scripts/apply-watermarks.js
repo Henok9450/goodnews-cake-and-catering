@@ -268,12 +268,15 @@ async function main() {
   console.log('Starting GoodNews Cake and Catering 360-Degree Crop-Proof Watermark Pipeline...');
   const cakesInv = await processFolder('cakes');
   const seasonalInv = await processFolder('seasonal');
+  const cupcakesInv = await processFolder('cupcakes');
+  const cookiesInv = await processFolder('cookies');
+  const cateringInv = await processFolder('catering');
   
-  const fullInventory = [...cakesInv, ...seasonalInv];
+  const fullInventory = [...cakesInv, ...seasonalInv, ...cupcakesInv, ...cookiesInv, ...cateringInv];
   const invPath = path.join(__dirname, '../originals/watermark-inventory.json');
   fs.writeFileSync(invPath, JSON.stringify(fullInventory, null, 2));
   console.log(`\nInventory successfully written to ${invPath}`);
-  console.log(`Total Cake Photographs Crop-Proof Watermarked: ${fullInventory.length}`);
+  console.log(`Total Food & Catering Photographs Crop-Proof Watermarked: ${fullInventory.length}`);
 }
 
 main().catch(console.error);

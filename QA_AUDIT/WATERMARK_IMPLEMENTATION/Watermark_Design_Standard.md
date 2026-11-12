@@ -1,63 +1,43 @@
 # GoodNews Cake and Catering – Watermark Design Standard
 
-**Version:** 3.0.0 (360-Degree Crop-Proof, Screenshot Capture, & Direct Download Standard)  
+**Version:** 4.0.0 (Complete Enterprise Portfolio Protection: Cakes, Seasonal, Cupcakes, Cookies, & Catering)  
 **Effective Date:** November 2026  
-**Applicability:** All Cake Photographs (Homepage, Catalog, Detail Modals, Seasonal/Holiday Gallery, and Future Admin Uploads)  
+**Applicability:** All Public Portfolio Photography (Cakes, Seasonal Holidays, Cupcakes, Cookies, Catering Banquets, and Future Admin Uploads)  
 **Status:** Approved & Implemented
 
 ---
 
-## 1. Executive Summary & Design Rationale
+## 1. Executive Summary & Full Portfolio Scope
 
-To address both image theft by edge-cropping (from top, bottom, or sides) and unauthorized screenshot sharing, Version 3.0.0 implements a **Four-Pillar Asset Protection System**:
+All 75 food and catering photographs displayed across the GoodNews Cake and Catering platform are protected with the **Four-Pillar 360-Degree Crop-Proof Asset Protection System**:
 
-1. **Center Core Diagonal Ribbon:** Angled across the absolute center $(50\%, 50\%)$ of every cake photo. It is mathematically impossible to crop out from any side (top, bottom, left, or right) without deleting the entire cake.
-2. **Secondary Upper & Lower Ribbons:** Angled at $-22^\circ$ across $y = 28\%$ and $y = 72\%$ to protect against aggressive asymmetrical cropping.
-3. **On-Screen UI Screenshot Watermarking:** Rendered dynamically inside `<OptimizedImage>` across live web views. Any screenshot taken via mobile, tablet, or desktop Snipping Tool inherently captures the official "GoodNews Cake and Catering" branding.
-4. **Authorized Watermarked Download:** Users, customers, and staff can freely right-click and save images or click the **"Save Photo" / "Download Watermarked Photo"** button inside the product modals, receiving the high-resolution crop-proof watermarked image directly.
-
----
-
-## 2. Photographic Watermark Specifications
-
-### 2.1 Center Core Diagonal Ribbon
-- **Position:** Centered at $(width/2, height/2)$, rotated $-22^\circ$.
-- **Text:** `GOODNEWS CAKE AND CATERING`
-- **Font:** `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
-- **Weight:** 600 (Semi-Bold), Uppercase
-- **Tracking:** `0.18em` (Luxury spaced typography)
-- **Scaling:** $\text{clamp}(18\text{px}, \text{baseDim} \times 0.028, 32\text{px})$
-- **Luminance Adaptivity:**
-  - Dark/Mid Backgrounds ($\le 195$): Ivory `#FFFFFF` @ $22\%$ opacity, soft dark shadow `#000000` @ $30\%$.
-  - Bright Backgrounds ($> 195$): Charcoal `#0F172A` @ $20\%$ opacity, soft halo `#FFFFFF` @ $35\%$.
-
-### 2.2 Secondary Diagonal Ribbons
-- **Positions:** Upper ($y = 28\%$ height) and Lower ($y = 72\%$ height), rotated $-22^\circ$.
-- **Text:** `GOODNEWS CAKE AND CATERING`
-- **Opacity:** $14\%–16\%$ (whisper-subtle secondary tier).
-
-### 2.3 Corner Brand Signature
-- **Position:** Bottom-right corner ($3.5\%$ edge margin).
-- **Text:** `GoodNews Cake and Catering`
-- **Opacity:** $28\%–30\%$.
+1. **Center Core Diagonal Ribbon:** Angled at $-22^\circ$ across $(50\%, 50\%)$. Cannot be cropped from top, bottom, left, or right without destroying the food presentation.
+2. **Secondary Upper & Lower Ribbons:** Protects against aggressive asymmetrical crops.
+3. **On-Screen UI Screenshot Watermarking:** Dynamic React overlay in `<OptimizedImage>` guarantees that any screenshot captured on mobile or desktop includes official GoodNews branding.
+4. **Direct Authorized Download:** Users and staff can right-click to save or click the dedicated **"Save Photo" / "Download Watermarked Photo"** button across all modals (Gallery, Seasonal, Cupcakes, Cookies, Catering).
 
 ---
 
-## 3. Web UI Screenshot Protection Overlay
+## 2. Protected Portfolio Scope
 
-Integrated within `src/components/common/OptimizedImage.jsx`:
-- For all cake imagery, a non-intrusive semi-transparent overlay displays:
-  - Upper ribbon (`text-white/20`)
-  - Center core ribbon (`text-white/30` with `drop-shadow`)
-  - Lower ribbon (`text-white/20`)
-  - Bottom-right signature (`text-white/45`)
-- When any user captures a screenshot (mobile screen grab, PrintScreen, Snipping Tool), the watermark is physically embedded into their screenshot directly from the screen!
+| Category | Directory Path | Asset Count | Protection Status | Master Backup |
+| :--- | :--- | -: | :--- | :--- |
+| **Standard Cakes** | `public/images/cakes/` | 19 | 360° Crop-Proof Watermarked | `originals/cakes/` |
+| **Seasonal & Cultural** | `public/images/seasonal/` | 29 | 360° Crop-Proof Watermarked | `originals/seasonal/` |
+| **Cupcakes** | `public/images/cupcakes/` | 9 | 360° Crop-Proof Watermarked | `originals/cupcakes/` |
+| **Cookies** | `public/images/cookies/` | 9 | 360° Crop-Proof Watermarked | `originals/cookies/` |
+| **Catering Services** | `public/images/catering/` | 9 | 360° Crop-Proof Watermarked | `originals/catering/` |
+| **Official Logos** | `public/images/logo/` | — | Pristine Vectors (Excluded) | Excluded |
+| **Total Assets** | | **75** | | |
 
 ---
 
-## 4. Direct Watermarked Photo Download
+## 3. Watermark Typography & Luminance Adaptation
 
-- Available in `CakeModal` (`src/pages/Gallery.jsx`) and `SeasonalModal` (`src/pages/Seasonal.jsx`).
-- Features dedicated **"Save Photo"** and **"Download Watermarked Photo"** buttons.
-- Right-click "Save Image As..." is completely enabled.
-- All downloaded files contain the full-resolution 360-degree crop-proof watermark.
+- **Primary Text:** `GoodNews Cake and Catering`
+- **Typography:** `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
+- **Center Ribbon Opacity:** $20\%–22\%$ with adaptive contrast.
+  - Dark/Mid Background ($\le 195$): Ivory `#FFFFFF`, soft shadow `#000000` @ $30\%$.
+  - Bright Background ($> 195$): Charcoal Slate `#0F172A`, soft halo `#FFFFFF` @ $35\%$.
+- **Secondary Ribbons Opacity:** $14\%–16\%$.
+- **Corner Signature Opacity:** $28\%–30\%$.

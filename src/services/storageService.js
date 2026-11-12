@@ -225,8 +225,9 @@ export const uploadImage = async (file, folder = 'products', onProgress = null, 
         throw new Error(validation.error);
     }
 
-    // Automatically watermark cake products and cake gallery items
-    const shouldWatermark = (folder === 'products' || folder === 'gallery' || options.isCake === true);
+    // Automatically watermark all product, catering, cupcake, cookie, and gallery items
+    const isFoodFolder = ['products', 'gallery', 'catering', 'cupcakes', 'cookies', 'services'].includes(folder);
+    const shouldWatermark = options.watermark !== undefined ? options.watermark : isFoodFolder;
 
     // Client-side pre-compression and watermarking
     const uploadReadyFile = await compressImageForUpload(file, 1600, 0.88, shouldWatermark);

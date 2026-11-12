@@ -64,13 +64,18 @@ describe('GoodNews Cake Watermark Verification Suite', () => {
     expect(files).toContain('wedding-cake-grand-card.webp');
   });
 
-  test('WM-005: Non-cake assets (catering, cookies, cupcakes, logo) do not exist in originals backup', () => {
+  test('WM-005: All food & catering assets are protected while raw logo remains un-watermarked', () => {
     const originalsDir = path.join(rootDir, 'originals');
     const folders = fs.readdirSync(originalsDir);
 
-    expect(folders).not.toContain('catering');
-    expect(folders).not.toContain('cookies');
-    expect(folders).not.toContain('cupcakes');
+    // Food & catering portfolios are backed up and watermarked
+    expect(folders).toContain('catering');
+    expect(folders).toContain('cookies');
+    expect(folders).toContain('cupcakes');
+    expect(folders).toContain('cakes');
+    expect(folders).toContain('seasonal');
+
+    // Logo brand marks remain pristine
     expect(folders).not.toContain('logo');
   });
 });

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import OptimizedImage from '../components/common/OptimizedImage';
 import SEOHead from '../components/common/SEOHead';
-import { Share2, MessageCircle } from 'lucide-react';
+import { Share2, MessageCircle, Download } from 'lucide-react';
 
 const cateringItems = [
   {
@@ -186,6 +186,17 @@ const Catering = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch (e) {}
+  };
+
+  const handleDownloadPhoto = () => {
+    if (!currentImage) return;
+    const link = document.createElement('a');
+    link.href = currentImage;
+    const cleanTitle = (currentImageTitle || 'Catering').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    link.download = `GoodNews-Catering-${cleanTitle}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleInputChange = (e) => {
@@ -413,15 +424,26 @@ const Catering = () => {
 
             {/* Social Share & WhatsApp Consultation Row */}
             <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="inline-flex items-center gap-1.5 text-gray-500 hover:text-primary-600 font-medium py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
-                title="Copy shareable link to this catering package"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                <span>{copied ? '✓ Link Copied!' : 'Share Package'}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleDownloadPhoto}
+                  className="inline-flex items-center gap-1.5 text-primary-700 hover:text-primary-800 font-semibold py-1.5 px-3 rounded-lg bg-primary-50 hover:bg-primary-100 transition-colors"
+                  title="Download official watermarked photo"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Save Photo</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center gap-1.5 text-gray-500 hover:text-primary-600 font-medium py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  title="Copy shareable link to this catering package"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>{copied ? '✓ Link Copied!' : 'Share Package'}</span>
+                </button>
+              </div>
               <div className="flex items-center gap-3">
                 <a
                   href={`https://wa.me/251917559943?text=${encodeURIComponent(`Hello GoodNews Cake, I would like to inquire about the "${currentImageTitle}" catering package: ${window.location.href}`)}`}

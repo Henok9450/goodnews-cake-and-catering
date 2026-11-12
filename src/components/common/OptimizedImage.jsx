@@ -58,8 +58,14 @@ const OptimizedImage = ({
 
   const imgFitClass = objectFit === 'cover' ? 'object-cover' : 'object-contain';
 
-  // Check if image is a cake photograph requiring on-screen watermark
-  const isCakeImage = typeof src === 'string' && (src.includes('/cakes/') || src.includes('/seasonal/'));
+  // Check if image is a product or service photograph requiring on-screen watermark
+  const isProtectedFoodImage = typeof src === 'string' && (
+    src.includes('/cakes/') ||
+    src.includes('/seasonal/') ||
+    src.includes('/cupcakes/') ||
+    src.includes('/cookies/') ||
+    src.includes('/catering/')
+  );
 
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
@@ -124,7 +130,7 @@ const OptimizedImage = ({
       )}
 
       {/* On-Screen Watermark Overlay for Live View & Screenshot Capture (Un-croppable from all sides) */}
-      {isCakeImage && isLoaded && !hasError && (
+      {isProtectedFoodImage && isLoaded && !hasError && (
         <div 
           className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center overflow-hidden z-20 select-none"
           aria-hidden="true"

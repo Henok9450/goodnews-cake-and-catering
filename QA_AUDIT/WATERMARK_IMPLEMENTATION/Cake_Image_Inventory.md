@@ -1,16 +1,20 @@
-# GoodNews Cake and Catering – Cake Image Inventory & 360° Crop-Proof Watermark Audit
+# GoodNews Cake and Catering – Full Portfolio Crop-Proof Watermark Inventory & Audit
 
-**Total 360° Crop-Proof Watermarked Cake Assets:** 48 photographs (19 Standard Catalog, 29 Seasonal & Cultural Holidays)
-**Preserved Master Backups:** originals/cakes/ and originals/seasonal/
+**Total Watermarked Portfolio Assets:** 75 photographs across all categories
+**Scope:** Cakes (19), Seasonal Holidays (29), Cupcakes (9), Cookies (9), Catering Banquets (9)
+**Preserved Master Backups:** originals/ (cakes, seasonal, cupcakes, cookies, catering)
 **Protection Strategy:** 360-Degree Crop-Proof (Center Core Diagonal + Upper/Lower Secondary Diagonals + Corner Signature + On-Screen UI Capture + Direct Download)
 
-## 1. Inventory Summary
+## 1. Inventory Summary by Category
 
 | Category | Directory | Count | Formats | WebP Derivatives | Card Derivatives |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| Standard Cakes | public/images/cakes/ | 19 | PNG, JPG, WebP | 19 | 19 |
+| Cakes | public/images/cakes/ | 19 | PNG, JPG, WebP | 19 | 19 |
 | Seasonal / Cultural | public/images/seasonal/ | 29 | PNG, JPG | 29 | 29 |
-| **Total** | | **48** | | **48** | **48** |
+| Cupcakes | public/images/cupcakes/ | 9 | PNG, JPG | 9 | 9 |
+| Cookies | public/images/cookies/ | 9 | PNG | 9 | 9 |
+| Catering Services | public/images/catering/ | 9 | PNG | 9 | 9 |
+| **Total** | | **75** | | **75** | **75** |
 
 ## 2. Complete Asset Matrix
 
@@ -64,3 +68,30 @@
 | 46 | traditional.png | seasonal | 1024x1024 | 79 | 79 | 520 KB | 247 KB | 68 KB |
 | 47 | valentine-heart.png | seasonal | 1024x1024 | 206 | 206 | 363 KB | 62 KB | 20 KB |
 | 48 | vegan.png | seasonal | 1024x1024 | 148 | 148 | 435 KB | 115 KB | 37 KB |
+| 49 | cupcake1.png | cupcakes | 1200x800 | 93 | 93 | 425 KB | 350 KB | 90 KB |
+| 50 | cupcake2.png | cupcakes | 1024x1024 | 157 | 157 | 355 KB | 122 KB | 57 KB |
+| 51 | cupcake3.png | cupcakes | 1024x1024 | 124 | 124 | 393 KB | 185 KB | 68 KB |
+| 52 | cupcake4.png | cupcakes | 1024x1024 | 168 | 168 | 456 KB | 198 KB | 51 KB |
+| 53 | cupcake5.png | cupcakes | 1024x1024 | 95 | 95 | 265 KB | 146 KB | 56 KB |
+| 54 | cupcake6.png | cupcakes | 1200x800 | 132 | 132 | 275 KB | 259 KB | 79 KB |
+| 55 | cupcake7.png | cupcakes | 1200x800 | 93 | 93 | 429 KB | 224 KB | 57 KB |
+| 56 | cupcake8.jpg | cupcakes | 960x960 | 148 | 148 | 131 KB | 113 KB | 46 KB |
+| 57 | cupcake9.png | cupcakes | 800x1200 | 107 | 107 | 288 KB | 176 KB | 103 KB |
+| 58 | cookie1.png | cookies | 800x1200 | 101 | 101 | 442 KB | 166 KB | 75 KB |
+| 59 | cookie2.png | cookies | 800x1200 | 47 | 47 | 449 KB | 182 KB | 90 KB |
+| 60 | cookie3.png | cookies | 1024x1024 | 115 | 115 | 635 KB | 265 KB | 71 KB |
+| 61 | cookie4.png | cookies | 1024x1024 | 127 | 127 | 522 KB | 274 KB | 86 KB |
+| 62 | cookie5.png | cookies | 1024x1024 | 122 | 122 | 541 KB | 221 KB | 58 KB |
+| 63 | cookie6.png | cookies | 1024x1024 | 122 | 122 | 513 KB | 188 KB | 49 KB |
+| 64 | cookie7.png | cookies | 1024x1024 | 155 | 155 | 530 KB | 210 KB | 62 KB |
+| 65 | cookie8.png | cookies | 1024x1024 | 127 | 127 | 540 KB | 243 KB | 71 KB |
+| 66 | cookie9.png | cookies | 800x1200 | 134 | 134 | 441 KB | 144 KB | 64 KB |
+| 67 | catering1.png | catering | 1200x800 | 103 | 103 | 384 KB | 334 KB | 92 KB |
+| 68 | catering2.png | catering | 1200x800 | 122 | 122 | 270 KB | 259 KB | 80 KB |
+| 69 | catering3.png | catering | 1200x800 | 130 | 130 | 192 KB | 148 KB | 47 KB |
+| 70 | catering4.png | catering | 800x1200 | 126 | 126 | 306 KB | 273 KB | 173 KB |
+| 71 | catering5.png | catering | 1200x800 | 210 | 210 | 474 KB | 110 KB | 28 KB |
+| 72 | catering6.png | catering | 1200x800 | 98 | 98 | 347 KB | 263 KB | 77 KB |
+| 73 | catering7.png | catering | 1200x800 | 131 | 131 | 305 KB | 229 KB | 72 KB |
+| 74 | catering8.png | catering | 1200x800 | 116 | 116 | 249 KB | 253 KB | 83 KB |
+| 75 | wedding-catering.png | catering | 1200x675 | 181 | 181 | 412 KB | 140 KB | 34 KB |
