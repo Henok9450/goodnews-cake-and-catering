@@ -4,6 +4,7 @@ import { db } from '../config/firebase';
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, CreditCard, ShoppingBag, LogOut, ChevronRight, MapPin, ExternalLink } from 'lucide-react';
+import { calculateOrderStatus, getStatusBadgeStyle } from '../utils/statusUtils';
 
 const Profile = () => {
     const { user, logout } = useAuth();
@@ -136,28 +137,24 @@ const Profile = () => {
                                                         <CreditCard className="w-8 h-8 text-gray-400" />
                                                     </div>
                                                     <div>
-                                                        <div className="flex items-center gap-2 mb-1">
+                                                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                                                             <p className="font-bold text-gray-900">{order.orderNumber}</p>
-                                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                                                order.status === 'Delivered' 
-                                                                    ? 'bg-green-100 text-green-700' 
-                                                                    : 'bg-primary-100 text-primary-700'
-                                                            }`}>
-                                                                {order.status}
+                                                            <span className={getStatusBadgeStyle(order, calculateOrderStatus(order))}>
+                                                                {calculateOrderStatus(order)}
                                                             </span>
                                                         </div>
                                                         <p className="text-sm text-gray-500">{order.orderDate} at {order.orderTime}</p>
-                                                        <p className="text-sm text-gray-600 mt-2 line-clamp-1">{order.orderSummary.split('\n')[0]}</p>
+                                                        <p className="text-sm text-gray-600 mt-2 line-clamp-1">{order.orderSummary?.split('\n')[0]}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex md:flex-col justify-between items-end gap-2">
                                                     <p className="text-xl font-bold text-primary-600">{order.totalPrice}</p>
                                                     <button
                                                         onClick={() => navigate(`/track/${order.orderNumber}`)}
-                                                        className="text-sm font-semibold text-gray-900 border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors inline-flex items-center space-x-2"
+                                                        className="text-xs font-bold text-gray-900 border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors inline-flex items-center space-x-2"
                                                     >
-                                                        <span>Tracking</span>
-                                                        <ExternalLink className="w-4 h-4" />
+                                                        <span>Track Order</span>
+                                                        <ExternalLink className="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
                                             </div>
