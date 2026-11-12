@@ -4,7 +4,7 @@ import { useCart } from '../contexts/CartContext';
 import { getProducts } from '../services/productService';
 import OptimizedImage from '../components/common/OptimizedImage';
 import SEOHead from '../components/common/SEOHead';
-import { Share2, MessageCircle } from 'lucide-react';
+import { Share2, MessageCircle, Download } from 'lucide-react';
 
 const defaultCakes = [
   {
@@ -494,6 +494,17 @@ const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
     } catch (e) {}
   };
 
+  const handleDownloadPhoto = () => {
+    if (!cake || !cake.img) return;
+    const link = document.createElement('a');
+    link.href = cake.img;
+    const cleanTitle = (cake.title || 'Cake').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    link.download = `GoodNews-Cake-${cleanTitle}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (!isOpen || !cake) return null;
 
   return (
@@ -566,17 +577,28 @@ const CakeModal = ({ cake, isOpen, onClose, onOrder, onCustomize }) => {
               </button>
             </div>
 
-            {/* Social Share & WhatsApp Consultation Row */}
-            <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="inline-flex items-center gap-1.5 text-gray-500 hover:text-primary-600 font-medium py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
-                title="Copy shareable link to this cake"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                <span>{copied ? '✓ Link Copied!' : 'Share Cake'}</span>
-              </button>
+            {/* Social Share, Save Photo & WhatsApp Consultation Row */}
+            <div className="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleDownloadPhoto}
+                  className="inline-flex items-center gap-1.5 text-primary-700 hover:text-primary-800 font-semibold py-1.5 px-3 rounded-lg bg-primary-50 hover:bg-primary-100 transition-colors"
+                  title="Download official watermarked photo"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Save Photo</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center gap-1.5 text-gray-500 hover:text-primary-600 font-medium py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
+                  title="Copy shareable link to this cake"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>{copied ? '✓ Link Copied!' : 'Share Cake'}</span>
+                </button>
+              </div>
               <a
                 href={`https://wa.me/251917559943?text=${encodeURIComponent(`Hello GoodNews Cake, I would like to inquire about the "${cake.title}": ${window.location.href}`)}`}
                 target="_blank"

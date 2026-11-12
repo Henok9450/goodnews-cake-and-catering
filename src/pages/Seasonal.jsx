@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import OptimizedImage from '../components/common/OptimizedImage';
-// import { emailService } from '../services/emailService';
+import { Download } from 'lucide-react';
 
 const seasonalItems = [
   {
@@ -547,6 +547,17 @@ const SeasonalOrderFormModal = ({ seasonalItem, isOpen, onClose, orderType }) =>
 
 // Seasonal Modal Component
 const SeasonalModal = ({ seasonalItem, isOpen, onClose, onOrder, onCustomize }) => {
+  const handleDownloadPhoto = () => {
+    if (!seasonalItem || !seasonalItem.img) return;
+    const link = document.createElement('a');
+    link.href = seasonalItem.img;
+    const cleanTitle = (seasonalItem.title || 'Seasonal-Cake').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    link.download = `GoodNews-${cleanTitle}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -616,6 +627,15 @@ const SeasonalModal = ({ seasonalItem, isOpen, onClose, onOrder, onCustomize }) 
                   onClick={() => onCustomize(seasonalItem)}
                 >
                   Customize Order
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownloadPhoto}
+                  className="w-full mt-2 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-primary-700 bg-primary-50 hover:bg-primary-100 transition-colors"
+                  title="Download official watermarked photo"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Watermarked Photo</span>
                 </button>
               </div>
             </div>

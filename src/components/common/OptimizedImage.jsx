@@ -58,11 +58,11 @@ const OptimizedImage = ({
 
   const imgFitClass = objectFit === 'cover' ? 'object-cover' : 'object-contain';
 
+  // Check if image is a cake photograph requiring on-screen watermark
+  const isCakeImage = typeof src === 'string' && (src.includes('/cakes/') || src.includes('/seasonal/'));
+
   return (
-    <div
-      className="relative w-full h-full flex items-center justify-center overflow-hidden select-none"
-      onContextMenu={(e) => e.preventDefault()}
-    >
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
       {/* Shimmer skeleton placeholder */}
       {!isLoaded && !hasError && (
         <div
@@ -79,7 +79,7 @@ const OptimizedImage = ({
           <span className="text-xs text-gray-500 font-medium">Image preview</span>
         </div>
       ) : isLocalImage && webpFullSrc ? (
-        <picture className={`${pictureClassName} select-none pointer-events-auto`}>
+        <picture className={`${pictureClassName}`}>
           <source
             type="image/webp"
             srcSet={
@@ -97,12 +97,9 @@ const OptimizedImage = ({
             loading={priority ? 'eager' : 'lazy'}
             fetchPriority={priority ? 'high' : 'auto'}
             decoding={priority ? 'sync' : 'async'}
-            draggable="false"
-            onContextMenu={(e) => e.preventDefault()}
             onClick={onClick}
             onLoad={handleLoad}
             onError={handleError}
-            style={{ WebkitUserDrag: 'none', userSelect: 'none' }}
             className={`${className} ${imgFitClass} transition-opacity duration-300 ${
               isLoaded ? 'opacity-100' : 'opacity-0'
             }`}
@@ -117,16 +114,38 @@ const OptimizedImage = ({
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority ? 'high' : 'auto'}
           decoding={priority ? 'sync' : 'async'}
-          draggable="false"
-          onContextMenu={(e) => e.preventDefault()}
           onClick={onClick}
           onLoad={handleLoad}
           onError={handleError}
-          style={{ WebkitUserDrag: 'none', userSelect: 'none' }}
           className={`${className} ${imgFitClass} transition-opacity duration-300 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         />
+      )}
+
+      {/* On-Screen Watermark Overlay for Live View & Screenshot Capture (Un-croppable from all sides) */}
+      {isCakeImage && isLoaded && !hasError && (
+        <div 
+          className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center overflow-hidden z-20 select-none"
+          aria-hidden="true"
+        >
+          {/* Upper Subtle Ribbon */}
+          <div className="absolute top-[22%] transform -rotate-12 text-center font-bold tracking-[0.18em] uppercase whitespace-nowrap text-white/20 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] text-xs sm:text-sm">
+            GoodNews Cake and Catering
+          </div>
+          {/* Center Core Ribbon (Un-croppable from top, bottom, or sides) */}
+          <div className="transform -rotate-12 text-center font-bold tracking-[0.20em] uppercase whitespace-nowrap text-white/30 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] text-sm sm:text-base md:text-lg px-4 py-1">
+            GoodNews Cake and Catering
+          </div>
+          {/* Lower Subtle Ribbon */}
+          <div className="absolute bottom-[22%] transform -rotate-12 text-center font-bold tracking-[0.18em] uppercase whitespace-nowrap text-white/20 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] text-xs sm:text-sm">
+            GoodNews Cake and Catering
+          </div>
+          {/* Bottom-Right Signature Badge */}
+          <div className="absolute bottom-2.5 right-2.5 text-[11px] sm:text-xs font-semibold text-white/45 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)] tracking-wider">
+            GoodNews Cake and Catering
+          </div>
+        </div>
       )}
     </div>
   );

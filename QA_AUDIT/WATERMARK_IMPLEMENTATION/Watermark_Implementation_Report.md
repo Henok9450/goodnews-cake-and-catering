@@ -2,56 +2,40 @@
 
 **Project:** GoodNews Cake and Catering  
 **Production URL:** https://goodnews-cake-and-catering.vercel.app/  
-**Feature:** Dual-Zone Anti-Crop Watermark & Web Protection Architecture  
+**Feature:** 360-Degree Crop-Proof Watermark, Screenshot Capture, & Direct Download Architecture  
 **Status:** Verification Passed & Production-Ready  
 **Date:** November 2026
 
 ---
 
-## 1. Architecture & Execution Overview
+## 1. Executive Summary
 
-To defeat image cropping while preserving high aesthetic appeal, a two-zone defense system was engineered:
+In response to image theft via edge cropping and un-watermarked screenshot capture, the platform's asset protection architecture has been elevated to Version 3.0.0:
 
-1. **Dual-Zone Watermark Pipeline (`scripts/apply-watermarks.js`):**
-   - **Corner Brand Signature:** Anchored bottom-right with adaptive contrast.
-   - **Subject Protection Mark:** Whisper-soft ($14\%–16\%$ opacity) brand mark angled at $-6^\circ$ centered at $y \approx 72\%$ height across the cake pedestal/lower tier.
-   - Composited via SIMD-accelerated `sharp` from untouched master images in `originals/`.
-2. **Web UI Anti-Save Layer (`src/components/common/OptimizedImage.jsx`):**
-   - Right-click saving disabled via `onContextMenu={(e) => e.preventDefault()}`.
-   - Image dragging disabled via `draggable="false"` and `WebkitUserDrag: 'none'`.
-   - Touch callout suppressed on mobile devices.
-3. **Admin Upload Future Pipeline (`src/services/storageService.js`):**
-   - HTML5 Canvas engine stamps both corner signature and lower-third subject mark automatically before uploading newly added cake images to Firebase Storage.
+1. **Un-Croppable Center Ribbon:** Core brand ribbon anchored at $(50\%, 50\%)$ makes it impossible to remove the brand by cropping from the top, bottom, left, or right edges.
+2. **On-Screen Screenshot Protection:** Dynamic React UI overlay baked into `<OptimizedImage>` guarantees that every screenshot captured by a user directly from the web app includes the "GoodNews Cake and Catering" branding.
+3. **Direct Photo Download Feature:** Right-click context menus are fully enabled, and dedicated "Save Photo" / "Download Watermarked Photo" buttons allow customers and bakery staff to download high-resolution watermarked cake photographs.
+4. **Admin Future Upload Pipeline:** `src/services/storageService.js` automatically applies this 360-degree crop-proof pattern to newly uploaded cake photos before sending to Firebase Storage.
 
 ---
 
-## 2. Mathematical Model for Dual-Zone Protection
+## 2. Crop-Proof Geometry & Screenshot Defense
 
 ```
-+-------------------------------------------------------------+
-|                                                             |
-|                       [ CAKE TOPPER ]                       |
-|                                                             |
-|                      [ UPPER TIER(S) ]                      |
-|                                                             |
-|        - - - - - - - - - - - - - - - - - - - - - - -        |
-|        \ GOODNEWS CAKE AND CATERING (14-16% opacity) \      |  <-- Crop-Proof Zone (y=72%)
-|        - - - - - - - - - - - - - - - - - - - - - - -        |
-|                     [ SERVING PEDESTAL ]                    |
-|                                                             |
-|                                   GoodNews Cake and Catering|  <-- Corner Signature (y=96%)
-+-------------------------------------------------------------+
++--------------------------------------------------------------------------------------------------+
+| (Top Crop Blocked)     \  GOODNEWS CAKE AND CATERING (Upper Ribbon) \                            |
+|                                                                                                  |
+| (Left Crop Blocked)  \  GOODNEWS CAKE AND CATERING (Center Core Ribbon) \   (Right Crop Blocked) |
+|                                                                                                  |
+| (Bottom Crop Blocked)  \  GOODNEWS CAKE AND CATERING (Lower Ribbon) \                            |
+|                                                                   GoodNews Cake and Catering     |
++--------------------------------------------------------------------------------------------------+
 ```
-
-### Protection Guarantee:
-- If a bad actor crops out the corner signature (bottom 10%), the cake image still retains `GOODNEWS CAKE AND CATERING` embossed across the pedestal.
-- To remove the secondary mark, an adversary would have to crop out $\ge 35\%$ from the bottom, which severs the cake pedestal and lower decorations, completely ruining the photo.
 
 ---
 
-## 3. Automated Quality Assurance & Verification
+## 3. Preservation & Quality Assurance
 
-Running the test suite executes all 9 test suites and 52 tests:
-- `src/__tests__/watermark_verification.test.js` verifies canvas export, fallback resilience, backup integrity, and derivative creation.
-- `src/__tests__/performance_revalidation.test.js` confirms total image asset payload remains under 50MB.
-- `src/__tests__/functional_regression.test.js` and `seo_master_suite.test.js` pass with zero regressions.
+- All pristine un-watermarked masters remain safely backed up in `originals/cakes/` and `originals/seasonal/`.
+- All 48 images across `public/images/cakes/` and `public/images/seasonal/` have their primary files and responsive WebP variants regenerated.
+- Zero functional regressions; full test suite passing cleanly.

@@ -51,38 +51,74 @@ export const drawWatermarkOnCanvas = (canvas, ctx) => {
         const cornerAvg = count > 0 ? totalBrightness / count : 150;
         const isCornerLight = cornerAvg > 195;
 
-        // 2. Anti-Crop Lower-Third Subject Watermark (Anchored across lower body / pedestal)
-        const midFontSize = Math.max(16, Math.min(28, Math.round(baseDim * 0.026)));
-        const midX = Math.round(width / 2);
-        const midY = Math.round(height * 0.72);
+        // 2. 360-Degree Anti-Crop Ribbon System (Center, Upper, and Lower)
+        const centerFontSize = Math.max(16, Math.min(28, Math.round(baseDim * 0.026)));
+        const centerX = Math.round(width / 2);
+        const centerY = Math.round(height / 2);
+        const upperY = Math.round(height * 0.28);
+        const lowerY = Math.round(height * 0.72);
 
-        // Analyze mid-lower brightness
+        // Analyze center brightness
         const sampleW = Math.min(400, Math.round(width * 0.50));
-        const sampleH = Math.min(100, Math.round(height * 0.12));
-        const midLeft = Math.max(0, Math.round((width - sampleW) / 2));
-        const midTop = Math.max(0, Math.round(height * 0.68));
-        const midData = ctx.getImageData(midLeft, midTop, sampleW, sampleH).data;
-        let midTotal = 0;
-        let midCount = 0;
-        for (let i = 0; i < midData.length; i += 16) {
-            midTotal += (midData[i] + midData[i + 1] + midData[i + 2]) / 3;
-            midCount++;
+        const sampleH = Math.min(120, Math.round(height * 0.15));
+        const centerLeft = Math.max(0, Math.round((width - sampleW) / 2));
+        const centerTop = Math.max(0, Math.round((height - sampleH) / 2));
+        const centerData = ctx.getImageData(centerLeft, centerTop, sampleW, sampleH).data;
+        let centerTotal = 0;
+        let centerCount = 0;
+        for (let i = 0; i < centerData.length; i += 16) {
+            centerTotal += (centerData[i] + centerData[i + 1] + centerData[i + 2]) / 3;
+            centerCount++;
         }
-        const midAvg = midCount > 0 ? midTotal / midCount : 150;
-        const isMidLight = midAvg > 195;
+        const centerAvg = centerCount > 0 ? centerTotal / centerCount : 150;
+        const isCenterLight = centerAvg > 195;
 
-        // Render Anti-Crop Lower-Third Mark (Angled -6deg, whisper-subtle)
+        const ribbonFill = isCenterLight ? 'rgba(15, 23, 42, 0.18)' : 'rgba(255, 255, 255, 0.20)';
+        const ribbonSubFill = isCenterLight ? 'rgba(15, 23, 42, 0.13)' : 'rgba(255, 255, 255, 0.15)';
+        const ribbonShadow = isCenterLight ? 'rgba(255, 255, 255, 0.40)' : 'rgba(0, 0, 0, 0.30)';
+
+        // Render Upper Diagonal Ribbon (Crop-proof against top crop)
         ctx.save();
-        ctx.translate(midX, midY);
-        ctx.rotate(-6 * Math.PI / 180);
-        ctx.font = `600 ${midFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+        ctx.translate(centerX, upperY);
+        ctx.rotate(-22 * Math.PI / 180);
+        ctx.font = `600 ${Math.round(centerFontSize * 0.85)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.shadowOffsetX = 0.5;
         ctx.shadowOffsetY = 0.8;
         ctx.shadowBlur = 2.0;
-        ctx.shadowColor = isMidLight ? 'rgba(255, 255, 255, 0.40)' : 'rgba(0, 0, 0, 0.28)';
-        ctx.fillStyle = isMidLight ? 'rgba(15, 23, 42, 0.14)' : 'rgba(255, 255, 255, 0.16)';
+        ctx.shadowColor = ribbonShadow;
+        ctx.fillStyle = ribbonSubFill;
+        ctx.fillText('GOODNEWS CAKE AND CATERING', 0, 0);
+        ctx.restore();
+
+        // Render Center Core Diagonal Ribbon (Un-croppable from ANY edge!)
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(-22 * Math.PI / 180);
+        ctx.font = `600 ${centerFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowOffsetX = 0.5;
+        ctx.shadowOffsetY = 1.0;
+        ctx.shadowBlur = 2.5;
+        ctx.shadowColor = ribbonShadow;
+        ctx.fillStyle = ribbonFill;
+        ctx.fillText('GOODNEWS CAKE AND CATERING', 0, 0);
+        ctx.restore();
+
+        // Render Lower Diagonal Ribbon (Crop-proof against bottom crop)
+        ctx.save();
+        ctx.translate(centerX, lowerY);
+        ctx.rotate(-22 * Math.PI / 180);
+        ctx.font = `600 ${Math.round(centerFontSize * 0.85)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowOffsetX = 0.5;
+        ctx.shadowOffsetY = 0.8;
+        ctx.shadowBlur = 2.0;
+        ctx.shadowColor = ribbonShadow;
+        ctx.fillStyle = ribbonSubFill;
         ctx.fillText('GOODNEWS CAKE AND CATERING', 0, 0);
         ctx.restore();
 
