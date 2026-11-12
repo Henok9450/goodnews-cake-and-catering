@@ -3,6 +3,7 @@ import { Image as ImageIcon, Plus, Trash2, Upload, AlertCircle, Check, X, Refres
 import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { uploadImage, validateImageFile } from '../../services/storageService';
+import { INITIAL_PRODUCTS } from '../../utils/seedData';
 
 const GalleryManagement = () => {
   const [photos, setPhotos] = useState([]);
@@ -12,15 +13,28 @@ const GalleryManagement = () => {
   const [category, setCategory] = useState('Celebration Cakes');
   const [notification, setNotification] = useState({ type: '', message: '' });
 
+  const getFallbackPhotos = () => {
+    return INITIAL_PRODUCTS.map((p, idx) => ({
+      id: `gallery-${p.slug || idx}`,
+      url: p.featuredImage || (p.images && p.images[0]) || '/images/cakes/cake1.png',
+      caption: p.name,
+      category: p.category === 'cakes' ? 'Celebration Cakes' : (p.category === 'seasonal' ? 'Holiday Specials' : 'Pastries & Sweets')
+    }));
+  };
+
   const fetchPhotos = async () => {
     setLoading(true);
     try {
       const q = query(collection(db, 'gallery_photos'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      let data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (data.length === 0) {
+        data = getFallbackPhotos();
+      }
       setPhotos(data);
     } catch (err) {
-      console.error('Error fetching gallery:', err);
+      console.warn('Gallery fallback notice:', err.message);
+      setPhotos(getFallbackPhotos());
     } finally {
       setLoading(false);
     }

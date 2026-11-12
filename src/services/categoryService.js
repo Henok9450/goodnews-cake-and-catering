@@ -4,6 +4,7 @@ import {
     doc, 
     getDocs, 
     getDoc, 
+    setDoc,
     addDoc, 
     updateDoc, 
     deleteDoc, 
@@ -25,22 +26,36 @@ export const getCategories = async (includeInactive = false) => {
         } catch (idxErr) {
             snapshot = await getDocs(collection(db, COLLECTION));
         }
-        const categories = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        let categories = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Seamless catalog fallback if Firestore collection is empty
+        if (categories.length === 0) {
+            categories = INITIAL_CATEGORIES.map((c, idx) => ({ id: c.slug || `init-cat-${idx + 1}`, ...c }));
+        }
+
         if (!includeInactive) {
             return categories.filter(c => c.isActive !== false);
         }
         return categories;
     } catch (error) {
         console.warn('Firestore categories fetch notice (using catalog fallback):', error.message);
-        return INITIAL_CATEGORIES.map((c, idx) => ({ id: c.id || `init-cat-${idx}`, ...c }));
+        let categories = INITIAL_CATEGORIES.map((c, idx) => ({ id: c.slug || `init-cat-${idx + 1}`, ...c }));
+        if (!includeInactive) {
+            return categories.filter(c => c.isActive !== false);
+        }
+        return categories;
     }
 };
 
 export const getCategoryById = async (id) => {
-    const docRef = doc(db, COLLECTION, id);
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) throw new Error('Category not found');
-    return { id: snap.id, ...snap.data() };
+    try {
+        const docRef = doc(db, COLLECTION, id);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) return { id: snap.id, ...snap.data() };
+    } catch (e) {}
+    const fallback = INITIAL_CATEGORIES.find((c, idx) => c.slug === id || c.id === id || `init-cat-${idx + 1}` === id);
+    if (fallback) return { id: fallback.slug || id, ...fallback };
+    throw new Error('Category not found');
 };
 
 export const createCategory = async (data) => {
@@ -54,8 +69,15 @@ export const createCategory = async (data) => {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
     };
-    const ref = await addDoc(collection(db, COLLECTION), cleanData);
-    return { id: ref.id, ...cleanData };
+    const docId = cleanData.slug;
+    const docRef = doc(db, COLLECTION, docId);
+    try {
+        await setDoc(docRef, cleanData, { merge: true });
+        return { id: docId, ...cleanData };
+    } catch (err) {
+        const ref = await addDoc(collection(db, COLLECTION), cleanData);
+        return { id: ref.id, ...cleanData };
+    }
 };
 
 export const updateCategory = async (id, data) => {
@@ -67,7 +89,14 @@ export const updateCategory = async (id, data) => {
     if (data.name && !data.slug) {
         updateData.slug = data.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
     }
-    await updateDoc(docRef, updateData);
+    try {
+        await updateDoc(docRef, updateData);
+    } catch (err) {
+        await setDoc(docRef, {
+            ...updateData,
+            createdAt: serverTimestamp()
+        }, { merge: true });
+    }
     return { id, ...updateData };
 };
 

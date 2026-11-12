@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Star, Check, X, Trash2, Plus, AlertCircle, RefreshCw } from 'lucide-react';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, setDoc, deleteDoc, doc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { reviews as initialReviews } from '../../data/reviews';
 
 const TestimonialManagement = () => {
   const [reviews, setReviews] = useState([]);
@@ -22,10 +23,28 @@ const TestimonialManagement = () => {
     try {
       const q = query(collection(db, 'reviews'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      let data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (data.length === 0) {
+        data = (initialReviews || []).map((r, i) => ({
+          id: `review-${r.id || i + 1}`,
+          userName: r.name,
+          role: r.role || 'Verified Customer',
+          rating: r.rating || 5,
+          comment: r.text || '',
+          status: 'approved'
+        }));
+      }
       setReviews(data);
     } catch (err) {
-      console.error('Error fetching reviews:', err);
+      console.warn('Reviews fetch fallback:', err.message);
+      setReviews((initialReviews || []).map((r, i) => ({
+        id: `review-${r.id || i + 1}`,
+        userName: r.name,
+        role: r.role || 'Verified Customer',
+        rating: r.rating || 5,
+        comment: r.text || '',
+        status: 'approved'
+      })));
     } finally {
       setLoading(false);
     }

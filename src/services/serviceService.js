@@ -4,6 +4,7 @@ import {
     doc, 
     getDocs, 
     getDoc, 
+    setDoc,
     addDoc, 
     updateDoc, 
     deleteDoc, 
@@ -24,22 +25,36 @@ export const getServices = async (includeDrafts = false) => {
         } catch (idxErr) {
             snapshot = await getDocs(collection(db, COLLECTION));
         }
-        const services = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        let services = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Seamless catalog fallback if Firestore collection is empty
+        if (services.length === 0) {
+            services = INITIAL_SERVICES.map((s, idx) => ({ id: s.slug || `init-serv-${idx + 1}`, ...s }));
+        }
+
         if (!includeDrafts) {
             return services.filter(s => s.status === 'published');
         }
         return services;
     } catch (error) {
         console.warn('Firestore services fetch notice (using catalog fallback):', error.message);
-        return INITIAL_SERVICES.map((s, idx) => ({ id: s.id || `init-serv-${idx}`, ...s }));
+        let services = INITIAL_SERVICES.map((s, idx) => ({ id: s.slug || `init-serv-${idx + 1}`, ...s }));
+        if (!includeDrafts) {
+            return services.filter(s => s.status === 'published');
+        }
+        return services;
     }
 };
 
 export const getServiceById = async (id) => {
-    const docRef = doc(db, COLLECTION, id);
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) throw new Error('Service not found');
-    return { id: snap.id, ...snap.data() };
+    try {
+        const docRef = doc(db, COLLECTION, id);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) return { id: snap.id, ...snap.data() };
+    } catch (e) {}
+    const fallback = INITIAL_SERVICES.find((s, idx) => s.slug === id || s.id === id || `init-serv-${idx + 1}` === id);
+    if (fallback) return { id: fallback.slug || id, ...fallback };
+    throw new Error('Service not found');
 };
 
 export const createService = async (data) => {
@@ -59,8 +74,15 @@ export const createService = async (data) => {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
     };
-    const ref = await addDoc(collection(db, COLLECTION), cleanData);
-    return { id: ref.id, ...cleanData };
+    const docId = cleanData.slug;
+    const docRef = doc(db, COLLECTION, docId);
+    try {
+        await setDoc(docRef, cleanData, { merge: true });
+        return { id: docId, ...cleanData };
+    } catch (err) {
+        const ref = await addDoc(collection(db, COLLECTION), cleanData);
+        return { id: ref.id, ...cleanData };
+    }
 };
 
 export const updateService = async (id, data) => {
@@ -69,7 +91,14 @@ export const updateService = async (id, data) => {
         ...data,
         updatedAt: serverTimestamp()
     };
-    await updateDoc(docRef, updateData);
+    try {
+        await updateDoc(docRef, updateData);
+    } catch (err) {
+        await setDoc(docRef, {
+            ...updateData,
+            createdAt: serverTimestamp()
+        }, { merge: true });
+    }
     return { id, ...updateData };
 };
 

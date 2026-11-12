@@ -4,6 +4,7 @@ import {
     doc, 
     getDocs, 
     getDoc, 
+    setDoc,
     addDoc, 
     updateDoc, 
     deleteDoc, 
@@ -32,6 +33,17 @@ export const getProducts = async (filters = {}) => {
         }
         let products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
+        // Seamless catalog fallback if Firestore collection is empty
+        if (products.length === 0) {
+            products = INITIAL_PRODUCTS.map((p, idx) => ({
+                id: p.slug || `init-${idx + 1}`,
+                stockQuantity: 10,
+                isCustomizable: true,
+                isMadeToOrder: true,
+                ...p
+            }));
+        }
+
         if (category && category !== 'all') {
             products = products.filter(p => p.category === category);
         }
@@ -56,7 +68,13 @@ export const getProducts = async (filters = {}) => {
         return products;
     } catch (error) {
         console.warn('Firestore products fetch notice (using catalog fallback):', error.message);
-        let products = INITIAL_PRODUCTS.map((p, idx) => ({ id: p.id || `init-${idx}`, ...p }));
+        let products = INITIAL_PRODUCTS.map((p, idx) => ({ 
+            id: p.slug || `init-${idx + 1}`, 
+            stockQuantity: 10,
+            isCustomizable: true,
+            isMadeToOrder: true,
+            ...p 
+        }));
         const { category, status = 'all', featuredOnly = false, search = '' } = filters;
         if (category && category !== 'all') products = products.filter(p => p.category === category);
         if (status && status !== 'all') products = products.filter(p => p.status === status);
@@ -73,10 +91,26 @@ export const getProducts = async (filters = {}) => {
 };
 
 export const getProductById = async (id) => {
-    const docRef = doc(db, COLLECTION, id);
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) throw new Error('Product not found');
-    return { id: snap.id, ...snap.data() };
+    try {
+        const docRef = doc(db, COLLECTION, id);
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+            return { id: snap.id, ...snap.data() };
+        }
+    } catch (e) {
+        // Fall back below
+    }
+    const fallback = INITIAL_PRODUCTS.find((p, idx) => p.slug === id || p.id === id || `init-${idx + 1}` === id);
+    if (fallback) {
+        return {
+            id: fallback.slug || id,
+            stockQuantity: 10,
+            isCustomizable: true,
+            isMadeToOrder: true,
+            ...fallback
+        };
+    }
+    throw new Error('Product not found');
 };
 
 export const createProduct = async (data) => {
@@ -106,8 +140,15 @@ export const createProduct = async (data) => {
         updatedAt: serverTimestamp()
     };
 
-    const ref = await addDoc(collection(db, COLLECTION), cleanData);
-    return { id: ref.id, ...cleanData };
+    const docId = cleanData.slug;
+    const docRef = doc(db, COLLECTION, docId);
+    try {
+        await setDoc(docRef, cleanData, { merge: true });
+        return { id: docId, ...cleanData };
+    } catch (writeErr) {
+        const ref = await addDoc(collection(db, COLLECTION), cleanData);
+        return { id: ref.id, ...cleanData };
+    }
 };
 
 export const updateProduct = async (id, data) => {
@@ -119,7 +160,14 @@ export const updateProduct = async (id, data) => {
     if (data.name && !data.slug) {
         updateData.slug = data.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
     }
-    await updateDoc(docRef, updateData);
+    try {
+        await updateDoc(docRef, updateData);
+    } catch (err) {
+        await setDoc(docRef, {
+            ...updateData,
+            createdAt: serverTimestamp()
+        }, { merge: true });
+    }
     return { id, ...updateData };
 };
 
@@ -130,9 +178,17 @@ export const deleteProduct = async (id) => {
 
 export const updateProductStock = async (id, newStock, availabilityStatus = 'in-stock') => {
     const docRef = doc(db, COLLECTION, id);
-    await updateDoc(docRef, {
-        stockQuantity: Number(newStock),
-        availabilityStatus,
-        updatedAt: serverTimestamp()
-    });
+    try {
+        await updateDoc(docRef, {
+            stockQuantity: Number(newStock),
+            availabilityStatus,
+            updatedAt: serverTimestamp()
+        });
+    } catch (err) {
+        await setDoc(docRef, {
+            stockQuantity: Number(newStock),
+            availabilityStatus,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+    }
 };

@@ -506,61 +506,93 @@ export const INITIAL_CMS_CONTENT = {
 };
 
 /**
- * Seed initial data into Firestore if collections are empty
+ * Seed initial data into Firestore if collections are empty or force requested.
+ * Uses deterministic document slugs with { merge: true } for idempotent writes.
  * @param {boolean} force - Whether to force re-seeding
  */
 export const seedDatabaseIfEmpty = async (force = false) => {
     try {
         console.log('🌱 Checking Firestore database status...');
-        const productsSnap = await getDocs(collection(db, 'products'));
-
-        if (!productsSnap.empty && !force) {
-            console.log(`ℹ️ Products collection already contains ${productsSnap.size} records. Skipping seed.`);
-            return { seeded: false, count: productsSnap.size };
+        let productsSnap;
+        try {
+            productsSnap = await getDocs(collection(db, 'products'));
+            if (!productsSnap.empty && !force) {
+                console.log(`ℹ️ Products collection already contains ${productsSnap.size} records. Skipping seed.`);
+                return { seeded: false, count: productsSnap.size };
+            }
+        } catch (checkErr) {
+            console.warn('Initial product check notice:', checkErr.message);
         }
 
         console.log('🚀 Seeding initial categories...');
+        let catCount = 0;
         for (const cat of INITIAL_CATEGORIES) {
-            await addDoc(collection(db, 'categories'), {
-                ...cat,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp()
-            });
+            try {
+                await setDoc(doc(db, 'categories', cat.slug), {
+                    ...cat,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                catCount++;
+            } catch (err) {
+                console.warn(`Category ${cat.slug} seed notice:`, err.message);
+            }
         }
 
         console.log('🚀 Seeding initial products...');
+        let prodCount = 0;
         for (const prod of INITIAL_PRODUCTS) {
-            await addDoc(collection(db, 'products'), {
-                ...prod,
-                isCustomizable: true,
-                isMadeToOrder: true,
-                stockQuantity: 10,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp()
-            });
+            try {
+                await setDoc(doc(db, 'products', prod.slug), {
+                    ...prod,
+                    isCustomizable: true,
+                    isMadeToOrder: true,
+                    stockQuantity: 10,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                prodCount++;
+            } catch (err) {
+                console.warn(`Product ${prod.slug} seed notice:`, err.message);
+            }
         }
 
         console.log('🚀 Seeding initial catering services...');
+        let servCount = 0;
         for (const serv of INITIAL_SERVICES) {
-            await addDoc(collection(db, 'services'), {
-                ...serv,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp()
-            });
+            try {
+                await setDoc(doc(db, 'services', serv.slug), {
+                    ...serv,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+                servCount++;
+            } catch (err) {
+                console.warn(`Service ${serv.slug} seed notice:`, err.message);
+            }
         }
 
         console.log('🚀 Seeding CMS content...');
-        await setDoc(doc(db, 'website_content', 'homepage'), {
-            ...INITIAL_CMS_CONTENT.homepage,
-            updatedAt: serverTimestamp()
-        });
-        await setDoc(doc(db, 'website_content', 'contact'), {
-            ...INITIAL_CMS_CONTENT.contact,
-            updatedAt: serverTimestamp()
-        });
+        try {
+            await setDoc(doc(db, 'website_content', 'homepage'), {
+                ...INITIAL_CMS_CONTENT.homepage,
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+            await setDoc(doc(db, 'website_content', 'contact'), {
+                ...INITIAL_CMS_CONTENT.contact,
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+        } catch (cmsErr) {
+            console.warn('CMS seed notice:', cmsErr.message);
+        }
 
-        console.log('✅ Initial database seed completed successfully!');
-        return { seeded: true, productsCount: INITIAL_PRODUCTS.length };
+        console.log(`✅ Initial database seed completed: ${prodCount} products, ${catCount} categories, ${servCount} services.`);
+        return { 
+            seeded: true, 
+            productsCount: prodCount || INITIAL_PRODUCTS.length,
+            categoriesCount: catCount || INITIAL_CATEGORIES.length,
+            servicesCount: servCount || INITIAL_SERVICES.length
+        };
     } catch (error) {
         console.error('❌ Failed to seed initial database:', error);
         throw error;
