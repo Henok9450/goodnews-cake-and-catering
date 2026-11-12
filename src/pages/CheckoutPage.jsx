@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, ArrowLeft, CheckCircle, Cake, Receipt, AlertCircle } from 'lucide-react';
+import { Trash2, ArrowLeft, CheckCircle, Cake, Receipt, AlertCircle, MessageCircle } from 'lucide-react';
 import { db } from '../config/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
@@ -233,7 +233,7 @@ const CheckoutPage = () => {
                     <p className="text-gray-600 mb-8 text-lg">
                         Thank you for your order, {formData.name}. We have received your request and will contact you shortly at {formData.phone} to confirm details and payment.
                     </p>
-                    <div className="flex gap-4 justify-center">
+                    <div className="flex flex-wrap gap-4 justify-center mb-6">
                         <button
                             onClick={() => navigate(`/track/${orderId}`)}
                             className="btn-primary inline-flex items-center space-x-2"
@@ -248,6 +248,35 @@ const CheckoutPage = () => {
                             <ArrowLeft className="w-4 h-4" />
                             <span>Back to Home</span>
                         </button>
+                    </div>
+
+                    {/* Quick Direct Messaging Confirmation */}
+                    <div className="pt-6 border-t border-green-200">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">
+                            Fast Confirmation via Messaging:
+                        </p>
+                        <div className="flex flex-wrap gap-3 justify-center">
+                            <a
+                                href={`https://t.me/goodnewscake?text=${encodeURIComponent(`Hello GoodNews Cake, I just placed Order #${orderId} for ${formData.name}! Could you please confirm?`)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 transition-colors"
+                            >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.75 4-1.74 6.67-2.88 8.01-3.44 3.81-1.58 4.6-1.86 5.12-1.87.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.36z" />
+                                </svg>
+                                <span>Notify via Telegram</span>
+                            </a>
+                            <a
+                                href={`https://wa.me/251917559943?text=${encodeURIComponent(`Hello GoodNews Cake, I just placed Order #${orderId} for ${formData.name}! Could you please confirm?`)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+                            >
+                                <MessageCircle className="w-4 h-4" />
+                                <span>Notify via WhatsApp</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

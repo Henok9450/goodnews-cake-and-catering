@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { MessageCircle } from 'lucide-react';
 
 const CustomOrder = () => {
   const [formData, setFormData] = useState({
@@ -502,6 +503,40 @@ const CustomOrder = () => {
             )}
           </div>
         </form>
+
+        {/* Direct Telegram & WhatsApp Consultation Box */}
+        <div className="max-w-4xl mx-auto mt-10 p-6 rounded-2xl bg-gradient-to-r from-sky-50 via-white to-emerald-50 border border-gray-200 text-center shadow-xs">
+          <h3 className="font-bold text-gray-900 text-base mb-1">
+            Have a reference photo or special custom design idea?
+          </h3>
+          <p className="text-gray-600 text-xs sm:text-sm mb-4 max-w-lg mx-auto">
+            Chat directly with our master bakers and send your inspiration images on Telegram or WhatsApp.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="https://t.me/goodnewscake?text=Hello%20GoodNews%20Cake,%20I'd%20like%20to%20discuss%20a%20custom%20cake%20design!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-sky-700 bg-white hover:bg-sky-50 border border-sky-200 shadow-xs transition-colors"
+              title="Chat on Telegram"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.75 4-1.74 6.67-2.88 8.01-3.44 3.81-1.58 4.6-1.86 5.12-1.87.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.36z" />
+              </svg>
+              <span>Consult on Telegram</span>
+            </a>
+            <a
+              href="https://wa.me/251917559943?text=Hello%20GoodNews%20Cake,%20I'd%20like%20to%20discuss%20a%20custom%20cake%20design!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-white hover:bg-emerald-50 border border-emerald-200 shadow-xs transition-colors"
+              title="Chat on WhatsApp"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>Consult on WhatsApp</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

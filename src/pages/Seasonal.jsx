@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import OptimizedImage from '../components/common/OptimizedImage';
-import { Download } from 'lucide-react';
+import { Download, MessageCircle } from 'lucide-react';
 
 const seasonalItems = [
   {
@@ -637,6 +637,32 @@ const SeasonalModal = ({ seasonalItem, isOpen, onClose, onOrder, onCustomize }) 
                   <Download className="w-3.5 h-3.5" />
                   <span>Download Watermarked Photo</span>
                 </button>
+
+                {/* Direct Telegram & WhatsApp Order Row */}
+                <div className="pt-3 border-t border-gray-100 flex flex-wrap gap-2">
+                  <a
+                    href={`https://t.me/goodnewscake?text=${encodeURIComponent(`Hello GoodNews Cake, I would like to order the "${seasonalItem.title}": ${window.location.href}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 transition-colors"
+                    title="Order this seasonal cake on Telegram"
+                  >
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.75 4-1.74 6.67-2.88 8.01-3.44 3.81-1.58 4.6-1.86 5.12-1.87.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.21-.04.36z" />
+                    </svg>
+                    <span>Order via Telegram</span>
+                  </a>
+                  <a
+                    href={`https://wa.me/251917559943?text=${encodeURIComponent(`Hello GoodNews Cake, I would like to order the "${seasonalItem.title}": ${window.location.href}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                    title="Order this seasonal cake on WhatsApp"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>Order via WhatsApp</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
