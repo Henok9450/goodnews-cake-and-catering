@@ -27,11 +27,28 @@ const GalleryManagement = () => {
     try {
       const q = query(collection(db, 'gallery_photos'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
-      let data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      if (data.length === 0) {
-        data = getFallbackPhotos();
-      }
-      setPhotos(data);
+      const uploadedData = snap.docs.map(d => ({ id: d.id, ...d.data(), isUploaded: true }));
+      const fallbackPhotos = getFallbackPhotos();
+
+      // Combine: newly uploaded live photos first, followed by development catalog photos
+      const seen = new Set();
+      const combined = [];
+
+      uploadedData.forEach(p => {
+        if (p.url && !seen.has(p.url)) {
+          seen.add(p.url);
+          combined.push(p);
+        }
+      });
+
+      fallbackPhotos.forEach(p => {
+        if (p.url && !seen.has(p.url)) {
+          seen.add(p.url);
+          combined.push(p);
+        }
+      });
+
+      setPhotos(combined);
     } catch (err) {
       console.warn('Gallery fallback notice:', err.message);
       setPhotos(getFallbackPhotos());
@@ -80,7 +97,9 @@ const GalleryManagement = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this photo from gallery?')) return;
     try {
-      await deleteDoc(doc(db, 'gallery_photos', id));
+      if (!id.startsWith('gallery-')) {
+        await deleteDoc(doc(db, 'gallery_photos', id));
+      }
       setPhotos(prev => prev.filter(p => p.id !== id));
       showNotification('success', 'Photo removed.');
     } catch (err) {

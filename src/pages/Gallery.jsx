@@ -665,7 +665,7 @@ const Gallery = () => {
             })
           : [];
 
-        const productCakes = (prods && prods.length > 0)
+        const baseCakes = (prods && prods.length > 0)
           ? prods.map(p => ({
               id: p.id,
               title: p.name,
@@ -675,12 +675,27 @@ const Gallery = () => {
               size: p.size || '1 kg',
               servings: p.servings || '8-10 people'
             }))
-          : [];
+          : defaultCakes;
 
-        const combined = [...uploadedCakes, ...productCakes];
-        if (combined.length > 0) {
-          setLiveCakes(combined);
-        }
+        // Combine: uploaded cakes at the top, followed by development catalog cakes (deduplicated by image)
+        const seen = new Set();
+        const combined = [];
+
+        uploadedCakes.forEach(c => {
+          if (c.img && !seen.has(c.img)) {
+            seen.add(c.img);
+            combined.push(c);
+          }
+        });
+
+        baseCakes.forEach(c => {
+          if (c.img && !seen.has(c.img)) {
+            seen.add(c.img);
+            combined.push(c);
+          }
+        });
+
+        setLiveCakes(combined);
       })
       .catch(err => console.warn('Using default cakes catalog:', err.message));
 
