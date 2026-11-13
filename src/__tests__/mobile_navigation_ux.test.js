@@ -29,14 +29,9 @@ describe('Mobile Navigation Discoverability & UX Improvements', () => {
     expect(headerFile).toContain("ring-2 ring-primary-500 ring-offset-2 animate-pulse");
   });
 
-  test('NAV-005: Horizontal quick-category strip provides instant browse affordance', () => {
-    expect(headerFile).toContain("quickCategories");
-    expect(headerFile).toContain("/gallery");
-    expect(headerFile).toContain("/custom-order");
-    expect(headerFile).toContain("/catering");
-    expect(headerFile).toContain("/cupcakes");
-    expect(headerFile).toContain("/cookies");
-    expect(headerFile).toContain("/track");
+  test('NAV-005: Clean mobile header avoids screen clutter and keeps full catalog organized in MENU drawer', () => {
+    expect(headerFile).not.toContain("quickCategories");
+    expect(headerFile).toContain("id=\"mobile-menu-toggle-btn\"");
   });
 
   test('NAV-006: Redesigned drawer organizes offerings into clear categorized sections', () => {

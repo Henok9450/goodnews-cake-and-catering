@@ -126,16 +126,6 @@ const Header = () => {
     { label: 'About', path: '/about' },
   ];
 
-  const quickCategories = [
-    { label: 'All Cakes', path: '/gallery', icon: '🎂' },
-    { label: 'Custom Cake', path: '/custom-order', icon: '👑' },
-    { label: 'Catering', path: '/catering', icon: '🍱' },
-    { label: 'Cupcakes', path: '/cupcakes', icon: '🧁' },
-    { label: 'Cookies', path: '/cookies', icon: '🍪' },
-    { label: 'Seasonal', path: '/seasonal', icon: '✨' },
-    { label: 'Track Order', path: '/track', icon: '📍' },
-  ];
-
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -348,25 +338,6 @@ const Header = () => {
 
             </div>
           </div>
-        </div>
-
-        {/* MOBILE QUICK CATEGORY HORIZONTAL STRIP (Instant Browse Affordance) */}
-        <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 px-3 py-1.5 overflow-x-auto flex items-center gap-2 text-xs scrollbar-none">
-          {quickCategories.map((cat) => (
-            <Link
-              key={cat.path}
-              to={cat.path}
-              onClick={() => setIsMenuOpen(false)}
-              className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
-                isActive(cat.path)
-                  ? 'bg-primary-600 text-white shadow-xs'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <span role="img" aria-hidden="true">{cat.icon}</span>
-              <span>{cat.label}</span>
-            </Link>
-          ))}
         </div>
 
         {/* ENHANCED EXPANDED MOBILE NAVIGATION DRAWER */}

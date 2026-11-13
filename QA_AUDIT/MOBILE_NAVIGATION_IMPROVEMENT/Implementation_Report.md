@@ -15,7 +15,10 @@ To address the customer navigation discovery and conversion problem on mobile ph
    - Upgraded button to a rounded tactile pill with distinct border and background states.
    - Enforced WCAG 2.2 AA compliant touch target: `min-h-[44px]` and `min-w-[44px]`.
    - Added complete ARIA semantics (`aria-expanded`, `aria-controls="mobile-navigation-drawer"`, and descriptive `aria-label`).
-2. **Subtle First-Visit Onboarding Affordance:**
+2. **Streamlined Mobile Header:**
+   - Evaluated horizontal quick-category chip strip vs. streamlined header.
+   - Per client requirement, the category chip strip beneath the header was removed to ensure a clean, uncluttered mobile browsing experience that keeps 100% of the focus on the prominent **MENU** button and cake gallery.
+3. **Subtle First-Visit Onboarding Affordance:**
    - Automatically detects first-time visitors via `localStorage.getItem('goodnews_menu_discovered')`.
    - Displays a gentle pulsating halo ring (`ring-2 ring-primary-500 animate-pulse`) and an informative floating tooltip:
      > ✨ **"Explore our Cakes & Catering"** (with dismiss button).
