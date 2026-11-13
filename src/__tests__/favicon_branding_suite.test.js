@@ -45,7 +45,7 @@ describe('GoodNews Favicon & Multi-Tab Brand Recognition Suite', () => {
     });
   });
 
-  test('FAV-003: favicon.svg contains SVG vector graphics with brand badge and celebration cake', () => {
+  test('FAV-003: favicon.svg contains SVG vector graphics with brand badge and authentic G monogram', () => {
     const svgPath = path.join(publicDir, 'favicon.svg');
     const content = fs.readFileSync(svgPath, 'utf8');
 
@@ -55,8 +55,9 @@ describe('GoodNews Favicon & Multi-Tab Brand Recognition Suite', () => {
     expect(content).not.toContain('image/png;base64');
     // Brand color ruby red / rose
     expect(content.toLowerCase()).toMatch(/#e11d48|#be123c|#f43f5e/);
-    // Cake elements & candle flame gold
-    expect(content.toLowerCase()).toMatch(/#fbbf24|#f59e0b|#d97706/);
+    // Authentic GoodNews 'G' white lettermark path
+    expect(content).toContain('fill="#ffffff"');
+    expect(content).toContain('<path');
   });
 
   test('FAV-004: public/index.html includes cache-busting version params on favicon links', () => {

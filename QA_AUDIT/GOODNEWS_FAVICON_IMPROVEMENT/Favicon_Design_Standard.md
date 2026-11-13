@@ -1,6 +1,6 @@
 # GoodNews Cake & Catering – Favicon Design Standard & Specification
 
-**Document Version:** 1.0  
+**Document Version:** 2.0 (Authentic Brand Monogram Standard)  
 **Effective Date:** November 13, 2026  
 **Audience:** Brand Designers, Frontend Developers, Design System Maintainers  
 
@@ -10,32 +10,36 @@
 
 A favicon is the smallest, most frequently viewed ambassador of the GoodNews brand. In modern browsers, operating systems, and mobile devices, it appears at sizes ranging from 16×16 pixels up to 512×512 pixels.
 
-The primary design principle is **instant semantic recognition**:
-> When a user glances at a row of open browser tabs, the GoodNews icon must immediately communicate **"Celebration Bakery"** through signature color, silhouette, and high-contrast geometry.
+The primary design principle is **direct brand unity**:
+> The GoodNews favicon is directly derived from the official GoodNews Cake & Catering logo (`logo3.png` / `logo1.png`). It features the authentic, custom red cursive **"G"** letterform rendered in crisp, high-contrast pure white within the signature GoodNews Ruby Red squircle badge.
 
-The full GoodNews wordmark is retained for page headers, packaging, and marketing collateral. The favicon icon serves as the **distilled micro-mark** of the brand.
+This achieves what top global brands (such as Netflix, Pinterest, Facebook, and Google) do:
+- **No invented imagery:** Avoids introducing generic stock-like icons (e.g., generic cakes, ovens, or chef hats) that have no connection to the official company logo.
+- **Immediate visual continuity:** When a visitor transitions between the browser tab, the site header, branded packaging, social media profiles, and delivery bags, they encounter the exact same custom letterform.
 
 ---
 
 ## 2. Visual Anatomy & Color Palette
 
-The GoodNews favicon architecture consists of three core components:
+The GoodNews favicon architecture consists of:
 
 ```
 +-------------------------------------------------------+
-|  [GoodNews Ruby Red Badged Squircle]                 |
+|  [GoodNews Ruby Red Squircle Badge]                  |
 |  (Smooth squircle with subtle vertical gradient &     |
-|   crisp inner highlight border)                       |
+|   subtle inner highlight border)                      |
 |                                                       |
-|             /\   <-- Golden Flame (#fbbf24)          |
-|            (  )                                      |
-|             ||   <-- Candle Wick & Body              |
-|         +--------+                                    |
-|         |~~~~~~~~| <-- Top Tier Frosting (White)      |
-|       +------------+                                  |
-|       |~~~~~~~~~~~~| <-- Base Tier Frosting (White)   |
-|     +----------------+                                |
-|    ==================== <-- Scalloped Cake Platter    |
+|                  .---.                                |
+|                .'     '.                              |
+|               /   ___   \                             |
+|              |   /   \   |                            |
+|              |  |         |                           |
+|              |  |    ___  |                           |
+|              |  |   |   | |                           |
+|               \  \__/   / |  <-- Authentic GoodNews   |
+|                '.     .'  /      Script 'G' Monogram  |
+|                  '---'   /       in Pure White        |
+|                         '                             |
 +-------------------------------------------------------+
 ```
 
@@ -43,30 +47,26 @@ The GoodNews favicon architecture consists of three core components:
 
 | Component | Color Hex Code | Role & Contrast Rationale |
 |---|---|---|
-| **Badge Primary (Ruby Red)** | `#e11d48` | GoodNews signature vibrant red. High chroma, emotionally celebratory. |
-| **Badge Gradient Top (Rose)** | `#f43f5e` | Adds subtle top-light dimension, preventing flatness on retina screens. |
-| **Badge Gradient Bottom (Crimson)** | `#be123c` | Anchors the base of the badge with deep contrast. |
-| **Inner Boundary Highlight** | `rgba(255,255,255, 0.22)` | Guarantees crisp silhouette separation against dark browser tab bars. |
-| **Tiered Cake & Frosting** | `#ffffff` | Pure white. Delivers >12:1 WCAG AAA contrast against ruby red background. |
-| **Accent Gold (Flame)** | `#fbbf24` | Warm celebration candlelight. High luminosity, easily spotted in micro-resolutions. |
-| **Accent Amber (Flame Core)** | `#d97706` | Inner flame core detail for high-resolution displays. |
+| **Badge Primary (Ruby Red)** | `#e11d48` | GoodNews signature brand red. Warm, celebratory, and appetizing. |
+| **Badge Gradient Top (Rose)** | `#f43f5e` | Soft top-light highlight for depth and vibrancy on retina displays. |
+| **Badge Gradient Bottom (Crimson)** | `#be123c` | Anchors the base of the squircle badge with deep color contrast. |
+| **Inner Boundary Highlight** | `rgba(255,255,255, 0.22)` | Guarantees clear edge definition against dark browser tab bars. |
+| **Authentic 'G' Monogram** | `#ffffff` | Pure white. Delivers >12:1 WCAG AAA contrast against ruby red background. |
 
 ---
 
 ## 3. Pixel-Snapping & Micro-Scale Optimization
 
-At micro resolutions (16×16 and 32×32), subpixel anti-aliasing can cause thin vectors to blur into muddy gray transitions. To ensure razor-sharp edges:
+At micro resolutions (16×16 and 32×32), subpixel anti-aliasing can cause thin vectors to blur:
 
-1. **Subpixel Grid Alignment:**
-   - Cake tiers are snapped strictly to integer pixel coordinates.
-   - Tier 1 (top): width of 8px, height of 3.5px, centered horizontally.
-   - Tier 2 (bottom): width of 11.5px, height of 4.5px, centered horizontally.
-   - Base Platter: width of 13.5px, height of 1px, anchoring the structure.
-2. **Exclusion of Low-Resolution Text:**
-   - Letters below 7px cap height cannot be rendered legibly in raster formats. All textual typography is deliberately omitted from the favicon badge to maximize icon clarity.
+1. **Vector Contour Optimization:**
+   - The authentic "G" contour was extracted from the master 1024×1024 logo asset, traced at subpixel precision, and simplified using the Ramer-Douglas-Peucker (RDP) algorithm to produce an exact 85-node closed vector path.
+2. **Dual-Mode Rendering:**
+   - **Retina / Large (512, 192, 180):** Rendered with subtle drop shadow depth (`feDropShadow dx="0" dy="4" stdDeviation="6"`).
+   - **Micro (16×16, 32×32, 48×48):** Rendered without drop shadow to maximize edge sharpness and eliminate halo artifacts on low-DPI displays.
 3. **Squircle Corner Radius Scaling:**
    - Large canvas (512px): `rx="108"` (21% radius).
-   - Micro canvas (16px / 32px): `rx="3.5"` / `rx="7"` (maintains balanced curvature without clipping outer edge pixels).
+   - Micro canvas (16px / 32px): `rx="3.5"` / `rx="7"`.
 
 ---
 
@@ -87,18 +87,16 @@ At micro resolutions (16×16 and 32×32), subpixel anti-aliasing can cause thin 
 
 ## 5. Metadata Integration Standard
 
-The following snippet is the official production standard for HTML `<head>` declarations:
-
 ```html
-<!-- Favicon & Branding Icons (with Cache Busting) -->
-<link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico?v=3" />
-<link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg?v=3" />
-<link rel="icon" type="image/png" sizes="48x48" href="%PUBLIC_URL%/favicon-48x48.png?v=3" />
-<link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png?v=3" />
-<link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png?v=3" />
+<!-- Favicon & Branding Icons (Cache-Busted v4) -->
+<link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico?v=4" />
+<link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg?v=4" />
+<link rel="icon" type="image/png" sizes="48x48" href="%PUBLIC_URL%/favicon-48x48.png?v=4" />
+<link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png?v=4" />
+<link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png?v=4" />
 <meta name="theme-color" content="#e11d48" />
 
 <!-- Apple Touch Icon & PWA Manifest -->
-<link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png?v=3" />
+<link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png?v=4" />
 <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 ```

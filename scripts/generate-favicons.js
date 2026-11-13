@@ -4,155 +4,130 @@ const sharp = require('sharp');
 
 /**
  * GoodNews Cake & Catering - Brand Favicon Suite Generator
- * Standard: Artisanal Bakery Brand Visibility & Multi-Tab Recognition Standard (ABV-2026)
+ * Design Standard: Authentic GoodNews 'G' Brand Monogram (ABV-2026-v2)
  *
- * Implements high-density pixel-snapping:
- * - Large/Scalable (SVG, 512, 192, 180, 48, 32): Rich tiered celebration cake on vibrant GoodNews Ruby Red squircle
- * - Pixel-Snappy 16x16: Optimized chunky geometry with high-contrast tier blocks and golden flame for instant tab recognition
+ * Directly extracts and renders the signature 'G' letterform from the official
+ * GoodNews logo (public/images/logo/logo3.png), enclosed within the signature
+ * GoodNews Ruby Red squircle badge with subtle contrast boundary.
  */
 
-const createMasterSvg = () => `
+// Exact vector outline of the authentic 'G' from GoodNews logo (normalized to 512x512 canvas)
+const G_PATH_DATA = "M 275.64 96.00 L 314.19 96.00 L 316.12 97.93 L 325.76 97.93 L 346.96 105.64 L 366.24 119.13 L 373.95 128.77 L 379.73 142.27 L 379.73 157.69 L 375.88 165.40 L 368.17 173.11 L 348.89 180.82 L 345.04 176.96 L 343.11 167.33 L 335.40 153.83 L 325.76 144.19 L 312.27 136.48 L 306.48 136.48 L 304.55 134.55 L 277.57 134.55 L 254.43 146.12 L 242.87 157.69 L 227.45 180.82 L 219.73 196.24 L 212.02 219.37 L 212.02 225.16 L 208.17 234.80 L 208.17 244.43 L 206.24 246.36 L 206.24 261.78 L 204.31 263.71 L 204.31 300.34 L 206.24 302.27 L 208.17 323.47 L 217.81 346.60 L 223.59 354.31 L 237.08 365.88 L 250.58 371.66 L 260.22 371.66 L 262.14 373.59 L 264.07 371.66 L 285.28 369.73 L 296.84 363.95 L 312.27 348.53 L 321.90 325.40 L 323.83 309.98 L 325.76 308.05 L 325.76 292.63 L 327.69 290.70 L 325.76 286.84 L 283.35 286.84 L 289.13 252.14 L 385.52 252.14 L 385.52 284.92 L 383.59 286.84 L 379.73 325.40 L 373.95 344.67 L 360.46 369.73 L 341.18 389.01 L 314.19 404.43 L 294.92 410.22 L 287.20 410.22 L 285.28 412.14 L 264.07 412.14 L 262.14 414.07 L 256.36 412.14 L 237.08 412.14 L 210.10 404.43 L 194.67 396.72 L 175.40 381.30 L 161.90 363.95 L 146.48 327.33 L 144.55 308.05 L 142.63 306.12 L 142.63 257.93 L 144.55 256.00 L 144.55 244.43 L 146.48 242.51 L 150.34 219.37 L 167.69 175.04 L 192.75 140.34 L 213.95 121.06 L 244.80 103.71 L 264.07 97.93 L 273.71 97.93 Z";
+
+const createSvg = (withDropShadow = true) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
     <linearGradient id="gnRed" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#f43f5e" />
-      <stop offset="45%" stop-color="#e11d48" />
+      <stop offset="50%" stop-color="#e11d48" />
       <stop offset="100%" stop-color="#be123c" />
     </linearGradient>
-    <linearGradient id="gnGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a" />
-      <stop offset="50%" stop-color="#f59e0b" />
-      <stop offset="100%" stop-color="#d97706" />
-    </linearGradient>
+    ${withDropShadow ? `
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.25" />
+    </filter>` : ''}
   </defs>
 
-  <!-- Solid Brand Squircle with Optimal Browser Padding -->
-  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#gnRed)" />
-  <rect x="30" y="30" width="452" height="452" rx="106" fill="none" stroke="#ffffff" stroke-width="12" stroke-opacity="0.25" />
+  <!-- Signature GoodNews Ruby Red Squircle Badge -->
+  <rect x="20" y="20" width="472" height="472" rx="108" fill="url(#gnRed)" />
+  <rect x="24" y="24" width="464" height="464" rx="104" fill="none" stroke="#ffffff" stroke-width="10" stroke-opacity="0.22" />
 
-  <!-- Cake Stand Base -->
-  <rect x="112" y="386" width="288" height="34" rx="17" fill="#ffffff" />
-
-  <!-- Bottom Tier (Bold White Block) -->
-  <rect x="136" y="280" width="240" height="96" rx="18" fill="#ffffff" />
-  <!-- Brand Red Decorative Accent -->
-  <path d="M 148 312 C 176 328, 196 328, 224 312 C 252 328, 260 328, 288 312 C 316 328, 336 328, 364 312" fill="none" stroke="#e11d48" stroke-width="14" stroke-linecap="round" />
-
-  <!-- Middle Tier -->
-  <rect x="176" y="196" width="160" height="84" rx="16" fill="#ffffff" />
-  <!-- Middle Tier Accent -->
-  <path d="M 188 224 C 210 238, 230 238, 256 224 C 282 238, 302 238, 324 224" fill="none" stroke="#e11d48" stroke-width="12" stroke-linecap="round" />
-
-  <!-- Top Tier -->
-  <rect x="216" y="132" width="80" height="64" rx="14" fill="#ffffff" />
-
-  <!-- Celebration Candle -->
-  <rect x="247" y="86" width="18" height="46" rx="6" fill="#ffffff" />
-
-  <!-- Glowing Golden Flame -->
-  <path d="M 256 36 C 240 60, 234 74, 234 88 C 234 102, 244 110, 256 110 C 268 110, 278 102, 278 88 C 278 74, 272 60, 256 36 Z" fill="url(#gnGold)" stroke="#b45309" stroke-width="4" />
+  <!-- Authentic GoodNews 'G' Monogram from Official Logo -->
+  <path d="${G_PATH_DATA}" fill="#ffffff" ${withDropShadow ? 'filter="url(#shadow)"' : ''} />
 </svg>
-`;
-
-// Micro-optimized SVG for 16x16 & 32x32 rendering (maximum chunkiness and zero sub-pixel fuzziness)
-const createMicroSvg = () => `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <defs>
-    <linearGradient id="mRed" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f43f5e" />
-      <stop offset="100%" stop-color="#be123c" />
-    </linearGradient>
-  </defs>
-
-  <!-- Full-bleed high-contrast rounded badge -->
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#mRed)" />
-  <rect x="3" y="3" width="58" height="58" rx="13" fill="none" stroke="#ffffff" stroke-width="2" stroke-opacity="0.25" />
-
-  <!-- Cake Stand Base -->
-  <rect x="12" y="50" width="40" height="5" rx="2.5" fill="#ffffff" />
-
-  <!-- Bottom Tier -->
-  <rect x="15" y="37" width="34" height="13" rx="2" fill="#ffffff" />
-  <line x1="17" y1="41" x2="47" y2="41" stroke="#e11d48" stroke-width="2" stroke-linecap="round" />
-
-  <!-- Middle Tier -->
-  <rect x="21" y="26" width="22" height="11" rx="2" fill="#ffffff" />
-  <line x1="23" y1="29" x2="41" y2="29" stroke="#e11d48" stroke-width="1.8" stroke-linecap="round" />
-
-  <!-- Top Tier -->
-  <rect x="26" y="17" width="12" height="9" rx="1.5" fill="#ffffff" />
-
-  <!-- Candle & Flame -->
-  <rect x="30.5" y="12" width="3" height="5" rx="0.5" fill="#ffffff" />
-  <ellipse cx="32" cy="7.5" rx="3" ry="4.5" fill="#fbbf24" stroke="#d97706" stroke-width="0.8" />
-</svg>
-`;
+`.trim();
 
 async function generateAll() {
   const publicDir = path.resolve(__dirname, '../public');
-  const masterSvg = createMasterSvg();
-  const microSvg = createMicroSvg();
 
-  console.log('Writing public/favicon.svg...');
+  console.log('Generating Authentic GoodNews "G" Brand Favicon Suite...');
+
+  // 1. Vector SVG (with subtle shadow)
+  const masterSvg = createSvg(true);
   fs.writeFileSync(path.join(publicDir, 'favicon.svg'), masterSvg, 'utf8');
+  console.log('✓ Created public/favicon.svg (Scalable Vector)');
 
-  console.log('Generating PNG favicons...');
-  // Micro sizes (16 and 32)
-  await sharp(Buffer.from(microSvg)).resize(16, 16).png().toFile(path.join(publicDir, 'favicon-16x16.png'));
-  await sharp(Buffer.from(microSvg)).resize(32, 32).png().toFile(path.join(publicDir, 'favicon-32x32.png'));
+  // Clean SVG for small raster renders (no shadow to prevent subpixel blur)
+  const cleanSvg = createSvg(false);
 
-  // Standard and high-res sizes
-  await sharp(Buffer.from(masterSvg)).resize(48, 48).png().toFile(path.join(publicDir, 'favicon-48x48.png'));
-  await sharp(Buffer.from(masterSvg)).resize(180, 180).png().toFile(path.join(publicDir, 'apple-touch-icon.png'));
-  await sharp(Buffer.from(masterSvg)).resize(192, 192).png().toFile(path.join(publicDir, 'logo192.png'));
-  await sharp(Buffer.from(masterSvg)).resize(512, 512).png().toFile(path.join(publicDir, 'logo512.png'));
+  // 2. High-Density App Icons
+  const sizes = [
+    { name: 'logo512.png', size: 512, svg: masterSvg },
+    { name: 'logo192.png', size: 192, svg: masterSvg },
+    { name: 'apple-touch-icon.png', size: 180, svg: masterSvg },
+    { name: 'favicon-48x48.png', size: 48, svg: cleanSvg },
+    { name: 'favicon-32x32.png', size: 32, svg: cleanSvg },
+    { name: 'favicon-16x16.png', size: 16, svg: cleanSvg }
+  ];
 
-  // Multi-resolution ICO
-  const p16 = await sharp(Buffer.from(microSvg)).resize(16, 16).png().toBuffer();
-  const p32 = await sharp(Buffer.from(microSvg)).resize(32, 32).png().toBuffer();
-  const p48 = await sharp(Buffer.from(masterSvg)).resize(48, 48).png().toBuffer();
+  for (const item of sizes) {
+    const outPath = path.join(publicDir, item.name);
+    await sharp(Buffer.from(item.svg))
+      .resize(item.size, item.size, {
+        kernel: sharp.kernel.lanczos3
+      })
+      .png()
+      .toFile(outPath);
+    console.log(`✓ Created public/${item.name} (${item.size}x${item.size})`);
+  }
 
-  const ico = buildIco([
-    { buffer: p16, width: 16, height: 16 },
-    { buffer: p32, width: 32, height: 32 },
-    { buffer: p48, width: 48, height: 48 }
+  // 3. Multi-layer Windows ICO (16, 32, 48)
+  const png16 = await sharp(Buffer.from(cleanSvg)).resize(16, 16).png().toBuffer();
+  const png32 = await sharp(Buffer.from(cleanSvg)).resize(32, 32).png().toBuffer();
+  const png48 = await sharp(Buffer.from(cleanSvg)).resize(48, 48).png().toBuffer();
+
+  const icoBuffer = createIco([
+    { size: 16, buffer: png16 },
+    { size: 32, buffer: png32 },
+    { size: 48, buffer: png48 }
   ]);
-  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), ico);
+  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
+  console.log('✓ Created public/favicon.ico (Multi-layer 16/32/48)');
 
-  console.log('✓ All favicon assets generated and verified.');
+  // Clean up any temporary json
+  const gPathJson = path.resolve(__dirname, 'g-path.json');
+  if (fs.existsSync(gPathJson)) fs.unlinkSync(gPathJson);
+
+  console.log('All Authentic Brand Favicon assets generated successfully!');
 }
 
-function buildIco(images) {
+/**
+ * Creates standard Windows ICO binary format wrapping multiple PNG images
+ */
+function createIco(images) {
+  const count = images.length;
   const headerSize = 6;
   const dirEntrySize = 16;
-  const count = images.length;
-  let offset = headerSize + dirEntrySize * count;
+  let offset = headerSize + count * dirEntrySize;
 
   const header = Buffer.alloc(headerSize);
-  header.writeUInt16LE(0, 0);
-  header.writeUInt16LE(1, 2);
-  header.writeUInt16LE(count, 4);
+  header.writeUInt16LE(0, 0); // Reserved
+  header.writeUInt16LE(1, 2); // Type 1 = ICO
+  header.writeUInt16LE(count, 4); // Number of images
 
   const entries = [];
   const imageBuffers = [];
 
   for (const img of images) {
     const entry = Buffer.alloc(dirEntrySize);
-    entry.writeUInt8(img.width >= 256 ? 0 : img.width, 0);
-    entry.writeUInt8(img.height >= 256 ? 0 : img.height, 1);
-    entry.writeUInt8(0, 2);
-    entry.writeUInt8(0, 3);
-    entry.writeUInt16LE(1, 4);
-    entry.writeUInt16LE(32, 6);
-    entry.writeUInt32LE(img.buffer.length, 8);
-    entry.writeUInt32LE(offset, 12);
+    entry.writeUInt8(img.size >= 256 ? 0 : img.size, 0); // Width
+    entry.writeUInt8(img.size >= 256 ? 0 : img.size, 1); // Height
+    entry.writeUInt8(0, 2); // Color palette
+    entry.writeUInt8(0, 3); // Reserved
+    entry.writeUInt16LE(1, 4); // Color planes
+    entry.writeUInt16LE(32, 6); // Bits per pixel
+    entry.writeUInt32LE(img.buffer.length, 8); // Image size in bytes
+    entry.writeUInt32LE(offset, 12); // Offset to image data
 
-    offset += img.buffer.length;
     entries.push(entry);
     imageBuffers.push(img.buffer);
+    offset += img.buffer.length;
   }
 
   return Buffer.concat([header, ...entries, ...imageBuffers]);
 }
 
-generateAll().catch(e => { console.error(e); process.exit(1); });
+generateAll().catch(err => {
+  console.error('Error generating favicons:', err);
+  process.exit(1);
+});
