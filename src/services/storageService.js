@@ -211,13 +211,79 @@ export const compressImageForUpload = async (file, maxWidth = 1600, quality = 0.
 };
 
 /**
- * Upload an image file to Firebase Storage
+ * Convert an image file to an optimized, watermarked WebP Data URL.
+ * Enables 100% free, zero-cost, serverless media uploads directly via Firestore
+ * without requiring any paid Google Cloud Storage bucket or CORS configuration.
+ * @param {File} file - Original file
+ * @param {number} maxWidth - Max pixel dimension
+ * @param {number} quality - WebP compression factor (0.0 to 1.0)
+ * @param {boolean} shouldWatermark - Whether to stamp the GoodNews watermark
+ * @returns {Promise<string>} Base64 WebP Data URL
+ */
+export const convertToOptimizedDataUrl = async (file, maxWidth = 1200, quality = 0.82, shouldWatermark = false) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined' || typeof Image === 'undefined') {
+        return '';
+    }
+    return new Promise((resolve) => {
+        try {
+            const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
+            img.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                let { width, height } = img;
+                if (width > maxWidth || height > maxWidth) {
+                    if (width > height) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    } else {
+                        width = Math.round((width * maxWidth) / height);
+                        height = maxWidth;
+                    }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return resolve('');
+
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Apply GoodNews watermark if cake image
+                if (shouldWatermark) {
+                    drawWatermarkOnCanvas(canvas, ctx);
+                }
+
+                // Prefer WebP for high compression (~30KB-60KB per photo)
+                let dataUrl = canvas.toDataURL('image/webp', quality);
+                if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+                    dataUrl = canvas.toDataURL('image/jpeg', quality);
+                }
+                resolve(dataUrl);
+            };
+            img.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                resolve('');
+            };
+            img.src = objectUrl;
+        } catch {
+            resolve('');
+        }
+    });
+};
+
+/**
+ * Upload an image file to Firebase Storage with automatic Zero-Cost Direct Firestore fallback.
  * Automatically applies the elegant "GoodNews Cake and Catering" watermark to cake photographs.
+ * 
+ * Reliability guarantee:
+ * - Attempts Cloud Storage upload first.
+ * - If blocked by CORS, missing bucket, or unpaid tier limits, automatically falls back
+ *   to an optimized client WebP data URL stored directly in Firestore (100% Free Forever).
  * @param {File} file - The file to upload
  * @param {string} folder - Destination folder (e.g., 'products', 'categories', 'services', 'gallery')
  * @param {Function} [onProgress] - Optional progress callback: (percent: number) => void
  * @param {object} [options] - Options e.g. { isCake: boolean }
- * @returns {Promise<string>} Resolves with public download URL
+ * @returns {Promise<string>} Resolves with public download URL or optimized WebP Data URL
  */
 export const uploadImage = async (file, folder = 'products', onProgress = null, options = {}) => {
     const validation = validateImageFile(file);
@@ -232,37 +298,69 @@ export const uploadImage = async (file, folder = 'products', onProgress = null, 
     // Client-side pre-compression and watermarking
     const uploadReadyFile = await compressImageForUpload(file, 1600, 0.88, shouldWatermark);
 
-    return new Promise((resolve, reject) => {
-        // Clean filename and create unique storage path
-        const sanitizedName = uploadReadyFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const uniquePath = `${folder}/${Date.now()}_${sanitizedName}`;
-        const storageRef = ref(storage, uniquePath);
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Clean filename and create unique storage path
+            const sanitizedName = uploadReadyFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+            const uniquePath = `${folder}/${Date.now()}_${sanitizedName}`;
+            const storageRef = ref(storage, uniquePath);
 
-        const uploadTask = uploadBytesResumable(storageRef, uploadReadyFile, {
-            contentType: uploadReadyFile.type
-        });
+            const uploadTask = uploadBytesResumable(storageRef, uploadReadyFile, {
+                contentType: uploadReadyFile.type
+            });
 
-        uploadTask.on(
-            'state_changed',
-            (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                if (onProgress && typeof onProgress === 'function') {
-                    onProgress(Math.round(progress));
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    if (onProgress && typeof onProgress === 'function') {
+                        onProgress(Math.round(progress));
+                    }
+                },
+                async (error) => {
+                    console.warn('⚠️ Cloud Storage upload encountered error, activating 100% Free Direct Mode:', error.message || error.code);
+                    try {
+                        const fallbackDataUrl = await convertToOptimizedDataUrl(file, 1200, 0.82, shouldWatermark);
+                        if (fallbackDataUrl) {
+                            if (onProgress && typeof onProgress === 'function') onProgress(100);
+                            resolve(fallbackDataUrl);
+                        } else {
+                            reject(new Error(`Failed to upload image: ${error.message}`));
+                        }
+                    } catch (fallbackErr) {
+                        reject(new Error(`Failed to upload image: ${error.message}`));
+                    }
+                },
+                async () => {
+                    try {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        resolve(downloadURL);
+                    } catch (err) {
+                        console.warn('⚠️ getDownloadURL failed, activating 100% Free Direct Mode:', err.message);
+                        try {
+                            const fallbackDataUrl = await convertToOptimizedDataUrl(file, 1200, 0.82, shouldWatermark);
+                            if (fallbackDataUrl) resolve(fallbackDataUrl);
+                            else reject(new Error(`Failed to retrieve download URL: ${err.message}`));
+                        } catch {
+                            reject(new Error(`Failed to retrieve download URL: ${err.message}`));
+                        }
+                    }
                 }
-            },
-            (error) => {
-                console.error('❌ Upload failed:', error);
-                reject(new Error(`Failed to upload image: ${error.message}`));
-            },
-            async () => {
-                try {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    resolve(downloadURL);
-                } catch (err) {
-                    reject(new Error(`Failed to retrieve download URL: ${err.message}`));
+            );
+        } catch (initErr) {
+            console.warn('⚠️ Storage task creation failed, activating 100% Free Direct Mode:', initErr.message);
+            try {
+                const fallbackDataUrl = await convertToOptimizedDataUrl(file, 1200, 0.82, shouldWatermark);
+                if (fallbackDataUrl) {
+                    if (onProgress && typeof onProgress === 'function') onProgress(100);
+                    resolve(fallbackDataUrl);
+                } else {
+                    reject(initErr);
                 }
+            } catch (err) {
+                reject(initErr);
             }
-        );
+        }
     });
 };
 

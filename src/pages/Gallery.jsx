@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { useCart } from '../contexts/CartContext';
 import { getProducts } from '../services/productService';
 import OptimizedImage from '../components/common/OptimizedImage';
@@ -641,18 +643,43 @@ const Gallery = () => {
 
   useEffect(() => {
     let isMounted = true;
-    getProducts({ category: 'cakes', status: 'published' })
-      .then(prods => {
-        if (isMounted && prods && prods.length > 0) {
-          setLiveCakes(prods.map(p => ({
-            id: p.id,
-            title: p.name,
-            img: p.featuredImage || (p.images && p.images[0]) || '/images/cakes/cake1.png',
-            description: p.description,
-            ingredients: p.ingredients || [],
-            size: p.size || '1 kg',
-            servings: p.servings || '8-10 people'
-          })));
+    Promise.all([
+      getProducts({ category: 'cakes', status: 'published' }).catch(() => []),
+      getDocs(query(collection(db, 'gallery_photos'), orderBy('createdAt', 'desc'))).catch(() => null)
+    ])
+      .then(([prods, gallerySnap]) => {
+        if (!isMounted) return;
+        const uploadedCakes = (gallerySnap && !gallerySnap.empty)
+          ? gallerySnap.docs.map(d => {
+              const data = d.data();
+              return {
+                id: d.id,
+                title: data.caption || 'Celebration Cake',
+                img: data.url || '/images/cakes/cake1.png',
+                description: data.caption || 'Artisanal celebration cake crafted by GoodNews Cake & Catering.',
+                ingredients: ['Vanilla Velvet Sponge', 'Buttercream Frosting', 'Signature Decor'],
+                size: 'Custom Size',
+                servings: '10-15 people',
+                category: data.category || 'Celebration Cakes'
+              };
+            })
+          : [];
+
+        const productCakes = (prods && prods.length > 0)
+          ? prods.map(p => ({
+              id: p.id,
+              title: p.name,
+              img: p.featuredImage || (p.images && p.images[0]) || '/images/cakes/cake1.png',
+              description: p.description,
+              ingredients: p.ingredients || [],
+              size: p.size || '1 kg',
+              servings: p.servings || '8-10 people'
+            }))
+          : [];
+
+        const combined = [...uploadedCakes, ...productCakes];
+        if (combined.length > 0) {
+          setLiveCakes(combined);
         }
       })
       .catch(err => console.warn('Using default cakes catalog:', err.message));
