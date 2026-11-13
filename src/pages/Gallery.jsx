@@ -4,6 +4,7 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useCart } from '../contexts/CartContext';
 import { getProducts } from '../services/productService';
+import { resolveCakeDetails } from '../utils/cakeGalleryCuration';
 import OptimizedImage from '../components/common/OptimizedImage';
 import SEOHead from '../components/common/SEOHead';
 import { Share2, MessageCircle, Download } from 'lucide-react';
@@ -652,15 +653,16 @@ const Gallery = () => {
         const uploadedCakes = (gallerySnap && !gallerySnap.empty)
           ? gallerySnap.docs.map(d => {
               const data = d.data();
+              const curated = resolveCakeDetails(data);
               return {
                 id: d.id,
-                title: data.caption || 'Celebration Cake',
+                title: curated.title,
                 img: data.url || '/images/cakes/cake1.png',
-                description: data.caption || 'Artisanal celebration cake crafted by GoodNews Cake & Catering.',
-                ingredients: ['Vanilla Velvet Sponge', 'Buttercream Frosting', 'Signature Decor'],
-                size: 'Custom Size',
-                servings: '10-15 people',
-                category: data.category || 'Celebration Cakes'
+                description: curated.description,
+                ingredients: curated.ingredients,
+                size: curated.size,
+                servings: curated.servings,
+                category: curated.category
               };
             })
           : [];

@@ -4,6 +4,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, or
 import { db } from '../../config/firebase';
 import { uploadImage, validateImageFile } from '../../services/storageService';
 import { INITIAL_PRODUCTS } from '../../utils/seedData';
+import { resolveCakeTitle } from '../../utils/cakeGalleryCuration';
 
 const GalleryManagement = () => {
   const [photos, setPhotos] = useState([]);
@@ -188,7 +189,7 @@ const GalleryManagement = () => {
                 </span>
                 <div>
                   <span className="text-[10px] bg-primary-600 text-white px-2 py-0.5 rounded-full font-bold uppercase">{photo.category}</span>
-                  <p className="text-white text-xs font-bold truncate mt-1">{photo.caption}</p>
+                  <p className="text-white text-xs font-bold truncate mt-1">{resolveCakeTitle(photo.caption, photo.url)}</p>
                 </div>
               </div>
             </div>
