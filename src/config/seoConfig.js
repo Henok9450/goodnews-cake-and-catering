@@ -35,7 +35,7 @@ export const SITE_METADATA = {
 
 export const ROUTE_SEO_CONFIG = {
   '/': {
-    title: 'GoodNews Cake & Catering | Artisanal Bakery in Addis Ababa',
+    title: 'GoodNews Cake & Catering | Cakes and Catering Services',
     description: 'Discover handcrafted artisanal cakes, custom wedding designs, and luxury catering in Addis Ababa. Order online with reliable delivery across Addis Ababa.',
     canonical: `${SITE_METADATA.siteUrl}/`,
     keywords: 'cake shop in addis ababa, custom cakes addis ababa, catering services addis ababa, wedding cakes addis ababa, birthday cake delivery addis',
