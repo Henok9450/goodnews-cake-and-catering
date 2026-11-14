@@ -680,15 +680,20 @@ const Seasonal = () => {
     getProducts({ category: 'seasonal', status: 'published' })
       .then(prods => {
         if (isMounted && prods && prods.length > 0) {
-          setLiveSeasonal(prods.map(p => ({
-            id: p.id,
-            title: p.name,
-            img: p.featuredImage || (p.images && p.images[0]) || '/images/seasonal/enkutatash.png',
-            description: p.description,
-            ingredients: p.ingredients || [],
-            size: p.size || '1 kg round cake',
-            servings: p.servings || '12-16 people'
-          })));
+          setLiveSeasonal(prods.map(p => {
+            const catalogMatch = seasonalItems.find(
+              s => (s.title || '').trim().toLowerCase() === (p.name || '').trim().toLowerCase()
+            );
+            return {
+              id: p.id,
+              title: p.name,
+              img: p.featuredImage || (p.images && p.images[0]) || catalogMatch?.img || '/images/seasonal/enkutatash-real.jpg',
+              description: p.description || catalogMatch?.description || '',
+              ingredients: p.ingredients || catalogMatch?.ingredients || [],
+              size: p.size || catalogMatch?.size || '1.5 kg round cake',
+              servings: p.servings || catalogMatch?.servings || '12-16 people'
+            };
+          }));
         }
       })
       .catch(e => console.warn('Using default seasonal items:', e.message));
@@ -696,7 +701,18 @@ const Seasonal = () => {
     return () => { isMounted = false; };
   }, []);
 
-  const displaySeasonal = liveSeasonal.length > 0 ? liveSeasonal : seasonalItems;
+  // Seamless merge: combine live Firestore seasonal items with complete static catalog
+  const displaySeasonal = React.useMemo(() => {
+    if (!liveSeasonal || liveSeasonal.length === 0) return seasonalItems;
+    const result = [...liveSeasonal];
+    const liveTitles = new Set(liveSeasonal.map(c => (c.title || '').trim().toLowerCase()));
+    for (const def of seasonalItems) {
+      if (!liveTitles.has((def.title || '').trim().toLowerCase())) {
+        result.push(def);
+      }
+    }
+    return result;
+  }, [liveSeasonal]);
   const [selectedSeasonalItem, setSelectedSeasonalItem] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);

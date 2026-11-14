@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 /**
  * OptimizedImage Component
@@ -22,6 +22,22 @@ const OptimizedImage = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const imgRef = useRef(null);
+
+  // Check if image is already cached or completed by the browser
+  useEffect(() => {
+    setHasError(false);
+    if (imgRef.current) {
+      if (imgRef.current.complete) {
+        if (imgRef.current.naturalWidth > 0) {
+          setIsLoaded(true);
+        } else if (imgRef.current.src && imgRef.current.naturalWidth === 0) {
+          setHasError(true);
+          setIsLoaded(true);
+        }
+      }
+    }
+  }, [src]);
 
   if (!src) {
     return (
@@ -96,6 +112,7 @@ const OptimizedImage = ({
             sizes={sizes}
           />
           <img
+            ref={imgRef}
             src={fallbackSrc}
             alt={alt}
             width={width}
@@ -113,6 +130,7 @@ const OptimizedImage = ({
         </picture>
       ) : (
         <img
+          ref={imgRef}
           src={src}
           alt={alt}
           width={width}

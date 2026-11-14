@@ -27,9 +27,19 @@ export const getServices = async (includeDrafts = false) => {
         }
         let services = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // Seamless catalog fallback if Firestore collection is empty
-        if (services.length === 0) {
-            services = INITIAL_SERVICES.map((s, idx) => ({ id: s.slug || `init-serv-${idx + 1}`, ...s }));
+        // Seamless catalog fallback or completion: ensure all catalog services are represented
+        const existingKeys = new Set(
+            services.map(s => (s.slug || s.title || '').toLowerCase().trim())
+        );
+
+        for (const initS of INITIAL_SERVICES) {
+            const key = (initS.slug || initS.title || '').toLowerCase().trim();
+            if (!existingKeys.has(key)) {
+                services.push({
+                    id: initS.slug || `init-serv-${services.length + 1}`,
+                    ...initS
+                });
+            }
         }
 
         if (!includeDrafts) {

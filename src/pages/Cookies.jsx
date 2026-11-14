@@ -614,15 +614,20 @@ const Cookies = () => {
     getProducts({ category: 'cookies', status: 'published' })
       .then(prods => {
         if (isMounted && prods && prods.length > 0) {
-          setLiveCookies(prods.map(p => ({
-            id: p.id,
-            title: p.name,
-            img: p.featuredImage || (p.images && p.images[0]) || '/images/cookies/cookie1.png',
-            description: p.description,
-            ingredients: p.ingredients || [],
-            size: p.size || '3-inch diameter',
-            servings: p.servings || '12 cookies per batch'
-          })));
+          setLiveCookies(prods.map(p => {
+            const catalogMatch = cookies.find(
+              c => (c.title || '').trim().toLowerCase() === (p.name || '').trim().toLowerCase()
+            );
+            return {
+              id: p.id,
+              title: p.name,
+              img: p.featuredImage || (p.images && p.images[0]) || catalogMatch?.img || '/images/cookies/cookie1.png',
+              description: p.description || catalogMatch?.description || '',
+              ingredients: p.ingredients || catalogMatch?.ingredients || [],
+              size: p.size || catalogMatch?.size || '3-inch diameter',
+              servings: p.servings || catalogMatch?.servings || '12 cookies per batch'
+            };
+          }));
         }
       })
       .catch(e => console.warn('Using default cookies:', e.message));
@@ -630,7 +635,18 @@ const Cookies = () => {
     return () => { isMounted = false; };
   }, []);
 
-  const displayCookies = liveCookies.length > 0 ? liveCookies : cookies;
+  // Seamless merge: combine live Firestore cookies with complete static catalog so all cookies remain available
+  const displayCookies = React.useMemo(() => {
+    if (!liveCookies || liveCookies.length === 0) return cookies;
+    const result = [...liveCookies];
+    const liveTitles = new Set(liveCookies.map(c => (c.title || '').trim().toLowerCase()));
+    for (const def of cookies) {
+      if (!liveTitles.has((def.title || '').trim().toLowerCase())) {
+        result.push(def);
+      }
+    }
+    return result;
+  }, [liveCookies]);
   const [selectedCookie, setSelectedCookie] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);

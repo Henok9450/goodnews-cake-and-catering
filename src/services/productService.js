@@ -33,15 +33,23 @@ export const getProducts = async (filters = {}) => {
         }
         let products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-        // Seamless catalog fallback if Firestore collection is empty
-        if (products.length === 0) {
-            products = INITIAL_PRODUCTS.map((p, idx) => ({
-                id: p.slug || `init-${idx + 1}`,
-                stockQuantity: 10,
-                isCustomizable: true,
-                isMadeToOrder: true,
-                ...p
-            }));
+        // Seamless catalog fallback or completion: ensure all catalog items are represented
+        const existingKeys = new Set(
+            products.map(p => (p.slug || p.name || '').toLowerCase().trim())
+        );
+
+        // Append initial products not yet stored in Firestore so no catalog items are missing
+        for (const initP of INITIAL_PRODUCTS) {
+            const key = (initP.slug || initP.name || '').toLowerCase().trim();
+            if (!existingKeys.has(key)) {
+                products.push({
+                    id: initP.slug || `init-${products.length + 1}`,
+                    stockQuantity: 10,
+                    isCustomizable: true,
+                    isMadeToOrder: true,
+                    ...initP
+                });
+            }
         }
 
         if (category && category !== 'all') {

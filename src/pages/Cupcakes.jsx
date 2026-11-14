@@ -618,15 +618,20 @@ const Cupcakes = () => {
     getProducts({ category: 'cupcakes', status: 'published' })
       .then(prods => {
         if (isMounted && prods && prods.length > 0) {
-          setLiveCupcakes(prods.map(p => ({
-            id: p.id,
-            title: p.name,
-            img: p.featuredImage || (p.images && p.images[0]) || '/images/cupcakes/cupcake1.png',
-            description: p.description,
-            ingredients: p.ingredients || [],
-            size: p.size || 'Standard cupcake',
-            servings: p.servings || '1 person per cupcake'
-          })));
+          setLiveCupcakes(prods.map(p => {
+            const catalogMatch = cupcakes.find(
+              c => (c.title || '').trim().toLowerCase() === (p.name || '').trim().toLowerCase()
+            );
+            return {
+              id: p.id,
+              title: p.name,
+              img: p.featuredImage || (p.images && p.images[0]) || catalogMatch?.img || '/images/cupcakes/cupcake1.png',
+              description: p.description || catalogMatch?.description || '',
+              ingredients: p.ingredients || catalogMatch?.ingredients || [],
+              size: p.size || catalogMatch?.size || 'Standard cupcake',
+              servings: p.servings || catalogMatch?.servings || '1 person per cupcake'
+            };
+          }));
         }
       })
       .catch(e => console.warn('Using default cupcakes:', e.message));
@@ -634,7 +639,18 @@ const Cupcakes = () => {
     return () => { isMounted = false; };
   }, []);
 
-  const displayCupcakes = liveCupcakes.length > 0 ? liveCupcakes : cupcakes;
+  // Seamless merge: combine live Firestore cupcakes with complete static catalog so all cupcakes remain available
+  const displayCupcakes = React.useMemo(() => {
+    if (!liveCupcakes || liveCupcakes.length === 0) return cupcakes;
+    const result = [...liveCupcakes];
+    const liveTitles = new Set(liveCupcakes.map(c => (c.title || '').trim().toLowerCase()));
+    for (const def of cupcakes) {
+      if (!liveTitles.has((def.title || '').trim().toLowerCase())) {
+        result.push(def);
+      }
+    }
+    return result;
+  }, [liveCupcakes]);
   const [selectedCupcake, setSelectedCupcake] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOrderFormOpen, setIsOrderFormOpen] = useState(false);

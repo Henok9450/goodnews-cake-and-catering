@@ -89,14 +89,19 @@ const Catering = () => {
     getServices()
       .then(servs => {
         if (isMounted && servs && servs.length > 0) {
-          setLiveServices(servs.map(s => ({
-            id: s.id,
-            img: s.coverImage || (s.images && s.images[0]) || '/images/catering/catering1.png',
-            title: s.title,
-            description: s.description,
-            serves: s.serves || '10-15 people',
-            category: s.category || 'desserts'
-          })));
+          setLiveServices(servs.map(s => {
+            const catalogMatch = cateringItems.find(
+              c => (c.title || '').trim().toLowerCase() === (s.title || '').trim().toLowerCase()
+            );
+            return {
+              id: s.id,
+              img: s.coverImage || (s.images && s.images[0]) || catalogMatch?.img || '/images/catering/catering1.png',
+              title: s.title,
+              description: s.description || catalogMatch?.description || '',
+              serves: s.serves || catalogMatch?.serves || '10-15 people',
+              category: s.category || catalogMatch?.category || 'desserts'
+            };
+          }));
         }
       })
       .catch(e => console.warn('Using default catering items:', e.message));
@@ -104,7 +109,18 @@ const Catering = () => {
     return () => { isMounted = false; };
   }, []);
 
-  const displayCateringItems = liveServices.length > 0 ? liveServices : cateringItems;
+  // Seamless merge: combine live Firestore catering services with complete static catalog packages
+  const displayCateringItems = React.useMemo(() => {
+    if (!liveServices || liveServices.length === 0) return cateringItems;
+    const result = [...liveServices];
+    const liveTitles = new Set(liveServices.map(s => (s.title || '').trim().toLowerCase()));
+    for (const def of cateringItems) {
+      if (!liveTitles.has((def.title || '').trim().toLowerCase())) {
+        result.push(def);
+      }
+    }
+    return result;
+  }, [liveServices]);
   const [showForm, setShowForm] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
